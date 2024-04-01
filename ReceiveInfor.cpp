@@ -1,4 +1,4 @@
-#include "Mahjong.h"
+//#include "Mahjong.h"
 #include "ReceiveInfor.h"
 #include"StatusMemory.h"
 

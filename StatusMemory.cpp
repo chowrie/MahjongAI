@@ -1,6 +1,8 @@
 #include "StatusMemory.h"
 
-extern int turn = 0;
+int turn = 0;
+
+Memory memory;
 
 Memory::Memory()
 {

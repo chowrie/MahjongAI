@@ -39,6 +39,21 @@
     <ClInclude Include="StatusMemory.h">
       <Filter>头文件\inner</Filter>
     </ClInclude>
+    <ClInclude Include="fan_calculator.h">
+      <Filter>头文件\outerTools</Filter>
+    </ClInclude>
+    <ClInclude Include="shanten.h">
+      <Filter>头文件\outerTools</Filter>
+    </ClInclude>
+    <ClInclude Include="standard_tiles.h">
+      <Filter>头文件\outerTools</Filter>
+    </ClInclude>
+    <ClInclude Include="stringify.h">
+      <Filter>头文件\outerTools</Filter>
+    </ClInclude>
+    <ClInclude Include="tile.h">
+      <Filter>头文件\outerTools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Mahjong.cpp">
@@ -49,6 +64,18 @@
     </ClCompile>
     <ClCompile Include="StatusMemory.cpp">
       <Filter>源文件\inner</Filter>
+    </ClCompile>
+    <ClCompile Include="fan_calculator.cpp">
+      <Filter>源文件\outerTools</Filter>
+    </ClCompile>
+    <ClCompile Include="shanten.cpp">
+      <Filter>源文件\outerTools</Filter>
+    </ClCompile>
+    <ClCompile Include="stringify.cpp">
+      <Filter>源文件\outerTools</Filter>
+    </ClCompile>
+    <ClCompile Include="unit_test.cpp">
+      <Filter>源文件\outerTools</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
