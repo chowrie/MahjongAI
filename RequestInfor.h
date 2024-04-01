@@ -5,7 +5,7 @@
 
 using namespace std;
 
-void receive(istringstream& sin);
+void request(istringstream& sin);
 
 void memoryInitial(istringstream& sin);
 

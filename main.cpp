@@ -8,12 +8,13 @@
 #include <limits>
 #include <assert.h>
 #include <time.h>
-
-#include <iostream>
-#include <string>
-#include <sstream>
 #include <vector>
 #include <algorithm>
+
+#include "StatusMemory.h"
+#include "RequestInfor.h"
+#include "ResponseInfor.h"
+
 
 #ifdef _BOTZONE_ONLINE
 #include "jsoncpp/json.h" // 在线环境下包含JSON库
@@ -523,96 +524,106 @@ void test_shanten(const char *str) {
 using namespace std;
 
 // 定义请求和响应向量以及手牌向量
-vector<string> request, response;
-vector<string> hand;
+//vector<string> request, response;
+//vector<string> hand;
 
 int main()
 {
-    int turnID;
-    string stmp;
-    // 根据简单交互或JSON交互读取输入并解析
-#if SIMPLEIO
-    cin >> turnID; // 读取回合ID
-    turnID--; // 转化成从0开始的索引
-    getline(cin, stmp); // 读取当前行剩余内容以清除输入缓冲区
-    for (int i = 0; i < turnID; i++) {
-        getline(cin, stmp); // 读取每个请求
-        request.push_back(stmp); // 添加到请求向量
-        getline(cin, stmp); // 读取每个响应
-        response.push_back(stmp); // 添加到响应向量
-    }
-    getline(cin, stmp); // 读取最新的请求
-    request.push_back(stmp); // 添加到请求向量
-#else
+//    int turnID;
+//    string stmp;
+//    // 根据简单交互或JSON交互读取输入并解析
+//#if SIMPLEIO
+//    cin >> turnID; // 读取回合ID
+//    turnID--; // 转化成从0开始的索引
+//    getline(cin, stmp); // 读取当前行剩余内容以清除输入缓冲区
+//    for (int i = 0; i < turnID; i++) {
+//        getline(cin, stmp); // 读取每个请求
+//        request.push_back(stmp); // 添加到请求向量
+//        getline(cin, stmp); // 读取每个响应
+//        response.push_back(stmp); // 添加到响应向量
+//    }
+//    getline(cin, stmp); // 读取最新的请求
+//    request.push_back(stmp); // 添加到请求向量
+//#else
+//    Json::Value inputJSON;
+//    cin >> inputJSON; // 读取JSON格式输入
+//    turnID = inputJSON["responses"].size(); // 获取当前回合数
+//    for (int i = 0; i < turnID; i++) {
+//        request.push_back(inputJSON["requests"][i].asString()); // 添加到请求向量
+//        response.push_back(inputJSON["responses"][i].asString()); // 添加到响应向量
+//    }
+//    request.push_back(inputJSON["requests"][turnID].asString()); // 添加最新的请求
+//#endif
+//
+//    // 如果是前两个回合，则自动PASS
+//    if (turnID < 2) {
+//        response.push_back("PASS");
+//    }
+//    else {
+//        int itmp, myPlayerID, quan;
+//        ostringstream sout;
+//        istringstream sin;
+//        // 解析初始信息
+//        sin.str(request[0]);
+//        sin >> itmp >> myPlayerID >> quan;
+//        sin.clear();
+//        // 解析初始手牌
+//        sin.str(request[1]);
+//        for (int j = 0; j < 5; j++) sin >> itmp; // 跳过前五个整数
+//        for (int j = 0; j < 13; j++) {
+//            sin >> stmp; // 读取手牌
+//            hand.push_back(stmp); // 添加到手牌向量
+//        }
+//        // 处理后续回合
+//        for (int i = 2; i < turnID; i++) {
+//            sin.clear();
+//            sin.str(request[i]);
+//            sin >> itmp;
+//            // 如果是自己抓牌，处理抓牌和打牌
+//            if (itmp == 2) {
+//                sin >> stmp; // 读取抓到的牌
+//                hand.push_back(stmp); // 添加到手牌
+//                sin.clear();
+//                sin.str(response[i]);
+//                sin >> stmp >> stmp; // 读取打出的牌
+//                hand.erase(find(hand.begin(), hand.end(), stmp)); // 从手牌中移除打出的牌
+//            }
+//        }
+//        // 处理当前回合的抓牌
+//        sin.clear();
+//        sin.str(request[turnID]);
+//        sin >> itmp;
+//        if (itmp == 2) {
+//            random_shuffle(hand.begin(), hand.end()); // 随机打乱手牌
+//            sout << "PLAY " << *hand.rbegin(); // 选择最后一张牌打出
+//            hand.pop_back(); // 从手牌中移除
+//        }
+//        else {
+//            sout << "PASS"; // 如果不是抓牌回合，则PASS
+//        }
+//        response.push_back(sout.str()); // 将操作加入响应向量
+//    }
+//
+//#if SIMPLEIO
+//    cout << response[turnID] << endl; // 如果是简单交互，直接输出响应
+//#else
+//    Json::Value outputJSON;
+//    outputJSON["response"] = response[turnID]; // 如果是JSON交互，构造JSON格式响应
+//    cout << outputJSON << endl; // 输出响应JSON
+//#endif
+//    return 0; // 程序结束
+
     Json::Value inputJSON;
-    cin >> inputJSON; // 读取JSON格式输入
-    turnID = inputJSON["responses"].size(); // 获取当前回合数
-    for (int i = 0; i < turnID; i++) {
-        request.push_back(inputJSON["requests"][i].asString()); // 添加到请求向量
-        response.push_back(inputJSON["responses"][i].asString()); // 添加到响应向量
-    }
-    request.push_back(inputJSON["requests"][turnID].asString()); // 添加最新的请求
-#endif
+    cin >> inputJSON;
+    turn = inputJSON["responses"].size();
 
-    // 如果是前两个回合，则自动PASS
-    if (turnID < 2) {
-        response.push_back("PASS");
-    }
-    else {
-        int itmp, myPlayerID, quan;
-        ostringstream sout;
-        istringstream sin;
-        // 解析初始信息
-        sin.str(request[0]);
-        sin >> itmp >> myPlayerID >> quan;
-        sin.clear();
-        // 解析初始手牌
-        sin.str(request[1]);
-        for (int j = 0; j < 5; j++) sin >> itmp; // 跳过前五个整数
-        for (int j = 0; j < 13; j++) {
-            sin >> stmp; // 读取手牌
-            hand.push_back(stmp); // 添加到手牌向量
-        }
-        // 处理后续回合
-        for (int i = 2; i < turnID; i++) {
-            sin.clear();
-            sin.str(request[i]);
-            sin >> itmp;
-            // 如果是自己抓牌，处理抓牌和打牌
-            if (itmp == 2) {
-                sin >> stmp; // 读取抓到的牌
-                hand.push_back(stmp); // 添加到手牌
-                sin.clear();
-                sin.str(response[i]);
-                sin >> stmp >> stmp; // 读取打出的牌
-                hand.erase(find(hand.begin(), hand.end(), stmp)); // 从手牌中移除打出的牌
-            }
-        }
-        // 处理当前回合的抓牌
-        sin.clear();
-        sin.str(request[turnID]);
-        sin >> itmp;
-        if (itmp == 2) {
-            random_shuffle(hand.begin(), hand.end()); // 随机打乱手牌
-            sout << "PLAY " << *hand.rbegin(); // 选择最后一张牌打出
-            hand.pop_back(); // 从手牌中移除
-        }
-        else {
-            sout << "PASS"; // 如果不是抓牌回合，则PASS
-        }
-        response.push_back(sout.str()); // 将操作加入响应向量
+    for (int i = 0; i <= turn; i++) {
+        istringstream sin(inputJSON["requests"][i].asString());
+        request(sin);
     }
 
-#if SIMPLEIO
-    cout << response[turnID] << endl; // 如果是简单交互，直接输出响应
-#else
     Json::Value outputJSON;
-    outputJSON["response"] = response[turnID]; // 如果是JSON交互，构造JSON格式响应
-    cout << outputJSON << endl; // 输出响应JSON
-#endif
-    return 0; // 程序结束
-
-
-
+    outputJSON["response"] = response();
+    cout << outputJSON << endl;
     return 0;
 }

@@ -130,7 +130,8 @@
     <ClInclude Include="FanCalculator.h" />
     <ClInclude Include="fan_calculator.h" />
     <ClInclude Include="Mahjong.h" />
-    <ClInclude Include="ReceiveInfor.h" />
+    <ClInclude Include="RequestInfor.h" />
+    <ClInclude Include="ResponseInfor.h" />
     <ClInclude Include="shanten.h" />
     <ClInclude Include="standard_tiles.h" />
     <ClInclude Include="StatusMemory.h" />
@@ -140,11 +141,12 @@
   <ItemGroup>
     <ClCompile Include="fan_calculator.cpp" />
     <ClCompile Include="Mahjong.cpp" />
-    <ClCompile Include="ReceiveInfor.cpp" />
+    <ClCompile Include="RequestInfor.cpp" />
+    <ClCompile Include="ResponseInfor.cpp" />
     <ClCompile Include="shanten.cpp" />
     <ClCompile Include="StatusMemory.cpp" />
     <ClCompile Include="stringify.cpp" />
-    <ClCompile Include="unit_test.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

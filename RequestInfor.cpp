@@ -1,8 +1,7 @@
-//#include "Mahjong.h"
-#include "ReceiveInfor.h"
+#include "RequestInfor.h"
 #include"StatusMemory.h"
 
-void receive(istringstream& sin)
+void request(istringstream& sin)
 {
     int inforType;
     sin >> inforType;

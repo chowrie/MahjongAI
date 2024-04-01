@@ -33,7 +33,7 @@
     <ClInclude Include="FanCalculator.h">
       <Filter>头文件\inner</Filter>
     </ClInclude>
-    <ClInclude Include="ReceiveInfor.h">
+    <ClInclude Include="RequestInfor.h">
       <Filter>头文件\inner</Filter>
     </ClInclude>
     <ClInclude Include="StatusMemory.h">
@@ -54,12 +54,15 @@
     <ClInclude Include="tile.h">
       <Filter>头文件\outerTools</Filter>
     </ClInclude>
+    <ClInclude Include="ResponseInfor.h">
+      <Filter>头文件\inner</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Mahjong.cpp">
       <Filter>源文件\inner</Filter>
     </ClCompile>
-    <ClCompile Include="ReceiveInfor.cpp">
+    <ClCompile Include="RequestInfor.cpp">
       <Filter>源文件\inner</Filter>
     </ClCompile>
     <ClCompile Include="StatusMemory.cpp">
@@ -74,8 +77,11 @@
     <ClCompile Include="stringify.cpp">
       <Filter>源文件\outerTools</Filter>
     </ClCompile>
-    <ClCompile Include="unit_test.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>源文件\outerTools</Filter>
+    </ClCompile>
+    <ClCompile Include="ResponseInfor.cpp">
+      <Filter>源文件\inner</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
