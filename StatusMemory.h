@@ -22,9 +22,9 @@ enum action {
     HU
 };
 
-action actionStrToEnum(string& Action);
+action actionStrToEnum(string Action);
 
-string actionEnumToStr(action& Action);
+string actionEnumToStr(action Action);
 
 class Memory {
 private:
@@ -56,6 +56,9 @@ public:
     Memory();
     void initial(int myPos, int quan);
 
+    void buHua(int num);
+
+    int getQuan();
 
     int getMyPosistion();
     int getLastPosition();
@@ -64,13 +67,16 @@ public:
     void setCurrPlayer(int idx);
     int getCurrPlayer();
 
-    void setCurrAction(action& Action);
-    void setCurrAction(string& Action);
+    void setCurrAction(action Action);
+    void setCurrAction(string Action);
     string getCurrAction();
+    Mahjong getCurrPlayTile();
 
     int getTargetTileLeft(int tileNum);
     int getTargetTileLeft(const Mahjong& majang);
+    int getTargetTileLeft(const Mahjong majang);
     int getTargetTileLeft(string& majang);
+    int getTargetTileLeft(string majang);
 
     //获取目标玩家打出/响应的牌
     const vector<Mahjong>& getChi(int idx);
@@ -81,14 +87,16 @@ public:
 
 
     //记录
-    void playTile(Mahjong& majang, action& Action);//本家出牌，包括吃碰杠花,注明动作
-    void playTile(Mahjong& majang);//本家出牌，包括吃碰花
+    void playTile(Mahjong majang, action Action);//本家出牌，包括吃碰杠花,注明动作
+    void playTile(Mahjong majang);//本家出牌，包括吃碰花
 
-    void playTile(int idx, Mahjong& majang, action& Action);//他家出牌，包括吃碰杠花
+    void playTile(int idx, Mahjong majang, action Action);//他家出牌，包括吃碰杠花
 
 
-    void drawTile(Mahjong& majang);//本家抓牌
+    void drawTile(Mahjong majang);//本家抓牌
     void drawTile(int idx, int num = 1);//他家抓牌
 };
 
 extern Memory memory;
+
+extern int turn;

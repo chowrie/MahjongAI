@@ -1,5 +1,7 @@
 #include "StatusMemory.h"
 
+extern int turn = 0;
+
 Memory::Memory()
 {
 }
@@ -42,6 +44,16 @@ void Memory::initial(int myPos, int quan){//初始牌墙剩余
     }
 }
 
+void Memory::buHua(int num)
+{
+    Hana[myPosition] += num;
+}
+
+int Memory::getQuan()
+{
+    return Quan;
+}
+
 int Memory::getMyPosistion()
 {
     return myPosition;
@@ -67,12 +79,12 @@ int Memory::getCurrPlayer()
     return currPlayer;
 }
 
-void Memory::setCurrAction(action& Action)
+void Memory::setCurrAction(action Action)
 {
     currAction = Action;
 }
 
-void Memory::setCurrAction(string& Action)
+void Memory::setCurrAction(string Action)
 {
     currAction = actionStrToEnum(Action);
 }
@@ -80,6 +92,11 @@ void Memory::setCurrAction(string& Action)
 string Memory::getCurrAction()
 {
     return actionEnumToStr(currAction);
+}
+
+Mahjong Memory::getCurrPlayTile()
+{
+    return currPlayTile;
 }
 
 
@@ -93,7 +110,17 @@ int Memory::getTargetTileLeft(const Mahjong& majang)
     return Unplayed[majang];
 }
 
+int Memory::getTargetTileLeft(const Mahjong majang)
+{
+    return Unplayed[majang];
+}
+
 int Memory::getTargetTileLeft(string& majang)
+{
+    return Unplayed[Mahjong(majang)];
+}
+
+int Memory::getTargetTileLeft(string majang)
 {
     return Unplayed[Mahjong(majang)];
 }
@@ -123,7 +150,7 @@ const vector<Mahjong>& Memory::getEachPlayed(int idx)
     return eachPlayed[idx];
 }
 
-void Memory::playTile(Mahjong& majang, action& Action)
+void Memory::playTile(Mahjong majang, action Action)
 {
     switch (Action)
     {
@@ -209,11 +236,13 @@ void Memory::playTile(Mahjong& majang, action& Action)
 
     currPlayer = myPosition;
     currPlayTile = majang;
-    currAction = Action;
+    if (currAction == PASS) {
+        currAction = Action;
+    }
 
 }
 
-void Memory::playTile(Mahjong& majang)
+void Memory::playTile(Mahjong majang)
 {
     for (int i = 0; i < handNum[myPosition]; i++) {
         if (handTile[i] == majang) {
@@ -225,7 +254,7 @@ void Memory::playTile(Mahjong& majang)
     handNum[myPosition]--;
 }
 
-void Memory::playTile(int idx, Mahjong& majang, action &Action)
+void Memory::playTile(int idx, Mahjong majang, action Action)
 {
     //吃碰明杠是建立在别人已经打出一张牌的基础上
     //因此我们只需要减少目标玩家打出的牌即可
@@ -310,11 +339,13 @@ void Memory::playTile(int idx, Mahjong& majang, action &Action)
 
     currPlayer = idx;
     currPlayTile = majang;
-    currAction = Action;
+    if (currAction == PASS) {
+        currAction = Action;
+    }
 
 }
 
-void Memory::drawTile(Mahjong& majang)
+void Memory::drawTile(Mahjong majang)
 {
     handTile.push_back(majang);
 
@@ -322,22 +353,15 @@ void Memory::drawTile(Mahjong& majang)
     totalTile--;
 
     Unplayed[majang]--;//手牌不算剩余的牌，用于计算可能的牌型
-
-
-    currPlayer = myPosition;
-    currAction = DRAW;
 }
 
 void Memory::drawTile(int idx,int num)
 {
     handNum[idx]+=num;
     totalTile-=num;
-
-    currPlayer = idx;
-    currAction = DRAW;
 }
 
-action actionStrToEnum(string& Action)
+action actionStrToEnum(string Action)
 {
     switch (Action[0])
     {
@@ -371,7 +395,7 @@ action actionStrToEnum(string& Action)
     }
 }
 
-string actionEnumToStr(action& Action)
+string actionEnumToStr(action Action)
 {
     switch (Action)
     {
