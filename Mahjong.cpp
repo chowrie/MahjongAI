@@ -77,18 +77,22 @@ string Mahjong::getTileString()
 
 bool Mahjong::isHana()
 {
-	int type = getTypeInt();
-
-	if (type == H)return true;
-	return false;
+	return getTypeInt() == H;
 }
 
 bool Mahjong::isJian()
 {
-	int type = getTypeInt();
+	return getTypeInt() == J;
+}
 
-	if (type == J)return true;
-	return false;
+bool Mahjong::isFeng()
+{
+	return getTypeInt() == F;
+}
+
+bool Mahjong::isNum()
+{
+	return !isFeng() && !isJian() && !isHana();
 }
 
 Mahjong Mahjong::getNext()

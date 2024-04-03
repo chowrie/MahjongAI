@@ -71,6 +71,11 @@ int Memory::getNextPosition()
     return nextPosition;
 }
 
+vector<Mahjong>& Memory::getHandTile()
+{
+    return handTile;
+}
+
 void Memory::setCurrPlayer(int idx)
 {
     currPlayer = idx;
@@ -101,6 +106,16 @@ Mahjong Memory::getCurrPlayTile()
     return currPlayTile;
 }
 
+Mahjong Memory::getCurrResponseTile()
+{
+    return currResponseTile;
+}
+
+Mahjong Memory::getCurrDrawTile()
+{
+    return currDrawTile;
+}
+
 
 int Memory::getTargetTileLeft(int tileNum)
 {
@@ -127,27 +142,27 @@ int Memory::getTargetTileLeft(string majang)
     return Unplayed[Mahjong(majang)];
 }
 
-const vector<Mahjong>& Memory::getChi(int idx)
+vector<Mahjong>& Memory::getChi(int idx)
 {
     return Chi[idx];
 }
 
-const vector<Mahjong>& Memory::getPeng(int idx)
+vector<Mahjong>& Memory::getPeng(int idx)
 {
     return Peng[idx];
 }
 
-const vector<Mahjong>& Memory::getGang(int idx)
+vector<Mahjong>& Memory::getGang(int idx)
 {
     return Gang[idx];
 }
 
-const vector<Mahjong>& Memory::getanGang(int idx)
+vector<Mahjong>& Memory::getanGang(int idx)
 {
     return anGang[idx];
 }
 
-const vector<Mahjong>& Memory::getEachPlayed(int idx)
+vector<Mahjong>& Memory::getEachPlayed(int idx)
 {
     return eachPlayed[idx];
 }
@@ -160,6 +175,7 @@ void Memory::playTile(Mahjong majang, action Action)
         eachPlayed[myPosition].push_back(majang);
 
         playTile(majang);
+        cnt_hand[majang]--;
 
         break;
     }
@@ -237,7 +253,12 @@ void Memory::playTile(Mahjong majang, action Action)
     }
 
     currPlayer = myPosition;
-    currPlayTile = majang;
+    if (Action == PLAY) {
+        currPlayTile = majang;
+    }
+    else {
+        currResponseTile = majang;
+    }
     if (currAction == PASS) {
         currAction = Action;
     }
@@ -340,7 +361,14 @@ void Memory::playTile(int idx, Mahjong majang, action Action)
 
 
     currPlayer = idx;
-    currPlayTile = majang;
+
+    if (Action == PLAY) {
+        currPlayTile = majang;//打出的
+    }
+    else {
+        currResponseTile = majang;//响应的
+    }
+
     if (currAction == PASS) {
         currAction = Action;
     }
@@ -355,12 +383,25 @@ void Memory::drawTile(Mahjong majang)
     totalTile--;
 
     Unplayed[majang]--;//手牌不算剩余的牌，用于计算可能的牌型
+
+    cnt_hand[majang]++;
+
+    currPlayer = myPosition;
+
+    currDrawTile = majang;
 }
 
 void Memory::drawTile(int idx,int num)
 {
     handNum[idx]+=num;
     totalTile-=num;
+
+    currPlayer = idx;
+}
+
+int Memory::getCntHand(Mahjong majang)
+{
+    return cnt_hand[majang];
 }
 
 action actionStrToEnum(string Action)

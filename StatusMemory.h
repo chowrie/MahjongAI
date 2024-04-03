@@ -2,6 +2,7 @@
 
 #include"Mahjong.h"
 #include<vector>
+#include<map>
 
 
 const int allTile = 144;
@@ -33,12 +34,15 @@ private:
     int nextPosition;//下家
     int currPlayer;
     action currAction;
-    Mahjong currPlayTile;//用于吃、抢杠
+    Mahjong currPlayTile;//用于吃
+    Mahjong currResponseTile;//用于抢杠
+    Mahjong currDrawTile;//用于补杠，自摸
     int currTurn;
     int Quan;//场风
 
     int Unplayed[70];//对应每张牌，未出现的牌，手牌不计入
     int totalTile;//不单独对应，所有未出现的牌
+    map<Mahjong, int>cnt_hand;//未有初始化为0，手牌中某种牌的数量
 
     int handNum[4];//各自的手牌数
     vector<Mahjong>handTile;//手牌
@@ -64,6 +68,8 @@ public:
     int getLastPosition();
     int getNextPosition();
 
+    vector<Mahjong>& getHandTile();
+
     void setCurrPlayer(int idx);
     int getCurrPlayer();
 
@@ -71,6 +77,8 @@ public:
     void setCurrAction(string Action);
     string getCurrAction();
     Mahjong getCurrPlayTile();
+    Mahjong getCurrResponseTile();
+    Mahjong getCurrDrawTile();
 
     int getTargetTileLeft(int tileNum);
     int getTargetTileLeft(const Mahjong& majang);
@@ -79,11 +87,11 @@ public:
     int getTargetTileLeft(string majang);
 
     //获取目标玩家打出/响应的牌
-    const vector<Mahjong>& getChi(int idx);
-    const vector<Mahjong>& getPeng(int idx);
-    const vector<Mahjong>& getGang(int idx);
-    const vector<Mahjong>& getanGang(int idx);
-    const vector<Mahjong>& getEachPlayed(int idx);
+    vector<Mahjong>& getChi(int idx);
+    vector<Mahjong>& getPeng(int idx);
+    vector<Mahjong>& getGang(int idx);
+    vector<Mahjong>& getanGang(int idx);
+    vector<Mahjong>& getEachPlayed(int idx);
 
 
     //记录
@@ -95,6 +103,8 @@ public:
 
     void drawTile(Mahjong majang);//本家抓牌
     void drawTile(int idx, int num = 1);//他家抓牌
+
+    int getCntHand(Mahjong majang);
 };
 
 extern Memory memory;

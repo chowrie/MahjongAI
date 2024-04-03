@@ -32,6 +32,8 @@ public:
 
     bool isHana();//花？
     bool isJian();//箭？
+    bool isFeng();//风？
+    bool isNum();
 
     //用于吃碰
     Mahjong getNext();
