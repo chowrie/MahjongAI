@@ -14,6 +14,17 @@
 //test
 using namespace mahjong;
 using namespace std;
+
+#define Discard       0   /// 点和
+#define SelfDrawn     1   /// 自摸
+#define FourLast      2   /// 绝张
+#define Gang          4   /// 杠
+#define WallLast      8   /// 牌墙最后一张
+#define WallFirst     16  /// 起手
+
+enum Win_type {
+
+};
 int handtiles_ShangTing(const char* str)
 {
     hand_tiles_t hand_p;
@@ -35,7 +46,8 @@ int handtiles_ShangTing(const char* str)
     for (int i = 0;i < 5;i++)result = min(r[i], result);
     return result;
 }
-int handtiles_point(const char* str, win_flag_t win_flag, wind_t prevalent_wind, wind_t seat_wind)
+
+int handtiles_point(const char* str, uint8_t win_flag, wind_t prevalent_wind, wind_t seat_wind)
 {
     calculate_param_t can;
     long sign = string_to_tiles(str, &can.hand_tiles, &can.win_tile);

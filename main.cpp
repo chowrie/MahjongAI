@@ -2,6 +2,7 @@
 #include "shanten.h"
 #include "stringify.h"
 #include "fan_calculator.h"
+#include"FanCalculator.h"
 
 #include <stdio.h>
 #include <iostream>
