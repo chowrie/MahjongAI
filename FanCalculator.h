@@ -1,10 +1,10 @@
 #pragma once
 
-#include"FanCalculator.h"
 #include "tile.h"
 #include "shanten.h"
 #include "stringify.h"
 #include "fan_calculator.h"
+#include "statusMemory.h"
 
 #include <stdio.h>
 #include <iostream>
@@ -15,21 +15,37 @@
 using namespace mahjong;
 using namespace std;
 
-#define Discard       0   /// 点和
-#define SelfDrawn     1   /// 自摸
-#define FourLast      2   /// 绝张
-#define Gang          4   /// 杠
-#define WallLast      8   /// 牌墙最后一张
-#define WallFirst     16  /// 起手
+extern Memory memory;
 
-enum Win_type {
-
-};
-int handtiles_ShangTing(const char* str)
+#define DISCARD       0   /// 点和
+#define SELFDRAWN     1   /// 自摸
+#define FOURLAST      2   /// 绝张
+#define FUGANG          4   /// 杠
+#define WALLLAST      8   /// 牌墙最后一张
+#define WALLFIRST     16  /// 起手
+typedef uint8_t Win_flag_t;
+int Hpoint(const char* str, Win_flag_t win_flag, wind_t prevalent_wind, wind_t seat_wind)
 {
+    calculate_param_t can;
+    long sign = string_to_tiles(str, &can.hand_tiles, &can.win_tile);
+    if (sign != PARSE_NO_ERROR) {
+        printf("error at line %d error = %ld\n", __LINE__, sign);
+        return -1;
+    }
+    fan_table_t fan_b;
+    can.flower_count = 0;
+    can.win_flag = win_flag;
+    can.prevalent_wind = prevalent_wind;
+    can.seat_wind = seat_wind;
+    int points = calculate_fan(&can, &fan_b);
+    return points;
+}
+int Handtiles_ShangTing()//计算上听数
+{
+    string str = memory.getFormatHandSting();
     hand_tiles_t hand_p;
     tile_t serving_p;
-    long sign = string_to_tiles(str, &hand_p, &serving_p);
+    long sign = string_to_tiles(str.c_str(), &hand_p, &serving_p);
     if (sign != 0)
     {
         printf("error at line %d error = %ld\n", __LINE__, sign);
@@ -46,11 +62,11 @@ int handtiles_ShangTing(const char* str)
     for (int i = 0;i < 5;i++)result = min(r[i], result);
     return result;
 }
-
-int handtiles_point(const char* str, uint8_t win_flag, wind_t prevalent_wind, wind_t seat_wind)
+int Handtiles_Point(Win_flag_t win_flag, wind_t prevalent_wind, wind_t seat_wind)
 {
+    string str = memory.getFormatHandSting();
     calculate_param_t can;
-    long sign = string_to_tiles(str, &can.hand_tiles, &can.win_tile);
+    long sign = string_to_tiles(str.c_str(), &can.hand_tiles, &can.win_tile);
     if (sign != PARSE_NO_ERROR) {
         printf("error at line %d error = %ld\n", __LINE__, sign);
         return -1;
