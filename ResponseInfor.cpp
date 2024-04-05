@@ -50,7 +50,7 @@ string response()
                 frotile = tmp;
                 thand.erase(thand.begin()+i);
                 int tmpShang = Handtiles_ShangTing();
-                if (tmpShang>maxShang)
+                if (tmpShang<=maxShang)
                 {
                     perfectlo = i;
                     maxShang = tmpShang;
