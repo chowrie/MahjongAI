@@ -31,6 +31,7 @@ public:
     int getTypeInt();
     int getNum();
     string getTileString();
+    int getTile() { return tile; }
 
     bool isHana();//»¨£¿
     bool isJian();//¼ý£¿

@@ -1,7 +1,10 @@
 #include "ResponseInfor.h"
 #include"StatusMemory.h"
+#include"FanCalculator.h"
+
 #include<algorithm>
 #include<iostream>
+
 string response()
 {
     Mahjong currPlayTile = memory.getCurrPlayTile();
@@ -11,7 +14,9 @@ string response()
     string responseStr = "";
 
     bool flag = false;
-
+    int pi = 0;
+    int NowShang = Handtiles_ShangTing();
+    if (!NowShang)return "HU";
     if (memory.getCurrPlayer() == memory.getMyPosistion()) {
 
         //BUGANG Card1（摸得是Card1）
@@ -35,12 +40,30 @@ string response()
         //PLAY Card1（打手牌Card1）
         else {//摸切
             responseStr = "PLAY ";
-
+            memory.sortHand();
+            vector<Mahjong> hand = memory.getHandTile(), thand = hand;
+            int perfectlo = 0, maxShang = INT_MAX, frotile = 0, len = thand.size();
+            for (int i=0;i<len;i++)
+            {
+                int tmp = thand[i].getTile();
+                if (tmp == frotile)continue;
+                frotile = tmp;
+                thand.erase(thand.begin()+i);
+                int tmpShang = Handtiles_ShangTing();
+                if (tmpShang>maxShang)
+                {
+                    perfectlo = i;
+                    maxShang = tmpShang;
+                }
+                thand = hand;
+            }
+            pi = perfectlo;
             //选择要打的牌
         }
 
     }
-    else {
+    else
+    {
 
         //GANG
         if (canMinGang()) {
@@ -76,10 +99,8 @@ string response()
             memory.playTile(chiTarget, CHI);
         }
     }
-
     //选择打的牌
-    responseStr += memory.getHandTile()[0].getTileString();
-
+    responseStr += memory.getHandTile()[pi].getTileString();
     return responseStr;
 }
 

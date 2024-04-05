@@ -210,19 +210,19 @@ static void save_work_path(const intptr_t fixed_cnt, const work_path_t *work_pat
 static int basic_form_shanten_recursively(tile_table_t &cnt_table, const bool has_pair, const unsigned pack_cnt, const unsigned incomplete_cnt,
     const intptr_t fixed_cnt, work_path_t *work_path, work_state_t *work_state) {
     if (fixed_cnt == 4) {  // 4副露
-        for (int i = 0; i < 34; ++i) {
+        for (int i = 0; i < 34; ++i) 
+        {
             tile_t t = all_tiles[i];
-            if (cnt_table[t] > 1) {
+            if (cnt_table[t] > 1)
+            {
                 return -1;
             }
         }
         return 0;
     }
-
     if (pack_cnt == 4) {  // 已经有4组面子
         return has_pair ? -1 : 0;  // 如果有雀头，则和了；如果无雀头，则是听牌
     }
-
     int max_ret;  // 当前状态能返回的最大上听数
 
     // 算法说明：
