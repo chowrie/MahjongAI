@@ -32,6 +32,8 @@ private:
     int myPosition;//本家
     int lastPosition;//上家
     int nextPosition;//下家
+    int oppoPosition;//对家
+
     int currPlayer;
     action currAction;
     Mahjong currPlayTile;//用于吃
@@ -47,10 +49,10 @@ private:
     vector<Mahjong>Played;//所有打出的牌
     vector<Mahjong>eachPlayed[4];//各自打出的牌，不含吃碰杠花
 
-    vector<Mahjong>Chi[4];
-    vector<Mahjong>Peng[4];
-    vector<Mahjong>Gang[4];
-    vector<Mahjong>anGang[4];
+    vector<pair<Mahjong,int>>Chi[4];//1=吃第一张
+    vector<pair<Mahjong, int>>Peng[4];//2=对家，3=下家
+    vector<pair<Mahjong, int>>Gang[4];//0=暗杠，1=上家明杠，5=碰上家后补杠
+
     int Hana[4];
     int currFan[4];//各自目前已有的番数，顺带计入补花数
 
@@ -63,8 +65,18 @@ public:
     int getQuan();
 
     int getMyPosistion();
+
     int getLastPosition();
     int getNextPosition();
+    int getoppoPosition();
+
+    int getFormatPosition(int target);
+
+    int getLastPosition(int idx);
+    int getNextPosition(int idx);
+    int getoppoPosition(int idx);
+
+    int getFormatPosition(int own, int target);
 
     vector<Mahjong>& getHandTile();
 
@@ -83,10 +95,9 @@ public:
     int getTargetTileLeft(string majang);
 
     //获取目标玩家打出/响应的牌
-    vector<Mahjong>& getChi(int idx);
-    vector<Mahjong>& getPeng(int idx);
-    vector<Mahjong>& getGang(int idx);
-    vector<Mahjong>& getanGang(int idx);
+    vector<pair<Mahjong, int>>& getChi(int idx);
+    vector<pair<Mahjong, int>>& getPeng(int idx);
+    vector<pair<Mahjong, int>>& getGang(int idx);
     vector<Mahjong>& getEachPlayed(int idx);
 
 
@@ -103,6 +114,9 @@ public:
     int getCntHand(Mahjong majang);
 
     void sortHand();
+
+    string getFormatHandSting();
+
 };
 
 extern Memory memory;

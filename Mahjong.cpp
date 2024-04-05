@@ -1,7 +1,9 @@
 #include "Mahjong.h"
+#include <cctype>
 
 Mahjong::Mahjong():tile(0)
 {
+	setFortamtStr();
 }
 
 Mahjong::Mahjong(const string& s)
@@ -33,11 +35,18 @@ Mahjong::Mahjong(const string& s)
 	}
 
 	tile += num;
+	setFortamtStr();
 }
 
-Mahjong::Mahjong(const Mahjong& other):tile(other.tile){}
+Mahjong::Mahjong(const Mahjong& other):tile(other.tile){
 
-Mahjong::Mahjong(int tileNum):tile(tileNum){}
+	setFortamtStr();
+}
+
+Mahjong::Mahjong(int tileNum):tile(tileNum){
+
+	setFortamtStr();
+}
 
 char Mahjong::getTypeChar()
 {
@@ -53,6 +62,22 @@ char Mahjong::getTypeChar()
 	case H: return 'H';
 	default:return 0;
 	}
+
+
+}
+
+string Mahjong::getTypeStr()
+{
+	int type = tile / 10;
+
+	switch (type)
+	{
+	case W: return "m";
+	case B: return "p";
+	case T: return "s";
+	default:return 0;
+	}
+
 
 }
 
@@ -139,8 +164,53 @@ Mahjong::operator int()const
 	return tile;
 }
 
-Mahjong::operator string ()
+Mahjong::operator string()
 {
 	return getTileString();
 }
+
+void Mahjong::setFortamtStr()
+{
+	if (isNum()) {
+		FormatStr = to_string(getNum()) + getTypeStr();
+	}
+	else {
+		switch (tile) {
+		case 41: {
+			FormatStr = "E";
+			break;
+		}
+		case 42: {
+			FormatStr = "S";
+			break;
+		}
+		case 43: {
+			FormatStr = "W";
+			break;
+		}
+		case 44: {
+			FormatStr = "N";
+			break;
+		}
+		case 51: {
+			FormatStr = "C";
+			break;
+		}
+		case 52: {
+			FormatStr = "F";
+			break;
+		}
+		case 53: {
+			FormatStr = "P";
+			break;
+		}
+		}
+	}
+}
+
+string Mahjong::getFormatStr()
+{
+	return FormatStr;
+}
+
 

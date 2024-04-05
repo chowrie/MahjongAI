@@ -18,6 +18,7 @@ enum tileType {
 class Mahjong {
 private:
     int tile;
+    string FormatStr;
 
 public:
     Mahjong();
@@ -26,6 +27,7 @@ public:
     Mahjong(int tileNum);
 
     char getTypeChar();
+    string getTypeStr();
     int getTypeInt();
     int getNum();
     string getTileString();
@@ -46,6 +48,9 @@ public:
     bool operator>(const Mahjong& other)const;
     operator int()const;
     operator string();
+
+    void setFortamtStr();
+    string getFormatStr();
 };
 
 

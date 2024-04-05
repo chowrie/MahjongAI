@@ -14,6 +14,7 @@ void Memory::initial(int myPos, int quan){//初始牌墙剩余
     myPosition = myPos;
     lastPosition = (myPos - 1 + 4) % 4;
     nextPosition = (myPos + 1) % 4;
+    oppoPosition = (myPos + 2) % 4;
     Quan = quan;
     totalTile = allTile;
 
@@ -70,6 +71,44 @@ int Memory::getLastPosition()
 int Memory::getNextPosition()
 {
     return nextPosition;
+}
+
+int Memory::getoppoPosition()
+{
+    return oppoPosition;
+}
+
+int Memory::getFormatPosition(int target)
+{
+    if (target == (myPosition + 3) % 4)return 1;
+    if (target == (myPosition + 2) % 4)return 2;
+    if (target == (myPosition + 1) % 4)return 3;
+
+    return 0;
+}
+
+int Memory::getLastPosition(int idx)
+{
+    return (idx + 3) % 4;
+}
+
+int Memory::getNextPosition(int idx)
+{
+    return (idx + 1) % 4;
+}
+
+int Memory::getoppoPosition(int idx)
+{
+    return (idx + 2) % 4;
+}
+
+int Memory::getFormatPosition(int own, int target)
+{
+    if (target == (own + 3) % 4)return 1;
+    if (target == (own + 2) % 4)return 2;
+    if (target == (own + 1) % 4)return 3;
+
+    return 0;
 }
 
 vector<Mahjong>& Memory::getHandTile()
@@ -132,24 +171,19 @@ int Memory::getTargetTileLeft(string majang)
     return Unplayed[Mahjong(majang)];
 }
 
-vector<Mahjong>& Memory::getChi(int idx)
+vector<pair<Mahjong, int>>& Memory::getChi(int idx)
 {
     return Chi[idx];
 }
 
-vector<Mahjong>& Memory::getPeng(int idx)
+vector<pair<Mahjong, int>>& Memory::getPeng(int idx)
 {
     return Peng[idx];
 }
 
-vector<Mahjong>& Memory::getGang(int idx)
+vector<pair<Mahjong, int>>& Memory::getGang(int idx)
 {
     return Gang[idx];
-}
-
-vector<Mahjong>& Memory::getanGang(int idx)
-{
-    return anGang[idx];
 }
 
 vector<Mahjong>& Memory::getEachPlayed(int idx)
@@ -159,6 +193,8 @@ vector<Mahjong>& Memory::getEachPlayed(int idx)
 
 void Memory::playTile(Mahjong majang, action Action)
 {
+    int previousPlayer = getFormatPosition(currPlayer);
+
     switch (Action)
     {
     case PLAY: {
@@ -169,26 +205,33 @@ void Memory::playTile(Mahjong majang, action Action)
         break;
     }
     case CHI: {//吃传入的参数是中间的牌
-        Chi[myPosition].push_back(majang);
 
         if (currPlayTile != majang.getLast()) {
             Mahjong tmp(majang.getLast());
             playTile(tmp);
         }
+        else {
+            Chi[myPosition].push_back(make_pair(majang, 1));
+        }
 
         if (currPlayTile != majang) {
             playTile(majang);
+        }
+        else {
+            Chi[myPosition].push_back(make_pair(majang, 2));
         }
 
         if (currPlayTile != majang.getNext()) {
             Mahjong tmp(majang.getNext());
             playTile(tmp);
         }
-
+        else {
+            Chi[myPosition].push_back(make_pair(majang, 3));
+        }
         break;
     }
     case PENG: {
-        Peng[myPosition].push_back(majang);
+        Peng[myPosition].push_back(make_pair(majang, previousPlayer));
 
         playTile(majang);
         playTile(majang);
@@ -196,7 +239,7 @@ void Memory::playTile(Mahjong majang, action Action)
         break;
     }
     case GANG: {//明杠
-        Gang[myPosition].push_back(majang);
+        Gang[myPosition].push_back(make_pair(majang, previousPlayer));
 
 
         playTile(majang);
@@ -206,7 +249,7 @@ void Memory::playTile(Mahjong majang, action Action)
         break;
     }
     case ANGANG: {
-        anGang[myPosition].push_back(majang);
+        Gang[myPosition].push_back(make_pair(majang, 0));
 
         playTile(majang);
         playTile(majang);
@@ -218,11 +261,13 @@ void Memory::playTile(Mahjong majang, action Action)
     case BUGANG: {
         int tmpLen = Peng[myPosition].size();
         for (int i = 0; i < tmpLen; i++) {
-            if (Peng[myPosition][i] == majang) {
+            if (Peng[myPosition][i].first == majang) {
                 swap(Peng[myPosition][i], Peng[myPosition][tmpLen - 1]);
-                Peng[myPosition].pop_back();
-                Gang[myPosition].push_back(majang);
 
+                // 碰的相对位置+4
+                Gang[myPosition].push_back(make_pair(majang, Peng[myPosition].back().second + 4));
+
+                Peng[myPosition].pop_back();
                 playTile(majang);
                 break;
             }
@@ -267,6 +312,9 @@ void Memory::playTile(int idx, Mahjong majang, action Action)
     //因此我们只需要减少目标玩家打出的牌即可
     //对于吃，我们先保留上家打出的牌++
     //然后根据吃的中间牌三个--
+
+    int previousPlayer = getFormatPosition(idx,currPlayer);
+
     switch (Action)
     {
     case PLAY: {
@@ -279,19 +327,27 @@ void Memory::playTile(int idx, Mahjong majang, action Action)
         break;
     }
     case CHI: {
-        Chi[idx].push_back(majang);
         handNum[idx] -= 2;
 
         Unplayed[majang]--;
         Unplayed[majang.getLast()]--;
         Unplayed[majang.getNext()]--;
 
+        if (currPlayTile == majang.getLast()) {
+            Chi[idx].push_back(make_pair(majang,1));
+        }
+        else if (currPlayTile == majang){
+            Chi[idx].push_back(make_pair(majang, 2));
+        }
+        else {
+            Chi[idx].push_back(make_pair(majang, 3));
+        }
         Unplayed[currPlayTile]++;
 
         break;
     }
     case PENG: {
-        Peng[idx].push_back(majang);
+        Peng[idx].push_back(make_pair(majang, previousPlayer));
 
         handNum[idx] -= 2;
         Unplayed[majang] -= 2;
@@ -299,7 +355,7 @@ void Memory::playTile(int idx, Mahjong majang, action Action)
         break;
     }
     case GANG: {//明杠
-        Gang[idx].push_back(majang);
+        Gang[idx].push_back(make_pair(majang, previousPlayer));
 
         handNum[idx] -= 3;
         Unplayed[majang] -= 3;
@@ -307,7 +363,7 @@ void Memory::playTile(int idx, Mahjong majang, action Action)
         break;
     }
     case ANGANG: {
-        anGang[idx].push_back(majang);
+        Gang[idx].push_back(make_pair(majang, previousPlayer));
 
         handNum[idx] -= 4;
         Unplayed[majang] -= 4;
@@ -319,10 +375,14 @@ void Memory::playTile(int idx, Mahjong majang, action Action)
 
         for (int i = 0; i < tmpLen; i++) {
 
-            if (Peng[idx][i] == majang) {
+            if (Peng[idx][i].first == majang) {
                 swap(Peng[idx][i], Peng[idx][tmpLen - 1]);
+
+
+                // 碰的相对位置+4
+                Gang[myPosition].push_back(make_pair(majang, Peng[myPosition].back().second + 4));
+
                 Peng[idx].pop_back();
-                Gang[idx].push_back(majang);
 
                 handNum[idx]--;
                 Unplayed[majang]--;
@@ -385,6 +445,39 @@ int Memory::getCntHand(Mahjong majang)
 void Memory::sortHand()
 {
     sort(handTile.begin(), handTile.end(), cmp());
+}
+
+string Memory::getFormatHandSting()
+{
+    string res="";
+    for (auto it : Chi[myPosition]) {
+        Mahjong tmpTile = it.first;
+
+        res+= "[" + tmpTile.getLast().getFormatStr() + tmpTile.getFormatStr() + tmpTile.getNext().getFormatStr();
+        res+= "," + to_string(it.second) + "]";
+    }
+
+    for (auto it : Peng[myPosition]) {
+        Mahjong tmpTile = it.first;
+
+        res+= "[" + tmpTile.getLast().getFormatStr() + tmpTile.getFormatStr() + tmpTile.getNext().getFormatStr();
+        res+= "," + to_string(it.second) + "]";
+    }
+
+
+    for (auto it : Gang[myPosition]) {
+        Mahjong tmpTile = it.first;
+
+        res+= "[" + tmpTile.getLast().getFormatStr() + tmpTile.getFormatStr() + 
+            tmpTile.getNext().getFormatStr() + tmpTile.getNext().getFormatStr();
+        res+= "," + to_string(it.second) + "]";
+    }
+
+    for (auto it : handTile) {
+        res+= it.getFormatStr();
+    }
+
+    return res;
 }
 
 action actionStrToEnum(string Action)

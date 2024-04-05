@@ -65,11 +65,47 @@ void complexInfor(istringstream& sin)
 
 	action Action = actionStrToEnum(currAction);
 
-	if (currAction == "DRAW") {
-		memory.drawTile(currPlayer);
+	if (currPlayer == memory.getMyPosistion()) {
+		switch (Action)
+		{
+		case PLAY: {//3 playerID DRAW
+			memory.playTile(Mahjong(card1), PLAY);
+			break;
+		}
+		case CHI: {//3 playerID CHI Card1 Card2
+			memory.playTile(Mahjong(card1), CHI);
+			memory.playTile(Mahjong(card2), PLAY);
+			break;
+		}
+		case PENG: {//3 playerID PENG Card1
+			memory.playTile(Mahjong(card1), PENG);
+			break;
+		}
+		case GANG: {
+			if (memory.getCurrAction() == DRAW) {
+				memory.playTile(Mahjong(card1), ANGANG);
+			}
+			else {
+				memory.playTile(Mahjong(card1), GANG);
+			}
+			break;
+		}
+		case BUGANG: {//3 playerID BUGANG Card1
+			memory.playTile(Mahjong(card1), BUGANG);
+			break;
+		}
+		case BUHUA: {//3 playerID BUHUA Card1 
+			memory.playTile(Mahjong(card1), BUHUA);
+			break;
+		}
+		case HU:
+			break;
+		default:
+			break;
+		}
+
 	}
 	else {
-
 		switch (Action)
 		{
 		case DRAW: {//3 playerID DRAW
@@ -89,20 +125,20 @@ void complexInfor(istringstream& sin)
 			memory.playTile(currPlayer, Mahjong(card1), PENG);
 			break;
 		}
-		case GANG:{
+		case GANG: {
 			if (memory.getCurrAction() == DRAW) {
-				memory.playTile(currPlayer, Mahjong(card1), BUGANG);
+				memory.playTile(currPlayer, Mahjong(card1), ANGANG);
 			}
 			else {
-				memory.playTile(currPlayer, Mahjong(card1), BUGANG);
+				memory.playTile(currPlayer, Mahjong(card1), GANG);
 			}
 			break;
 		}
-		case BUGANG:{//3 playerID BUGANG Card1
+		case BUGANG: {//3 playerID BUGANG Card1
 			memory.playTile(currPlayer, Mahjong(card1), BUGANG);
 			break;
 		}
-		case BUHUA:{//3 playerID BUHUA Card1 
+		case BUHUA: {//3 playerID BUHUA Card1 
 			memory.playTile(currPlayer, Mahjong(card1), BUHUA);
 			break;
 		}
@@ -113,4 +149,5 @@ void complexInfor(istringstream& sin)
 		}
 
 	}
+
 }

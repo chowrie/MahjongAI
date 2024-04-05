@@ -127,9 +127,9 @@ bool canAnGang()
 
 bool canBuGang()
 {
-    vector<Mahjong>MyPeng = memory.getPeng(memory.getMyPosistion());
+    vector<pair<Mahjong, int>>MyPeng = memory.getPeng(memory.getMyPosistion());
     for (auto& it : MyPeng) {
-        if (it == memory.getCurrPlayTile()) {
+        if (it.first == memory.getCurrPlayTile()) {
             return true;
         }
     }
