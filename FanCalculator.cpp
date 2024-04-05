@@ -14,7 +14,6 @@
 using namespace mahjong;
 using namespace std;
 
-extern Memory memory;
 
 #define DISCARD       0   /// 点和
 #define SELFDRAWN     1   /// 自摸
@@ -22,7 +21,6 @@ extern Memory memory;
 #define FUGANG          4   /// 杠
 #define WALLLAST      8   /// 牌墙最后一张
 #define WALLFIRST     16  /// 起手
-typedef uint8_t Win_flag_t;
 
 int Hpoint(const char* str, Win_flag_t win_flag, wind_t prevalent_wind, wind_t seat_wind)
 {

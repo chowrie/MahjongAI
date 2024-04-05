@@ -29,6 +29,9 @@ using namespace mahjong;
 
 using namespace std;
 
+
+vector<string> rrequest, rresponse;
+
 int main()
 {
     Json::Value inputJSON;
@@ -37,14 +40,14 @@ int main()
 
     string s;
     for (int i = 0; i < turn; i++) {
-        cout << i << endl;
-        cout << inputJSON["requests"][i].asString() << endl;
         istringstream sin(inputJSON["requests"][i].asString());
+        rresponse.push_back(inputJSON["responses"][i].asString());
         request(sin);
     }
 
     Json::Value outputJSON;
-    outputJSON["response"] = response();
+    rresponse.push_back(response());
+    outputJSON["response"] = rresponse[turn];
     cout << outputJSON << endl;
     return 0;
 }

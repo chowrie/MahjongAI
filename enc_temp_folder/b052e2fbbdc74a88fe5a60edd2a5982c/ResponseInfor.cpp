@@ -98,9 +98,6 @@ string response()
             responseStr += chiTarget.getTileString() + " ";
             memory.playTile(chiTarget, CHI);
         }
-        else if (memory.getCurrAction() == DRAW) {
-            return "PASS";
-        }
     }
     //Ñ¡Ôñ´òµÄÅÆ
     responseStr += memory.getHandTile()[pi].getTileString();

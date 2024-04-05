@@ -75,7 +75,7 @@ string Mahjong::getTypeStr()
 	case W: return "m";
 	case B: return "p";
 	case T: return "s";
-	default:return 0;
+	default:return "";
 	}
 
 
