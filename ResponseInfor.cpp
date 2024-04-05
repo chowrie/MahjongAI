@@ -38,6 +38,7 @@ string response()
 
             //选择要打的牌
         }
+
     }
     else {
 

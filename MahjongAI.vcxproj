@@ -139,6 +139,7 @@
     <ClInclude Include="tile.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="FanCalculator.cpp" />
     <ClCompile Include="fan_calculator.cpp" />
     <ClCompile Include="Mahjong.cpp" />
     <ClCompile Include="RequestInfor.cpp" />
