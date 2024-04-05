@@ -35,8 +35,6 @@ private:
     int currPlayer;
     action currAction;
     Mahjong currPlayTile;//用于吃
-    Mahjong currResponseTile;//用于抢杠
-    Mahjong currDrawTile;//用于补杠，自摸
     int currTurn;
     int Quan;//场风
 
@@ -60,7 +58,7 @@ public:
     Memory();
     void initial(int myPos, int quan);
 
-    void buHua(int num);
+    void buHua(int idx, int num);
 
     int getQuan();
 
@@ -75,10 +73,8 @@ public:
 
     void setCurrAction(action Action);
     void setCurrAction(string Action);
-    string getCurrAction();
+    action getCurrAction();
     Mahjong getCurrPlayTile();
-    Mahjong getCurrResponseTile();
-    Mahjong getCurrDrawTile();
 
     int getTargetTileLeft(int tileNum);
     int getTargetTileLeft(const Mahjong& majang);
@@ -105,6 +101,8 @@ public:
     void drawTile(int idx, int num = 1);//他家抓牌
 
     int getCntHand(Mahjong majang);
+
+    void sortHand();
 };
 
 extern Memory memory;

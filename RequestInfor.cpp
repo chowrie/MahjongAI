@@ -5,12 +5,13 @@ void request(istringstream& sin)
 {
     int inforType;
     sin >> inforType;
-
 	switch (inforType)
 	{
 	case 0:memoryInitial(sin); break;
 	case 1:handInitial(sin); break;
-	case 2:drawTile(sin); break;
+	case 2: {
+		drawTile(sin); break;
+	}
 	case 3:complexInfor(sin); break;
 	default:
 		break;
@@ -24,19 +25,18 @@ void memoryInitial(istringstream& sin)
 	sin >> plaerID >> quan;
 
 	memory.initial(plaerID, quan);
+
 }
 
 void handInitial(istringstream& sin)
 {
 	string tile;
 
-	sin >> tile;
+	int HanaNum = 0;
 
-	if (tile.size() == 1) {
-		memory.buHua(stoi(tile));
-	}
-	else {
-		memory.drawTile(Mahjong(tile));
+	for (int i = 0; i < 4; i++) {
+		sin >> HanaNum;
+		memory.buHua(i, HanaNum);
 	}
 
 	while (sin >> tile) {
@@ -48,6 +48,7 @@ void handInitial(istringstream& sin)
 			memory.drawTile(i, 13);
 		}
 	}
+	memory.setCurrPlayer(0);
 }
 
 void drawTile(istringstream& sin)
@@ -59,17 +60,57 @@ void drawTile(istringstream& sin)
 
 void complexInfor(istringstream& sin)
 {
-	int currPlayer; string currAction, currTile = "";
-	sin >> currPlayer >> currAction >> currTile;
+    int currPlayer; string currAction = "", card1 = "", card2 = "";
+    sin >> currPlayer >> currAction >> card1 >> card2;
 
-	memory.setCurrAction(PASS);
+	action Action = actionStrToEnum(currAction);
+
 	if (currAction == "DRAW") {
 		memory.drawTile(currPlayer);
 	}
 	else {
-		Mahjong lastTile(memory.getCurrPlayTile());
-		action Action = actionStrToEnum(currAction);
-		memory.playTile(currPlayer, lastTile, Action);
-		memory.playTile(currPlayer, Mahjong(currTile), PLAY);
+
+		switch (Action)
+		{
+		case DRAW: {//3 playerID DRAW
+			memory.drawTile(currPlayer);
+			break;
+		}
+		case PLAY: {//3 playerID DRAW
+			memory.playTile(currPlayer, Mahjong(card1), PLAY);
+			break;
+		}
+		case CHI: {//3 playerID CHI Card1 Card2
+			memory.playTile(currPlayer, Mahjong(card1), CHI);
+			memory.playTile(currPlayer, Mahjong(card2), PLAY);
+			break;
+		}
+		case PENG: {//3 playerID PENG Card1
+			memory.playTile(currPlayer, Mahjong(card1), PENG);
+			break;
+		}
+		case GANG:{
+			if (memory.getCurrAction() == DRAW) {
+				memory.playTile(currPlayer, Mahjong(card1), BUGANG);
+			}
+			else {
+				memory.playTile(currPlayer, Mahjong(card1), BUGANG);
+			}
+			break;
+		}
+		case BUGANG:{//3 playerID BUGANG Card1
+			memory.playTile(currPlayer, Mahjong(card1), BUGANG);
+			break;
+		}
+		case BUHUA:{//3 playerID BUHUA Card1 
+			memory.playTile(currPlayer, Mahjong(card1), BUHUA);
+			break;
+		}
+		case HU:
+			break;
+		default:
+			break;
+		}
+
 	}
 }

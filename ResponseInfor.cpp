@@ -1,9 +1,11 @@
 #include "ResponseInfor.h"
 #include"StatusMemory.h"
 #include<algorithm>
-
+#include<iostream>
 string response()
 {
+    Mahjong currPlayTile = memory.getCurrPlayTile();
+
     if (turn == 0 || turn == 1)return "PASS";
 
     string responseStr = "";
@@ -11,45 +13,49 @@ string response()
     bool flag = false;
 
     if (memory.getCurrPlayer() == memory.getMyPosistion()) {
-        Mahjong currDrawTile = memory.getCurrDrawTile();
 
+        //BUGANG Card1（摸得是Card1）
         if (canBuGang()) {
-            responseStr = "BUGANG";
-            memory.playTile(currDrawTile, BUGANG);
+            responseStr = "BUGANG ";
+            memory.playTile(currPlayTile, BUGANG);
 
-            responseStr += currDrawTile.getTileString();
+            responseStr += currPlayTile.getTileString();
 
             return responseStr;
         }
+        //GANG Card1（摸得是Card1）
         else if (canAnGang()) {
-            responseStr = "GANG";
-            memory.playTile(currDrawTile, ANGANG);
+            responseStr = "GANG ";
+            memory.playTile(currPlayTile, ANGANG);
             
-            responseStr += currDrawTile.getTileString();
+            responseStr += currPlayTile.getTileString();
 
             return responseStr;
         }
+        //PLAY Card1（打手牌Card1）
         else {//摸切
-            responseStr = "PLAY";
+            responseStr = "PLAY ";
+
+            //选择要打的牌
         }
-        flag = true;
     }
     else {
-        Mahjong currPlayTile = memory.getCurrDrawTile();
+
+        //GANG
         if (canMinGang()) {
-            responseStr = "GANG";
+            responseStr = "GANG ";
             memory.playTile(currPlayTile, GANG);
 
-            flag = true;
+            return responseStr;
         }
+        //PENG Card1（打Card1）
         else if (canPeng()) {
-            responseStr = "PENG";
+            responseStr = "PENG ";
             memory.playTile(currPlayTile, PENG);
-
-            flag = true;
         }
+        //CHI Card1 Card2（吃Card1打Card2）
         else if (canChi()) {
-            responseStr = "CHI";
+            responseStr = "CHI ";
             Mahjong chiTarget;
             switch (canChi()) {
             case 1: {
@@ -65,26 +71,21 @@ string response()
                 break;
             }
             }
-            responseStr += chiTarget.getTileString();
+            responseStr += chiTarget.getTileString() + " ";
             memory.playTile(chiTarget, CHI);
-
-            flag = true;
         }
     }
-    if(flag){
-        responseStr += memory.getHandTile()[0].getTileString();
 
-        return responseStr;
-    }
-    else {
-        return "PASS";
-    }
+    //选择打的牌
+    responseStr += memory.getHandTile()[0].getTileString();
+
+    return responseStr;
 }
 
 int canChi()
 {
     //不用担心19边界情况，0处无牌，默认不存在
-    if (memory.getCurrPlayer() == memory.getLastPosition()&&memory.getCurrPlayTile().isNum() ) {
+    if (memory.getCurrPlayTile().isNum() ) {
         if (memory.getCntHand(memory.getCurrPlayTile().getNext()) &&
             memory.getCntHand(memory.getCurrPlayTile().getNext().getNext())
             )return 1;
@@ -96,7 +97,7 @@ int canChi()
             )return 3;
     }
 
-    return false;
+    return 0;
 }
 
 bool canPeng()
@@ -118,7 +119,7 @@ bool canMinGang()
 
 bool canAnGang()
 {
-    if (memory.getCurrPlayer() == memory.getMyPosistion() && memory.getCntHand(memory.getCurrDrawTile()) == 4) {
+    if (memory.getCurrPlayer() == memory.getMyPosistion() && memory.getCntHand(memory.getCurrPlayTile()) == 4) {
         return true;
     }
     return false;
@@ -126,12 +127,10 @@ bool canAnGang()
 
 bool canBuGang()
 {
-    if (memory.getCurrPlayer() == memory.getMyPosistion()) {
-        vector<Mahjong>MyPeng = memory.getPeng(memory.getMyPosistion());
-        for (auto& it : MyPeng) {
-            if (it == memory.getCurrDrawTile()) {
-                return true;
-            }
+    vector<Mahjong>MyPeng = memory.getPeng(memory.getMyPosistion());
+    for (auto& it : MyPeng) {
+        if (it == memory.getCurrPlayTile()) {
+            return true;
         }
     }
     return false;

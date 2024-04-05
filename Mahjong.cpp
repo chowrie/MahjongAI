@@ -92,7 +92,7 @@ bool Mahjong::isFeng()
 
 bool Mahjong::isNum()
 {
-	return !isFeng() && !isJian() && !isHana();
+	return tile>=11&&tile<=39;
 }
 
 Mahjong Mahjong::getNext()

@@ -161,19 +161,20 @@ using namespace std;
 
 int main()
 {
-    while (1) {
-        Json::Value inputJSON;
-        cin >> inputJSON;
-        turn = inputJSON["responses"].size();
+    Json::Value inputJSON;
+    cin >> inputJSON;
+    turn = inputJSON["responses"].size();
 
-        for (int i = 0; i <= turn; i++) {
-            istringstream sin(inputJSON["requests"][i].asString());
-            request(sin);
-        }
-
-        Json::Value outputJSON;
-        outputJSON["response"] = response();
-        cout << outputJSON << endl;
+    string s;
+    for (int i = 0; i < turn; i++) {
+        cout << i << endl;
+        cout << inputJSON["requests"][i].asString() << endl;
+        istringstream sin(inputJSON["requests"][i].asString());
+        request(sin);
     }
+
+    Json::Value outputJSON;
+    outputJSON["response"] = response();
+    cout << outputJSON << endl;
     return 0;
 }

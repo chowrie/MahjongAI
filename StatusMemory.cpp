@@ -1,4 +1,5 @@
 #include "StatusMemory.h"
+#include<algorithm>
 
 int turn = 0;
 
@@ -46,9 +47,9 @@ void Memory::initial(int myPos, int quan){//初始牌墙剩余
     }
 }
 
-void Memory::buHua(int num)
+void Memory::buHua(int idx, int num)
 {
-    Hana[myPosition] += num;
+    Hana[idx] += num;
 }
 
 int Memory::getQuan()
@@ -96,26 +97,15 @@ void Memory::setCurrAction(string Action)
     currAction = actionStrToEnum(Action);
 }
 
-string Memory::getCurrAction()
+action Memory::getCurrAction()
 {
-    return actionEnumToStr(currAction);
+    return currAction;
 }
 
 Mahjong Memory::getCurrPlayTile()
 {
     return currPlayTile;
 }
-
-Mahjong Memory::getCurrResponseTile()
-{
-    return currResponseTile;
-}
-
-Mahjong Memory::getCurrDrawTile()
-{
-    return currDrawTile;
-}
-
 
 int Memory::getTargetTileLeft(int tileNum)
 {
@@ -175,7 +165,6 @@ void Memory::playTile(Mahjong majang, action Action)
         eachPlayed[myPosition].push_back(majang);
 
         playTile(majang);
-        cnt_hand[majang]--;
 
         break;
     }
@@ -253,15 +242,8 @@ void Memory::playTile(Mahjong majang, action Action)
     }
 
     currPlayer = myPosition;
-    if (Action == PLAY) {
-        currPlayTile = majang;
-    }
-    else {
-        currResponseTile = majang;
-    }
-    if (currAction == PASS) {
-        currAction = Action;
-    }
+    currPlayTile = majang;
+    currAction = Action;
 
 }
 
@@ -270,11 +252,13 @@ void Memory::playTile(Mahjong majang)
     for (int i = 0; i < handNum[myPosition]; i++) {
         if (handTile[i] == majang) {
             swap(handTile[i], handTile[handNum[myPosition] - 1]);
+            handNum[myPosition]--;
+            cnt_hand[majang]--;
             handTile.pop_back();
             break;
         }
     }
-    handNum[myPosition]--;
+
 }
 
 void Memory::playTile(int idx, Mahjong majang, action Action)
@@ -332,7 +316,9 @@ void Memory::playTile(int idx, Mahjong majang, action Action)
     }
     case BUGANG: {
         int tmpLen = Peng[idx].size();
+
         for (int i = 0; i < tmpLen; i++) {
+
             if (Peng[idx][i] == majang) {
                 swap(Peng[idx][i], Peng[idx][tmpLen - 1]);
                 Peng[idx].pop_back();
@@ -361,19 +347,10 @@ void Memory::playTile(int idx, Mahjong majang, action Action)
 
 
     currPlayer = idx;
-
-    if (Action == PLAY) {
-        currPlayTile = majang;//打出的
-    }
-    else {
-        currResponseTile = majang;//响应的
-    }
-
-    if (currAction == PASS) {
-        currAction = Action;
-    }
-
+    currPlayTile = majang;//打出的，响应的
+    currAction = Action;
 }
+
 
 void Memory::drawTile(Mahjong majang)
 {
@@ -383,12 +360,11 @@ void Memory::drawTile(Mahjong majang)
     totalTile--;
 
     Unplayed[majang]--;//手牌不算剩余的牌，用于计算可能的牌型
-
     cnt_hand[majang]++;
 
     currPlayer = myPosition;
-
-    currDrawTile = majang;
+    currPlayTile = majang;
+    currAction = DRAW;
 }
 
 void Memory::drawTile(int idx,int num)
@@ -397,11 +373,18 @@ void Memory::drawTile(int idx,int num)
     totalTile-=num;
 
     currPlayer = idx;
+    currPlayTile = 0;
+    currAction = DRAW;
 }
 
 int Memory::getCntHand(Mahjong majang)
 {
     return cnt_hand[majang];
+}
+
+void Memory::sortHand()
+{
+    sort(handTile.begin(), handTile.end(), cmp());
 }
 
 action actionStrToEnum(string Action)
