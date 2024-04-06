@@ -35,9 +35,6 @@ vector<string> rrequest, rresponse;
 int main()
 {
 
-    string a = "1m1m1m2m3m4m5m6m7m8m9m9m9m";
-    cout << Handtiles_ShangTing_Temp(a) << endl;
-
     Json::Value inputJSON;
     cin >> inputJSON;
     turn = inputJSON["responses"].size();
