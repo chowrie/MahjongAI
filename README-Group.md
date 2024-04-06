@@ -53,4 +53,16 @@
 
 2024/4/3 实现了响应部分（初级）
 
-
+l
+一头一元 先outer后inner
+tile.h
+standardtile
+stringify
+shanten
+fan_calculator
+Mahjong
+StatusMemory
+RequestInfor
+FanCalculator
+ResponseInfor
+Main
