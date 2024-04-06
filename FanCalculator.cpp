@@ -61,7 +61,7 @@ int Handtiles_ShangTing()
         vector<pair<int, int>> r;
         for (int i = 0;i < 5;i++)
         {
-            r[i].first = r[i].second = 0;
+            r.push_back(make_pair(0, 0));
         }
         Unplayed_totiletable(unplayed_table);
         int result = INT_MAX, perfectlo = 0;

@@ -57,16 +57,16 @@ string response()
                 return responseStr;
             }
 
+            responseStr = "PLAY ";
             //PLAY Card1£®¥Ú ÷≈∆Card1£©
             // 
             // //√˛«–
-            responseStr = "PLAY ";
             int len = hands.handTile.size();
             int perfectlo = 0, MinShang = INT_MAX, fro = 0;
             for (int i = 0; i < len; i++)
             {
                 Mahjong tmp = hands.handTile[i];
-                if (tmp == hands.handTile[i - 1])
+                if (i > 0 && tmp == hands.handTile[i - 1])
                     continue;
                 hands.removeHand(hands.handTile[i]);
                 string t1 = hands.getFormatHandSting();
@@ -75,6 +75,7 @@ string response()
                 {
                     perfectlo = i;
                     MinShang = Ts;
+                    flag = true;
                 }
                 hands.addHand(tmp);
             }
@@ -119,7 +120,7 @@ string response()
             for (int i = 0; i < len; i++)
             {
                 Mahjong tmp = thands.handTile[i];
-                if (tmp == thands.handTile[i - 1])
+                if (i > 0 && tmp == thands.handTile[i - 1])
                     continue;
 
                 thands.removeHand(thands.handTile[i]);
@@ -170,7 +171,7 @@ string response()
             for (int i = 0; i < len; i++)
             {
                 Mahjong tmp = thands.handTile[i];
-                if (tmp == thands.handTile[i - 1])
+                if (i > 0 && tmp == thands.handTile[i - 1])
                     continue;
                 thands.removeHand(thands.handTile[i]);
                 string t1 = thands.getFormatHandSting();
