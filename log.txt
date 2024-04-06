@@ -1,0 +1,31 @@
+{
+	"requests": [
+		"0 0 1",
+		"1 0 0 0 0 B5 B7 F1 W5 W2 T9 T7 F3 W8 B9 T8 T4 F1",
+		"2 B3",
+		"3 0 PLAY B5",
+		"3 1 DRAW",
+		"3 1 PLAY W8",
+		"3 2 DRAW",
+		"3 2 PLAY B2",
+		"3 3 DRAW",
+		"3 3 PLAY W3",
+		"2 W9",
+		"3 0 PLAY W9",
+		"3 3 PENG W3"
+	],
+	"responses": [
+		"PASS",
+		"PASS",
+		"PLAY B5",
+		"PASS",
+		"PASS",
+		"PASS",
+		"PASS",
+		"PASS",
+		"PASS",
+		"PASS",
+		"PLAY W9",
+		"PASS"
+	]
+}

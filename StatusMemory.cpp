@@ -461,32 +461,33 @@ void Memory::sortHand()
 
 string Memory::getFormatHandSting()
 {
-    string res="";
+
+    string res = "";
     for (auto it : Chi[myPosition]) {
         Mahjong tmpTile = it.first;
 
-        res+= "[" + tmpTile.getLast().getFormatStr() + tmpTile.getFormatStr() + tmpTile.getNext().getFormatStr();
-        res+= "," + to_string(it.second) + "]";
+        res += "[" + tmpTile.getLast().getFormatStr() + tmpTile.getFormatStr() + tmpTile.getNext().getFormatStr();
+        res += "," + to_string(it.second) + "]";
     }
 
     for (auto it : Peng[myPosition]) {
         Mahjong tmpTile = it.first;
 
-        res+= "[" + tmpTile.getLast().getFormatStr() + tmpTile.getFormatStr() + tmpTile.getNext().getFormatStr();
-        res+= "," + to_string(it.second) + "]";
+        res += "[" + tmpTile.getFormatStr() + tmpTile.getFormatStr() + tmpTile.getFormatStr();
+        res += "," + to_string(it.second) + "]";
     }
 
 
     for (auto it : Gang[myPosition]) {
         Mahjong tmpTile = it.first;
 
-        res+= "[" + tmpTile.getLast().getFormatStr() + tmpTile.getFormatStr() + 
-            tmpTile.getNext().getFormatStr() + tmpTile.getNext().getFormatStr();
-        res+= "," + to_string(it.second) + "]";
+        res += "[" + tmpTile.getFormatStr() + tmpTile.getFormatStr() +
+            tmpTile.getFormatStr() + tmpTile.getFormatStr();
+        res += "," + to_string(it.second) + "]";
     }
 
     for (auto it : handTile) {
-        res+= it.getFormatStr();
+        res += it.getFormatStr();
     }
 
     return res;
