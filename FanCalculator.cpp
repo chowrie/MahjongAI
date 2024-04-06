@@ -6,21 +6,16 @@
 
 #include <stdio.h>
 #include <iostream>
-#include <limits>
+#include <climits>
 #include <assert.h>
 #include <time.h>
 #include "FanCalculator.h"
+
+
+
 //test
 using namespace mahjong;
 using namespace std;
-
-
-#define DISCARD       0   /// 点和
-#define SELFDRAWN     1   /// 自摸
-#define FOURLAST      2   /// 绝张
-#define FUGANG          4   /// 杠
-#define WALLLAST      8   /// 牌墙最后一张
-#define WALLFIRST     16  /// 起手
 
 int Hpoint(const char* str, Win_flag_t win_flag, wind_t prevalent_wind, wind_t seat_wind)
 {
@@ -38,7 +33,7 @@ int Hpoint(const char* str, Win_flag_t win_flag, wind_t prevalent_wind, wind_t s
     int points = calculate_fan(&can, &fan_b);
     return points;
 }
-int count_useful_tile(const tile_table_t& unplayed_table, const useful_table_t& useful_table)
+int Count_usefultile(const tile_table_t& unplayed_table, const useful_table_t& useful_table)
 {
         int cnt = 0;
         for (int i = 0; i < 34; ++i) {
@@ -49,6 +44,7 @@ int count_useful_tile(const tile_table_t& unplayed_table, const useful_table_t& 
         }
         return cnt;
 }
+
 int Handtiles_ShangTing()
 {
         string str = memory.getFormatHandSting();
@@ -65,29 +61,30 @@ int Handtiles_ShangTing()
         vector<pair<int, int>> r;
         for (int i = 0;i < 5;i++)
         {
-            r[i].first = r[i].second = 0;
+            r.push_back(make_pair(0, 0));
         }
         Unplayed_totiletable(unplayed_table);
         int result = INT_MAX, perfectlo = 0;
+
         r[0].first= thirteen_orphans_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
         if(r[0].first != std::numeric_limits<int>::max())
-        r[0].second = count_useful_tile(unplayed_table, useful_count);
+        r[0].second = Count_usefultile(unplayed_table, useful_count);
 
         r[1].first = seven_pairs_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
         if (r[1].first != std::numeric_limits<int>::max())
-        r[1].second = count_useful_tile(unplayed_table, useful_count);
+        r[1].second = Count_usefultile(unplayed_table, useful_count);
 
         r[2].first = honors_and_knitted_tiles_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
         if (r[2].first != std::numeric_limits<int>::max())
-        r[2].second = count_useful_tile(unplayed_table, useful_count);
+        r[2].second = Count_usefultile(unplayed_table, useful_count);
 
         r[3].first = knitted_straight_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
         if (r[3].first != std::numeric_limits<int>::max())
-        r[3].second = count_useful_tile(unplayed_table, useful_count);
+        r[3].second = Count_usefultile(unplayed_table, useful_count);
 
         r[4].first = basic_form_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
         if (r[4].first != std::numeric_limits<int>::max())
-        r[4].second = count_useful_tile(unplayed_table, useful_count);
+        r[4].second = Count_usefultile(unplayed_table, useful_count);
         if (r[4].first == -1)
         {
             int fans = Handtiles_Point(DISCARD);
@@ -145,6 +142,64 @@ void Unplayed_totiletable(tile_table_t &target)
         else {}
     }
     return;
+}
+int Handtiles_ShangTing_Temp(string &a)
+{
+    string b = a;
+    hand_tiles_t hand_p;
+    tile_t serving_p;
+    long sign = string_to_tiles(b.c_str(), &hand_p, &serving_p);
+    if (sign != 0)
+    {
+        printf("error at line %d error = %ld\n", __LINE__, sign);
+        return -3;
+    }
+    tile_table_t unplayed_table = { 0 };
+    useful_table_t useful_count = { 0 };
+    vector<pair<int, int>> r;
+    for (int i = 0;i < 5;i++)
+    {
+        r.push_back(make_pair(0, 0));
+    }
+    Unplayed_totiletable(unplayed_table);
+    int result = INT_MAX, perfectlo = 0;
+
+    r[0].first = thirteen_orphans_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
+    if (r[0].first != std::numeric_limits<int>::max())
+        r[0].second = Count_usefultile(unplayed_table, useful_count);
+
+    r[1].first = seven_pairs_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
+    if (r[1].first != std::numeric_limits<int>::max())
+        r[1].second = Count_usefultile(unplayed_table, useful_count);
+
+    r[2].first = honors_and_knitted_tiles_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
+    if (r[2].first != std::numeric_limits<int>::max())
+        r[2].second = Count_usefultile(unplayed_table, useful_count);
+
+    r[3].first = knitted_straight_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
+    if (r[3].first != std::numeric_limits<int>::max())
+        r[3].second = Count_usefultile(unplayed_table, useful_count);
+
+    r[4].first = basic_form_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
+    if (r[4].first != std::numeric_limits<int>::max())
+        r[4].second = Count_usefultile(unplayed_table, useful_count);
+    if (r[4].first == -1)
+    {
+        int fans = Handtiles_Point(DISCARD);
+        if (fans < 8)r[4].first = INT_MAX;
+    }
+    for (int i = 0; i < 5; i++)
+    {
+        if (r[i].first < result && r[i].second > 0)
+        {
+            perfectlo = i;
+            result = r[i].first;
+        }
+    }
+
+
+    if (result != INT_MAX)return result;
+    else return -100;
 }
 
 

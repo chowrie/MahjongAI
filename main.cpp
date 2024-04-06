@@ -34,20 +34,20 @@ vector<string> rrequest, rresponse;
 
 int main()
 {
+
     Json::Value inputJSON;
     cin >> inputJSON;
     turn = inputJSON["responses"].size();
 
     string s;
-    for (int i = 0; i < turn; i++) {
+    for (int i = 0; i <= turn; i++) {
         istringstream sin(inputJSON["requests"][i].asString());
-        rresponse.push_back(inputJSON["responses"][i].asString());
         request(sin);
     }
 
+
     Json::Value outputJSON;
-    rresponse.push_back(response());
-    outputJSON["response"] = rresponse[turn];
+    outputJSON["response"] = response();
     cout << outputJSON << endl;
     return 0;
 }

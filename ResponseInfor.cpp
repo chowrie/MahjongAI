@@ -4,198 +4,199 @@
 
 #include<algorithm>
 #include<iostream>
+#include<climits>
 
 string response()
 {
     Mahjong currPlayTile = memory.getCurrPlayTile();
     if (turn == 0 || turn == 1)return "PASS";
+
     string responseStr = "";
     int pi = 0;
+
+    int NowFan = Handtiles_Point(SELFDRAWN);
+    if (NowFan != -3)return "HU";
+
+    Hand_Claim hands;
     int NowShang = Handtiles_ShangTing();
-    if (NowShang==-1)return "HU";
+
+    bool flag = false;
+
+    Mahjong card1, card2;
+
     if (memory.getCurrPlayer() == memory.getMyPosistion())
     {
-        if (memory.getCurrAction() == DRAW){//到自己回合并且摸牌，尚未打出牌
+        if (memory.getCurrAction() == DRAW) 
+        {//到自己回合并且摸牌，尚未打出牌
             //BUGANG Card1（摸得是Card1）
-            if (canBuGang()){
-                Mahjong tmp = memory.getCurrPlayTile();
-                vector<Mahjong> hand = memory.getHandTile(), thand = hand;
-                int len = thand.size();
-                for (int i = 0; i < len; i++)
-                {
-                    if (thand[i].getTile() == tmp)
-                    {
-                        thand.erase(thand.begin()+i);
-                        break;
-                    }
-                }
-                int TestShang = Handtiles_ShangTing();
-                if (NowShang > TestShang)
+            if (canBuGang()) 
+            {
+                hands.addBuGang(currPlayTile);
+                string h1 = hands.getFormatHandSting();
+                int TempShang = Handtiles_ShangTing_Temp(h1);
+                if (NowShang > TempShang)
                 {
                     responseStr = "BUGANG ";
-                    memory.playTile(currPlayTile, BUGANG);
                     responseStr += currPlayTile.getTileString();
-
-                    return responseStr;
                 }
-                else
-                {
-                    responseStr = "PASS";
-                    return responseStr;
-                }
+                hands.removeBuGang(currPlayTile);
+                return responseStr;
             }
             //GANG Card1（摸得是Card1）
-            else if (canAnGang()){
-                memory.sortHand();
-                Mahjong tmp = memory.getCurrPlayTile();
-                vector<Mahjong> hand = memory.getHandTile(), thand = hand;
-                int len = thand.size();
-                for (int i = 0; i < len; i++)
-                {
-                    if (thand[i].getTile() == tmp)
-                    {
-                        for(int j=0;j<4;j++)
-                        thand.erase(thand.begin()+i);
-                        break;
-                    }
-                }
-                int TestShang = Handtiles_ShangTing();
-                if (NowShang > TestShang)
+            else if (canAnGang()) 
+            {
+                hands.addAnGang(currPlayTile);
+                string h1 = hands.getFormatHandSting();
+                int TempShang = Handtiles_ShangTing_Temp(h1);
+                if (NowShang > TempShang)
                 {
                     responseStr = "GANG ";
-                    memory.playTile(currPlayTile, ANGANG);
                     responseStr += currPlayTile.getTileString();
-                    return responseStr;
                 }
-                else
-                {
-                    return "PASS";
-                }
+                hands.removeAnGang(currPlayTile);
+                return responseStr;
             }
+
+            responseStr = "PLAY ";
             //PLAY Card1（打手牌Card1）
-            else {//摸切
-                responseStr = "PLAY ";
-                memory.sortHand();
-                vector<Mahjong> hand = memory.getHandTile(), thand = hand;
-                int perfectlo = 0, maxShang = INT_MAX, frotile = 0, len = thand.size();
-                for (int i = 0; i < len; i++)
+            // 
+            // //摸切
+            int len = hands.handTile.size();
+            int perfectlo = 0, MinShang = INT_MAX, fro = 0;
+            for (int i = 0; i < len; i++)
+            {
+                Mahjong tmp = hands.handTile[i];
+                if (i > 0 && tmp == hands.handTile[i - 1])
+                    continue;
+                hands.removeHand(hands.handTile[i]);
+                string t1 = hands.getFormatHandSting();
+                int Ts = Handtiles_ShangTing_Temp(t1);
+                if (Ts < MinShang)
                 {
-                    int tmp = thand[i].getTile();
-                    if (tmp == frotile)continue;
-                    frotile = tmp;
-                    thand.erase(thand.begin() + i);
-                    int tmpShang = Handtiles_ShangTing();
-                    if (tmpShang <= maxShang)
-                    {
-                        perfectlo = i;
-                        maxShang = tmpShang;
-                    }
-                    thand = hand;
+                    perfectlo = i;
+                    MinShang = Ts;
+                    flag = true;
                 }
-                pi = perfectlo;
-                //选择要打的牌
+                hands.addHand(tmp);
             }
-        }
-        else{//到自己回合已自己打出牌或吃碰杠
-            return "PASS";
+            if (MinShang != std::numeric_limits<int>::max() && MinShang <= NowShang)
+                responseStr += hands.handTile[perfectlo].getTileString();
+            return responseStr;
         }
     }
     else
     {
-
+        int chiTarget = canChi();
         //GANG
-        if (canMinGang()) {
-            memory.sortHand();
-            vector<Mahjong> hand = memory.getHandTile(), thand = hand;
-            int len = thand.size();
-            for (int i = 0; i < len; i++)
-            {
-                if (thand[i].getTile() == currPlayTile)
-                {
-                    for (int j = 0; j < 3; j++)
-                     thand.erase(thand.begin() + i);
-                    break;
-                }
-            }
-            int TestShang = Handtiles_ShangTing();
-            if (NowShang > TestShang)
+        if (canMinGang())
+        {
+            int myP = memory.getMyPosistion(), otherP = memory.getCurrPlayer();
+            int tars = memory.getFormatPosition(myP, otherP);
+            hands.addMinGang(currPlayTile, tars);
+            string t1 = hands.getFormatHandSting();
+            int Ts = Handtiles_ShangTing_Temp(t1);
+            if (NowShang > Ts)
             {
                 responseStr = "GANG ";
                 memory.playTile(currPlayTile, GANG);
-
-                return responseStr;
+                //     hands.
+                flag = true;
             }
-            else
-            {
-                return "PASS";
-            }
+            hands.removeMinGang(currPlayTile);
         }
         //PENG Card1（打Card1）
-        else if (canPeng()) {
-            memory.sortHand();
-            vector<Mahjong> hand = memory.getHandTile(), thand = hand;
-            int len = thand.size();
+        if (canPeng()) {
+            int myP = memory.getMyPosistion(), otherP = memory.getCurrPlayer();
+            int tars = memory.getFormatPosition(myP, otherP);
+            hands.addPeng(currPlayTile, tars);
+            string t1 = hands.getFormatHandSting();
+            int Ts = Handtiles_ShangTing_Temp(t1);
+
+            if (Ts == -1)return"HU";
+
+            Hand_Claim thands;
+            int len = thands.handTile.size();
+            int perfectlo = 0, MinShang = INT_MAX, fro = 0;
             for (int i = 0; i < len; i++)
             {
-                if (thand[i].getTile() == currPlayTile)
+                Mahjong tmp = thands.handTile[i];
+                if (i > 0 && tmp == thands.handTile[i - 1])
+                    continue;
+
+                thands.removeHand(thands.handTile[i]);
+                string t1 = thands.getFormatHandSting();
+                int Ts = Handtiles_ShangTing_Temp(t1);
+                if (Ts < MinShang)
                 {
-                    for (int j = 0; j < 2; j++)
-                        thand.erase(thand.begin() + i);
-                    break;
+                    responseStr = "PENG ";
+                    perfectlo = i;
+                    MinShang = Ts;
                 }
+                thands.addHand(tmp);
             }
-            int TestShang = Handtiles_ShangTing();
-            if (NowShang > TestShang)
-            {
-                responseStr = "PENG ";
-                memory.playTile(currPlayTile, PENG);
+            if (MinShang != std::numeric_limits<int>::max() && MinShang <= NowShang) {
+                responseStr += thands.handTile[perfectlo].getTileString();
+                flag = true;
             }
-            else return "PASS";
+
+            hands.removePeng(currPlayTile);
         }
         //CHI Card1 Card2（吃Card1打Card2）
-        else if (canChi()) {
-            memory.sortHand();
-            vector<Mahjong> hand = memory.getHandTile(), thand = hand;
-            int len = thand.size();
+        if (chiTarget != -1) {
+            hands.addChi(currPlayTile, chiTarget);
+            string t1 = hands.getFormatHandSting();
+            int Ts = Handtiles_ShangTing_Temp(t1);
+
+            if (Ts == -1)return"HU";
+
+            Mahjong cTarget;
+            switch (canChi()) {
+            case 0: {
+                cTarget = currPlayTile.getNext();
+                break;
+            }
+            case 1: {
+                cTarget = currPlayTile;
+                break;
+            }
+            case 2: {
+                cTarget = currPlayTile.getLast();
+                break;
+            }
+            }
+
+            Hand_Claim thands;
+            int len = thands.handTile.size();
+            int perfectlo = 0, MinShang = INT_MAX, fro = 0;
             for (int i = 0; i < len; i++)
             {
-                if (thand[i].getTile() == currPlayTile-1&&thand[i+1].getTile()!=thand[i])
+                Mahjong tmp = thands.handTile[i];
+                if (i > 0 && tmp == thands.handTile[i - 1])
+                    continue;
+                thands.removeHand(thands.handTile[i]);
+                string t1 = thands.getFormatHandSting();
+                int Ts = Handtiles_ShangTing_Temp(t1);
+                if (Ts < MinShang)
                 {
-                    for (int j = 0; j < 2; j++)
-                        thand.erase(thand.begin() + i);
-                    break;
+                    responseStr = "CHI ";
+                    responseStr += cTarget.getTileString() + " ";
+                    perfectlo = i;
+                    MinShang = Ts;
                 }
+                thands.addHand(tmp);
             }
-            int TestShang = Handtiles_ShangTing();
-            if (NowShang > TestShang)
+            if (MinShang != std::numeric_limits<int>::max() && MinShang <= NowShang)
             {
-                responseStr = "CHI ";
-                Mahjong chiTarget;
-                switch (canChi()) {
-                case 1: {
-                    chiTarget = currPlayTile.getNext();
-                    break;
-                }
-                case 2: {
-                    chiTarget = currPlayTile;
-                    break;
-                }
-                case 3: {
-                    chiTarget = currPlayTile.getLast();
-                    break;
-                }
-                }
-                responseStr += chiTarget.getTileString() + " ";
-                memory.playTile(chiTarget, CHI);
+                responseStr += thands.handTile[perfectlo].getTileString();
+                flag = true;
             }
-            }
-        else{
-            return "PASS";
+
+            hands.removeChi(currPlayTile, chiTarget);
         }
     }
-    //选择打的牌
-    responseStr += memory.getHandTile()[pi].getTileString();
-    return responseStr;
+
+    if (flag)return responseStr;
+    return "PASS";
 }
 
 int canChi()
@@ -204,16 +205,16 @@ int canChi()
     if (memory.getCurrPlayTile().isNum() ) {
         if (memory.getCntHand(memory.getCurrPlayTile().getNext()) &&
             memory.getCntHand(memory.getCurrPlayTile().getNext().getNext())
-            )return 1;
+            )return 0;
         if (memory.getCntHand(memory.getCurrPlayTile().getLast()) &&
             memory.getCntHand(memory.getCurrPlayTile().getNext())
-            )return 2;
+            )return 1;
         if (memory.getCntHand(memory.getCurrPlayTile().getLast()) &&
             memory.getCntHand(memory.getCurrPlayTile().getLast().getLast())
-            )return 3;
+            )return 2;
     }
 
-    return 0;
+    return -1;
 }
 
 bool canPeng()

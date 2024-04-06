@@ -134,6 +134,7 @@ Mahjong& Mahjong::operator=(const Mahjong& other)
 {
 	if (this != &other) {
 		this->tile = other.tile;
+		this->FormatStr = other.FormatStr;
 	}
 
 	return *this;
