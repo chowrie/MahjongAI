@@ -85,10 +85,10 @@ int Handtiles_ShangTing()
         r[4].first = basic_form_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
         if (r[4].first != std::numeric_limits<int>::max())
         r[4].second = Count_usefultile(unplayed_table, useful_count);
-        if (r[4].first == -1)
+        if (r[4].first<=0)
         {
             int fans = Handtiles_Point(DISCARD);
-            if (fans < 8)r[4].first = INT_MAX;
+            if (fans>0&&fans < 8)r[4].first = INT_MAX;
         }
         for (int i = 0; i < 5; i++)
         {

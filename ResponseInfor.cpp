@@ -62,7 +62,7 @@ string response()
             // 
             // //摸切
             int len = hands.handTile.size();
-            int perfectlo = 0, MinShang = INT_MAX, fro = 0;
+            int perfectlo = 0, MinShang = INT_MAX;
             for (int i = 0; i < len; i++)
             {
                 Mahjong tmp = hands.handTile[i];
@@ -202,7 +202,7 @@ string response()
 int canChi()
 {
     //不用担心19边界情况，0处无牌，默认不存在
-    if (memory.getCurrPlayTile().isNum() ) {
+    if (memory.getCurrPlayTile().isNum() ){
         if (memory.getCntHand(memory.getCurrPlayTile().getNext()) &&
             memory.getCntHand(memory.getCurrPlayTile().getNext().getNext())
             )return 0;
@@ -213,7 +213,6 @@ int canChi()
             memory.getCntHand(memory.getCurrPlayTile().getLast().getLast())
             )return 2;
     }
-
     return -1;
 }
 
