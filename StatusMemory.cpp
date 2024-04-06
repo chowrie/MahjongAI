@@ -191,6 +191,11 @@ vector<Mahjong>& Memory::getEachPlayed(int idx)
     return eachPlayed[idx];
 }
 
+int Memory::getHana(int idx)
+{
+    return Hana[idx];
+}
+
 int* Memory::getUnPlayed()
 {
     return Unplayed;
@@ -264,18 +269,21 @@ void Memory::playTile(Mahjong majang, action Action)
         break;
     }
     case BUGANG: {
-        int tmpLen = Peng[myPosition].size();
-        for (int i = 0; i < tmpLen; i++) {
-            if (Peng[myPosition][i].first == majang) {
-                swap(Peng[myPosition][i], Peng[myPosition][tmpLen - 1]);
 
-                // 碰的相对位置+4
-                Gang[myPosition].push_back(make_pair(majang, Peng[myPosition].back().second + 4));
 
-                Peng[myPosition].pop_back();
+        for (auto it = Peng[myPosition].begin();
+            it != Peng[myPosition].end(); ++it) {
+            if (it->first == majang) {
+
+                Gang[myPosition].push_back(make_pair(majang, it->second + 3));
+
+                Peng[myPosition].erase(it);
+
                 playTile(majang);
+
                 break;
             }
+
         }
 
 
@@ -299,15 +307,11 @@ void Memory::playTile(Mahjong majang, action Action)
 
 void Memory::playTile(Mahjong majang)
 {
-    for (int i = 0; i < handNum[myPosition]; i++) {
-        if (handTile[i] == majang) {
-            swap(handTile[i], handTile[handNum[myPosition] - 1]);
-            handNum[myPosition]--;
-            cnt_hand[majang]--;
-            handTile.pop_back();
-            break;
-        }
-    }
+
+    auto new_end = remove(handTile.begin(), handTile.end(), majang);
+    handTile.erase(new_end, handTile.end());
+    handNum[myPosition]--;
+    cnt_hand[majang]--;
 
 }
 
@@ -376,24 +380,21 @@ void Memory::playTile(int idx, Mahjong majang, action Action)
         break;
     }
     case BUGANG: {
-        int tmpLen = Peng[idx].size();
 
-        for (int i = 0; i < tmpLen; i++) {
+        for (auto it = Peng[idx].begin();
+            it != Peng[idx].end(); ++it) {
+            if (it->first == majang) {
 
-            if (Peng[idx][i].first == majang) {
-                swap(Peng[idx][i], Peng[idx][tmpLen - 1]);
+                Gang[idx].push_back(make_pair(majang, it->second + 3));
 
+                Peng[idx].erase(it);
 
-                // 碰的相对位置+4
-                Gang[myPosition].push_back(make_pair(majang, Peng[myPosition].back().second + 4));
-
-                Peng[idx].pop_back();
-
-                handNum[idx]--;
-                Unplayed[majang]--;
+                handNum[idx] --;
+                Unplayed[majang] --;
 
                 break;
             }
+
         }
 
         break;
@@ -549,4 +550,229 @@ string actionEnumToStr(action Action)
             break;
         }
     }
+}
+
+Hand_Claim::Hand_Claim()
+{
+    myPosition = memory.getMyPosistion();
+    handTile = memory.getHandTile();
+    Chi[memory.getMyPosistion()] = memory.getChi(memory.getMyPosistion());
+    Peng[memory.getMyPosistion()] = memory.getPeng(memory.getMyPosistion());
+    Gang[memory.getMyPosistion()] = memory.getGang(memory.getMyPosistion());
+
+    Hana = memory.getHana(memory.getMyPosistion());
+}
+
+void Hand_Claim::addHand(Mahjong majang)
+{
+    handTile.push_back(majang);
+}
+
+void Hand_Claim::removeHand(Mahjong majang)
+{
+    auto it = find(handTile.begin(), handTile.end(), majang);
+    if (it != handTile.end()) {
+        handTile.erase(it);
+    }
+
+}
+
+void Hand_Claim::addChi(Mahjong majang, int target)
+{
+    Chi[myPosition].push_back(make_pair(majang, target));
+
+    if (target != 0) {
+        removeHand(majang.getLast());
+    }
+
+    if (target != 1) {
+        removeHand(majang);
+    }
+
+    if (target != 2) {
+        removeHand(majang.getNext());
+    }
+
+}
+
+void Hand_Claim::removeChi(Mahjong majang, int target)
+{
+    for (auto it = Chi[myPosition].begin();
+        it != Chi[myPosition].end(); ++it) {
+        if (it->first == majang) {
+
+            Chi[myPosition].erase(it);
+
+            break;
+        }
+    }
+
+    if (target != 0) {
+        handTile.push_back(majang.getLast());
+    }
+
+    if (target != 1) {
+        handTile.push_back(majang);
+    }
+
+    if (target != 2) {
+        handTile.push_back(majang.getNext());
+    }
+}
+
+void Hand_Claim::addPeng(Mahjong majang, int target)
+{
+
+    Peng[memory.getMyPosistion()].push_back(make_pair(majang, target));
+
+    removeHand(majang);
+    removeHand(majang);
+}
+
+int Hand_Claim::removePeng(Mahjong majang)
+{
+    int target = -1;
+
+    for (auto it = Peng[myPosition].begin();
+        it != Peng[myPosition].end(); ++it) {
+        if (it->first == majang) {
+
+            Peng[myPosition].erase(it);
+
+            target = it->second;
+
+            break;
+        }
+    }
+
+    handTile.push_back(majang);
+    handTile.push_back(majang);
+
+    return target;
+}
+
+void Hand_Claim::addAnGang(Mahjong majang)
+{
+    Gang[myPosition].push_back(make_pair(majang, 0));
+
+    int num = 4;
+
+    while (num--) {
+        removeHand(majang);
+    }
+}
+
+void Hand_Claim::addMinGang(Mahjong majang, int target)
+{
+    Gang[memory.getMyPosistion()].push_back(make_pair(majang, target));
+
+    int num = 3;
+
+    while (num--) {
+        removeHand(majang);
+    }
+
+}
+
+void Hand_Claim::addBuGang(Mahjong majang)
+{
+    int target = removePeng(majang);
+    Gang[memory.getMyPosistion()].push_back(make_pair(majang, target+3));
+    int num = 3;
+
+    while (num--) {
+        removeHand(majang);
+    }
+}
+
+void Hand_Claim::removeAnGang(Mahjong majang)
+{
+    for (auto it = Gang[myPosition].begin();
+        it != Gang[myPosition].end(); ++it) {
+        if (it->first == majang) {
+
+            Gang[myPosition].erase(it);
+            break;
+        }
+    }
+
+    int num = 4;
+    while (num--) {
+        handTile.push_back(majang);
+    }
+}
+
+void Hand_Claim::removeMinGang(Mahjong majang)
+{
+    for (auto it = Gang[myPosition].begin();
+        it != Gang[myPosition].end(); ++it) {
+        if (it->first == majang) {
+
+            Gang[myPosition].erase(it);
+
+            break;
+        }
+    }
+
+    int num = 3;
+    while (num--) {
+        handTile.push_back(majang);
+    }
+}
+
+void Hand_Claim::removeBuGang(Mahjong majang)
+{
+
+    int target = -1;
+    for (auto it = Gang[myPosition].begin();
+        it != Gang[myPosition].end(); ++it) {
+        if (it->first == majang) {
+
+            Gang[myPosition].erase(it);
+
+            target = it->second - 3;
+            break;
+        }
+    }
+
+    int num = 3;
+    while (num--) {
+        handTile.push_back(majang);
+    }
+
+    addPeng(majang, target);
+}
+
+string Hand_Claim::getFormatHandSting()
+{
+
+    string res = "";
+    for (auto it : Chi[myPosition]) {
+        Mahjong tmpTile = it.first;
+
+        res += "[" + tmpTile.getLast().getFormatStr() + tmpTile.getFormatStr() + tmpTile.getNext().getFormatStr();
+        res += "," + to_string(it.second) + "]";
+    }
+
+    for (auto it : Peng[myPosition]) {
+        Mahjong tmpTile = it.first;
+
+        res += "[" + tmpTile.getLast().getFormatStr() + tmpTile.getFormatStr() + tmpTile.getNext().getFormatStr();
+        res += "," + to_string(it.second) + "]";
+    }
+
+
+    for (auto it : Gang[myPosition]) {
+        Mahjong tmpTile = it.first;
+
+        res += "[" + tmpTile.getLast().getFormatStr() + tmpTile.getFormatStr() +
+            tmpTile.getNext().getFormatStr() + tmpTile.getNext().getFormatStr();
+        res += "," + to_string(it.second) + "]";
+    }
+
+    for (auto it : handTile) {
+        res += it.getFormatStr();
+    }
+
+    return res;
 }

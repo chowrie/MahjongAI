@@ -99,6 +99,7 @@ public:
     vector<pair<Mahjong, int>>& getPeng(int idx);
     vector<pair<Mahjong, int>>& getGang(int idx);
     vector<Mahjong>& getEachPlayed(int idx);
+    int getHana(int idx);
 
     int* getUnPlayed();
 
@@ -123,3 +124,33 @@ public:
 extern Memory memory;
 
 extern int turn;
+
+
+class Hand_Claim {
+public:
+    int myPosition;
+
+    vector<Mahjong>handTile;//手牌
+
+    vector<pair<Mahjong, int>>Chi[4];//1=吃第一张
+    vector<pair<Mahjong, int>>Peng[4];//2=对家，3=下家
+    vector<pair<Mahjong, int>>Gang[4];//0=暗杠，1=上家明杠，5=碰上家后补杠
+    int Hana;
+
+    Hand_Claim();
+
+    void addHand(Mahjong majang);
+    void removeHand(Mahjong majang);
+    void addChi(Mahjong majang, int target);
+    void removeChi(Mahjong majang, int target);
+    void addPeng(Mahjong majang, int target);
+    int removePeng(Mahjong majang);
+    void addAnGang(Mahjong majang);
+    void addMinGang(Mahjong majang, int target);
+    void addBuGang(Mahjong majang);
+    void removeAnGang(Mahjong majang);
+    void removeMinGang(Mahjong majang);
+    void removeBuGang(Mahjong majang);
+
+    string getFormatHandSting();
+};
