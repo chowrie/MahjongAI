@@ -66,14 +66,23 @@ int Handtiles_ShangTing()
         Unplayed_totiletable(unplayed_table);
         int r[5], result = INT_MAX, perfectlo = 0;
         r[0].first= thirteen_orphans_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
+        if(r[0].first != std::numeric_limits<int>::max())
         r[0].second = count_useful_tile(unplayed_table, useful_count);
+
         r[1].first = seven_pairs_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
+        if (r[1].first != std::numeric_limits<int>::max())
         r[1].second = count_useful_tile(unplayed_table, useful_count);
+
         r[2].first = honors_and_knitted_tiles_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
+        if (r[2].first != std::numeric_limits<int>::max())
         r[2].second = count_useful_tile(unplayed_table, useful_count);
+
         r[3].first = knitted_straight_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
+        if (r[3].first != std::numeric_limits<int>::max())
         r[3].second = count_useful_tile(unplayed_table, useful_count);
+
         r[4].first = basic_form_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
+        if (r[4].first != std::numeric_limits<int>::max())
         r[4].second = count_useful_tile(unplayed_table, useful_count);
         if (r[4].first == -1)
         {
