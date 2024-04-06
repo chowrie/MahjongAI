@@ -6,10 +6,13 @@
 
 #include <stdio.h>
 #include <iostream>
-#include <limits>
+#include <climits>
 #include <assert.h>
 #include <time.h>
 #include "FanCalculator.h"
+
+
+
 //test
 using namespace mahjong;
 using namespace std;
