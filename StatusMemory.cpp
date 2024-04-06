@@ -307,9 +307,15 @@ void Memory::playTile(Mahjong majang, action Action)
 
 void Memory::playTile(Mahjong majang)
 {
+    for (auto it = handTile.begin();
+        it != handTile.end(); ++it) {
+        if (*it == majang) {
 
-    auto new_end = remove(handTile.begin(), handTile.end(), majang);
-    handTile.erase(new_end, handTile.end());
+            handTile.erase(it);
+
+            break;
+        }
+    }
     handNum[myPosition]--;
     cnt_hand[majang]--;
 
