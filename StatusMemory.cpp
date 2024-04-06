@@ -522,8 +522,6 @@ action actionStrToEnum(string Action)
 
 string actionEnumToStr(action Action)
 {
-    switch (Action)
-    {
         switch (Action)
         {
         case PASS:return "PASS";
@@ -549,7 +547,6 @@ string actionEnumToStr(action Action)
         default:
             break;
         }
-    }
 }
 
 Hand_Claim::Hand_Claim()
@@ -644,8 +641,6 @@ int Hand_Claim::removePeng(Mahjong majang)
         if (it->first == majang) {
 
             Peng[myPosition].erase(it);
-
-            target = it->second;
 
             break;
         }
