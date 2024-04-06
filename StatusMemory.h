@@ -1,4 +1,3 @@
-#pragma once
 
 #include"Mahjong.h"
 #include<vector>

@@ -1,4 +1,4 @@
-#pragma once
+
 #include <string>
 #include "FanCalculator.h"
 using namespace std;

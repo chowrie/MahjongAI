@@ -12,7 +12,6 @@ string response()
     if (turn == 0 || turn == 1)return "PASS";
 
     string responseStr = "";
-    int pi = 0;
 
     int NowFan = Handtiles_Point(SELFDRAWN);
     if (NowFan != -3)return "HU";
@@ -116,7 +115,7 @@ string response()
 
             Hand_Claim thands;
             int len = thands.handTile.size();
-            int perfectlo = 0, MinShang = INT_MAX, fro = 0;
+            int perfectlo = 0, MinShang = INT_MAX;
             for (int i = 0; i < len; i++)
             {
                 Mahjong tmp = thands.handTile[i];
@@ -167,7 +166,7 @@ string response()
 
             Hand_Claim thands;
             int len = thands.handTile.size();
-            int perfectlo = 0, MinShang = INT_MAX, fro = 0;
+            int perfectlo = 0, MinShang = INT_MAX;
             for (int i = 0; i < len; i++)
             {
                 Mahjong tmp = thands.handTile[i];

@@ -1,4 +1,4 @@
-#pragma once
+
 
 //#include "tile.h"
 #include "shanten.h"

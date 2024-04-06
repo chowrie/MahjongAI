@@ -64,7 +64,7 @@ int Handtiles_ShangTing()
             r.push_back(make_pair(0, 0));
         }
         Unplayed_totiletable(unplayed_table);
-        int result = INT_MAX, perfectlo = 0;
+        int result = INT_MAX;
 
         r[0].first= thirteen_orphans_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
         if(r[0].first != std::numeric_limits<int>::max())
@@ -94,12 +94,11 @@ int Handtiles_ShangTing()
         {
             if (r[i].first < result&&r[i].second>0)
             {
-                perfectlo = i;
                 result = r[i].first;
             }
         }
         if (result != INT_MAX)return result;
-        else return -100;
+         return -100;
 }
 wind_t intowind(int a)
 {
@@ -109,7 +108,7 @@ wind_t intowind(int a)
     case 1:return mahjong::wind_t::SOUTH;
     case 2:return mahjong::wind_t::WEST;
     case 3:return  mahjong::wind_t::NORTH;
-    default:;
+    default:return wind_t::EAST;
     }
 }
 int Handtiles_Point(Win_flag_t win_flag)
@@ -162,7 +161,7 @@ int Handtiles_ShangTing_Temp(string &a)
         r.push_back(make_pair(0, 0));
     }
     Unplayed_totiletable(unplayed_table);
-    int result = INT_MAX, perfectlo = 0;
+    int result = INT_MAX;
 
     r[0].first = thirteen_orphans_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
     if (r[0].first != std::numeric_limits<int>::max())
@@ -192,14 +191,11 @@ int Handtiles_ShangTing_Temp(string &a)
     {
         if (r[i].first < result && r[i].second > 0)
         {
-            perfectlo = i;
             result = r[i].first;
         }
     }
-
-
     if (result != INT_MAX)return result;
-    else return -100;
+     return -100;
 }
 
 
