@@ -38,7 +38,17 @@ int Hpoint(const char* str, Win_flag_t win_flag, wind_t prevalent_wind, wind_t s
     int points = calculate_fan(&can, &fan_b);
     return points;
 }
-
+int count_useful_tile(const tile_table_t& unplayed_table, const useful_table_t& useful_table)
+{
+        int cnt = 0;
+        for (int i = 0; i < 34; ++i) {
+            tile_t t = all_tiles[i];
+            if (useful_table[t]) {
+                cnt += unplayed_table[t];
+            }
+        }
+        return cnt;
+}
 int Handtiles_ShangTing()
 {
         string str = memory.getFormatHandSting();
@@ -50,21 +60,36 @@ int Handtiles_ShangTing()
             printf("error at line %d error = %ld\n", __LINE__, sign);
             return -3;
         }
-
-        useful_table_t useful_count;
-        int r[5], result = INT_MAX;
-        r[0] = thirteen_orphans_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
-        r[1] = seven_pairs_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
-        r[2] = honors_and_knitted_tiles_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
-        r[3] = knitted_straight_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
-        r[4] = basic_form_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
-        if (r[4] == -1)
+        tile_table_t unplayed_table = { 0 };
+        useful_table_t useful_count = { 0 };
+        vector<pair<int, int>> r;
+        Unplayed_totiletable(unplayed_table);
+        int r[5], result = INT_MAX, perfectlo = 0;
+        r[0].first= thirteen_orphans_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
+        r[0].second = count_useful_tile(unplayed_table, useful_count);
+        r[1].first = seven_pairs_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
+        r[1].second = count_useful_tile(unplayed_table, useful_count);
+        r[2].first = honors_and_knitted_tiles_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
+        r[2].second = count_useful_tile(unplayed_table, useful_count);
+        r[3].first = knitted_straight_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
+        r[3].second = count_useful_tile(unplayed_table, useful_count);
+        r[4].first = basic_form_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
+        r[4].second = count_useful_tile(unplayed_table, useful_count);
+        if (r[4].first == -1)
         {
             int fans = Handtiles_Point(DISCARD);
-            if (fans < 8)r[4] = INT_MAX;
+            if (fans < 8)r[4].first = INT_MAX;
         }
-        for (int i = 0; i < 5; i++)result = min(r[i], result);
-        return result;
+        for (int i = 0; i < 5; i++)
+        {
+            if (r[i].first < result&&r[i].second>0)
+            {
+                perfectlo = i;
+                result = r[i].first;
+            }
+        }
+        if (result != INT_MAX)return result;
+        else return -100;
 }
 wind_t intowind(int a)
 {
@@ -83,7 +108,6 @@ int Handtiles_Point(Win_flag_t win_flag)
     wind_t p_wind = intowind(memory.getQuan()), s_wind = intowind(memory.getMyPosistion());
     return Hpoint(str.c_str(), win_flag, p_wind, s_wind);
 }
-
 void Unplayed_totiletable(tile_table_t &target)
 {
     int* a = memory.getUnPlayed();
