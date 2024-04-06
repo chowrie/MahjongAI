@@ -629,7 +629,7 @@ void Hand_Claim::removeChi(Mahjong majang, int target)
 void Hand_Claim::addPeng(Mahjong majang, int target)
 {
 
-    Peng[memory.getMyPosistion()].push_back(make_pair(majang, target));
+    Peng[myPosition].push_back(make_pair(majang, target));
 
     removeHand(majang);
     removeHand(majang);
@@ -763,7 +763,7 @@ string Hand_Claim::getFormatHandSting()
     for (auto it : Peng[myPosition]) {
         Mahjong tmpTile = it.first;
 
-        res += "[" + tmpTile.getLast().getFormatStr() + tmpTile.getFormatStr() + tmpTile.getNext().getFormatStr();
+        res += "[" + tmpTile.getFormatStr() + tmpTile.getFormatStr() + tmpTile.getFormatStr();
         res += "," + to_string(it.second) + "]";
     }
 
@@ -771,8 +771,8 @@ string Hand_Claim::getFormatHandSting()
     for (auto it : Gang[myPosition]) {
         Mahjong tmpTile = it.first;
 
-        res += "[" + tmpTile.getLast().getFormatStr() + tmpTile.getFormatStr() +
-            tmpTile.getNext().getFormatStr() + tmpTile.getNext().getFormatStr();
+        res += "[" + tmpTile.getFormatStr() + tmpTile.getFormatStr() +
+            tmpTile.getFormatStr() + tmpTile.getFormatStr();
         res += "," + to_string(it.second) + "]";
     }
 

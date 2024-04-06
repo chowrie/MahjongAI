@@ -115,16 +115,17 @@ string response()
 
             if (Ts == -1)return"HU";
 
-            int len = hands.handTile.size();
+            Hand_Claim thands;
+            int len = thands.handTile.size();
             int perfectlo = 0, MinShang = INT_MAX;
             for (int i = 0; i < len; i++)
             {
-                Mahjong tmp = hands.handTile[i];
-                if (i > 0 && tmp == hands.handTile[i - 1])
+                Mahjong tmp = thands.handTile[i];
+                if (i > 0 && tmp == thands.handTile[i - 1])
                     continue;
 
-                hands.removeHand(hands.handTile[i]);
-                string t1 = hands.getFormatHandSting();
+                thands.removeHand(thands.handTile[i]);
+                string t1 = thands.getFormatHandSting();
                 int Ts = Handtiles_ShangTing_Temp(t1);
                 if (Ts < MinShang)
                 {
@@ -132,10 +133,10 @@ string response()
                     perfectlo = i;
                     MinShang = Ts;
                 }
-                hands.addHand(tmp);
+                thands.addHand(tmp);
             }
             if (MinShang != std::numeric_limits<int>::max() && MinShang <= NowShang) {
-                responseStr += hands.handTile[perfectlo].getTileString();
+                responseStr += thands.handTile[perfectlo].getTileString();
                 flag = true;
             }
 
