@@ -63,8 +63,12 @@ int Handtiles_ShangTing()
         tile_table_t unplayed_table = { 0 };
         useful_table_t useful_count = { 0 };
         vector<pair<int, int>> r;
+        for (int i = 0;i < 5;i++)
+        {
+            r[i].first = r[i].second = 0;
+        }
         Unplayed_totiletable(unplayed_table);
-        int r[5], result = INT_MAX, perfectlo = 0;
+        int result = INT_MAX, perfectlo = 0;
         r[0].first= thirteen_orphans_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
         if(r[0].first != std::numeric_limits<int>::max())
         r[0].second = count_useful_tile(unplayed_table, useful_count);
