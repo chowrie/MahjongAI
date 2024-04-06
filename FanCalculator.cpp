@@ -84,4 +84,30 @@ int Handtiles_Point(Win_flag_t win_flag)
     return Hpoint(str.c_str(), win_flag, p_wind, s_wind);
 }
 
+void Unplayed_totiletable(tile_table_t &target)
+{
+    int* a = memory.getUnPlayed();
+    for (int i = 10;i < 60;i++)
+    {
+        if (a[i] && i < 20)
+        {
+            target[i + 6] = a[i];
+        }
+        else if (a[i] && i < 30)
+        {
+            target[i + 28] = a[i];
+        }
+        else if (a[i] && i < 40)
+        {
+            target[i + 2] = a[i];
+        }
+        else if (a[i] && i < 54)
+        {
+            target[i + 18] = a[i];
+        }
+        else {}
+    }
+    return;
+}
+
 
