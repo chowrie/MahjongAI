@@ -19,6 +19,10 @@ string response()
     Hand_Claim hands;
     int NowShang = Handtiles_ShangTing();
 
+    bool flag = false;
+
+    Mahjong card1, card2;
+
     if (memory.getCurrPlayer() == memory.getMyPosistion())
     {
         if (memory.getCurrAction() == DRAW) 
@@ -32,12 +36,7 @@ string response()
                 if (NowShang > TempShang)
                 {
                     responseStr = "BUGANG ";
-                    memory.playTile(currPlayTile, BUGANG);
                     responseStr += currPlayTile.getTileString();
-                }
-                else
-                {
-                    responseStr = "PASS";
                 }
                 hands.removeBuGang(currPlayTile);
                 return responseStr;
@@ -51,47 +50,37 @@ string response()
                 if (NowShang > TempShang)
                 {
                     responseStr = "GANG ";
-                    memory.playTile(currPlayTile, ANGANG);
                     responseStr += currPlayTile.getTileString();
-                }
-                else
-                {
-                    responseStr = "PASS";
                 }
                 hands.removeAnGang(currPlayTile);
                 return responseStr;
             }
+
             //PLAY Card1（打手牌Card1）
-            else
-            {//摸切
-                responseStr = "PLAY ";
-                int len = hands.handTile.size();
-                int perfectlo = 0, MinShang = INT_MAX, fro = 0;
-                for (int i = 0;i < len;i++)
+            // 
+            // //摸切
+            responseStr = "PLAY ";
+            int len = hands.handTile.size();
+            int perfectlo = 0, MinShang = INT_MAX, fro = 0;
+            for (int i = 0; i < len; i++)
+            {
+                Mahjong tmp = hands.handTile[i];
+                if (tmp == hands.handTile[i - 1])
+                    continue;
+                hands.removeHand(hands.handTile[i]);
+                string t1 = hands.getFormatHandSting();
+                int Ts = Handtiles_ShangTing_Temp(t1);
+                if (Ts < MinShang)
                 {
-                    Mahjong tmp = hands.handTile[i];
-                    if (tmp == hands.handTile[i - 1])
-                        continue;
-                    hands.removeHand(hands.handTile[i]);
-                    string t1 = hands.getFormatHandSting();
-                    int Ts = Handtiles_ShangTing_Temp(t1);
-                    if (Ts < MinShang)
-                    {
-                        perfectlo = i;
-                        MinShang = Ts;
-                    }
-                    hands.addHand(tmp);
+                    perfectlo = i;
+                    MinShang = Ts;
                 }
-                if (MinShang != std::numeric_limits<int>::max() && MinShang <= NowShang)
-                    responseStr += hands.handTile[perfectlo].getTileString();
-                else
-                    responseStr = "PASS";
-
-                return responseStr;
-                //选择要打的牌
+                hands.addHand(tmp);
             }
+            if (MinShang != std::numeric_limits<int>::max() && MinShang <= NowShang)
+                responseStr += hands.handTile[perfectlo].getTileString();
+            return responseStr;
         }
-
     }
     else
     {
@@ -109,65 +98,103 @@ string response()
                 responseStr = "GANG ";
                 memory.playTile(currPlayTile, GANG);
                 //     hands.
+                flag = true;
             }
-            else
-            {
-                responseStr = "PASS";
-            }
-            return responseStr;
+            hands.removeMinGang(currPlayTile);
         }
         //PENG Card1（打Card1）
-        else if (canPeng()) {
+        if (canPeng()) {
             int myP = memory.getMyPosistion(), otherP = memory.getCurrPlayer();
             int tars = memory.getFormatPosition(myP, otherP);
             hands.addPeng(currPlayTile, tars);
             string t1 = hands.getFormatHandSting();
             int Ts = Handtiles_ShangTing_Temp(t1);
-            if (NowShang > Ts)
+
+            if (Ts == -1)return"HU";
+
+            Hand_Claim thands;
+            int len = thands.handTile.size();
+            int perfectlo = 0, MinShang = INT_MAX, fro = 0;
+            for (int i = 0; i < len; i++)
             {
-                responseStr = "PENG ";
-                memory.playTile(currPlayTile, GANG);
-                //     hands.
+                Mahjong tmp = thands.handTile[i];
+                if (tmp == thands.handTile[i - 1])
+                    continue;
+
+                thands.removeHand(thands.handTile[i]);
+                string t1 = thands.getFormatHandSting();
+                int Ts = Handtiles_ShangTing_Temp(t1);
+                if (Ts < MinShang)
+                {
+                    responseStr = "PENG ";
+                    perfectlo = i;
+                    MinShang = Ts;
+                }
+                thands.addHand(tmp);
             }
-            else
-            {
-                responseStr = "PASS";
+            if (MinShang != std::numeric_limits<int>::max() && MinShang <= NowShang) {
+                responseStr += thands.handTile[perfectlo].getTileString();
+                flag = true;
             }
-            return responseStr;
+
+            hands.removePeng(currPlayTile);
         }
         //CHI Card1 Card2（吃Card1打Card2）
-        else if (chiTarget != -1) {
+        if (chiTarget != -1) {
             hands.addChi(currPlayTile, chiTarget);
             string t1 = hands.getFormatHandSting();
             int Ts = Handtiles_ShangTing_Temp(t1);
-            if (NowShang < Ts)
-            {
-                responseStr = "CHI ";
-                Mahjong cTarget;
-                switch (canChi()) {
-                case 0: {
-                    cTarget = currPlayTile.getNext();
-                    break;
-                }
-                case 1: {
-                    cTarget = currPlayTile;
-                    break;
-                }
-                case 2: {
-                    cTarget = currPlayTile.getLast();
-                    break;
-                }
-                }
-                responseStr += cTarget.getTileString() + " ";
-                memory.playTile(chiTarget, CHI);
+
+            if (Ts == -1)return"HU";
+
+            Mahjong cTarget;
+            switch (canChi()) {
+            case 0: {
+                cTarget = currPlayTile.getNext();
+                break;
             }
-            else
-            {
-                responseStr = "PASS";
+            case 1: {
+                cTarget = currPlayTile;
+                break;
             }
-            return responseStr;
+            case 2: {
+                cTarget = currPlayTile.getLast();
+                break;
+            }
+            }
+
+            Hand_Claim thands;
+            int len = thands.handTile.size();
+            int perfectlo = 0, MinShang = INT_MAX, fro = 0;
+            for (int i = 0; i < len; i++)
+            {
+                Mahjong tmp = thands.handTile[i];
+                if (tmp == thands.handTile[i - 1])
+                    continue;
+                thands.removeHand(thands.handTile[i]);
+                string t1 = thands.getFormatHandSting();
+                int Ts = Handtiles_ShangTing_Temp(t1);
+                if (Ts < MinShang)
+                {
+                    responseStr = "CHI ";
+                    responseStr += cTarget.getTileString() + " ";
+                    perfectlo = i;
+                    MinShang = Ts;
+                }
+                thands.addHand(tmp);
+            }
+            if (MinShang != std::numeric_limits<int>::max() && MinShang <= NowShang)
+            {
+                responseStr += thands.handTile[perfectlo].getTileString();
+                flag = true;
+            }
+
+            hands.removeChi(currPlayTile, chiTarget);
         }
     }
+
+    if (flag)return responseStr;
+    return "PASS";
 }
 
 int canChi()

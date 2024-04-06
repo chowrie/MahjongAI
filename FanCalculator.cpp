@@ -142,9 +142,10 @@ void Unplayed_totiletable(tile_table_t &target)
 }
 int Handtiles_ShangTing_Temp(string &a)
 {
+    string b = a;
     hand_tiles_t hand_p;
     tile_t serving_p;
-    long sign = string_to_tiles(a.c_str(), &hand_p, &serving_p);
+    long sign = string_to_tiles(b.c_str(), &hand_p, &serving_p);
     if (sign != 0)
     {
         printf("error at line %d error = %ld\n", __LINE__, sign);
@@ -155,7 +156,7 @@ int Handtiles_ShangTing_Temp(string &a)
     vector<pair<int, int>> r;
     for (int i = 0;i < 5;i++)
     {
-        r[i].first = r[i].second = 0;
+        r.push_back(make_pair(0, 0));
     }
     Unplayed_totiletable(unplayed_table);
     int result = INT_MAX, perfectlo = 0;
@@ -186,15 +187,16 @@ int Handtiles_ShangTing_Temp(string &a)
     }
     for (int i = 0; i < 5; i++)
     {
-        if (r[i].first < result && r[i].second>0)
+        if (r[i].first < result && r[i].second > 0)
         {
             perfectlo = i;
             result = r[i].first;
         }
     }
+
+
     if (result != INT_MAX)return result;
     else return -100;
-    return 0;
 }
 
 
