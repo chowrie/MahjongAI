@@ -203,7 +203,7 @@ string response()
 int canChi()
 {
     //不用担心19边界情况，0处无牌，默认不存在
-    if (memory.getCurrPlayTile().isNum() ){
+    if (memory.getCurrPlayer()==memory.getLastPosition() && memory.getCurrPlayTile().isNum()) {
         if (memory.getCntHand(memory.getCurrPlayTile().getNext()) &&
             memory.getCntHand(memory.getCurrPlayTile().getNext().getNext())
             )return 1;
