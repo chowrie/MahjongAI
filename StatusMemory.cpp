@@ -191,6 +191,11 @@ vector<Mahjong>& Memory::getEachPlayed(int idx)
     return eachPlayed[idx];
 }
 
+int* Memory::getUnPlayed()
+{
+    return Unplayed;
+}
+
 void Memory::playTile(Mahjong majang, action Action)
 {
     int previousPlayer = getFormatPosition(currPlayer);

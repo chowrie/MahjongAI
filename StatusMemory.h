@@ -100,6 +100,7 @@ public:
     vector<pair<Mahjong, int>>& getGang(int idx);
     vector<Mahjong>& getEachPlayed(int idx);
 
+    int* getUnPlayed();
 
     //记录
     void playTile(Mahjong majang, action Action);//本家出牌，包括吃碰杠花,注明动作
