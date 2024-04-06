@@ -69,7 +69,7 @@ void complexInfor(istringstream& sin)
 	if (currPlayer == memory.getMyPosistion()) {
 		switch (Action)
 		{
-		case PLAY: {//3 playerID DRAW
+		case PLAY: {//3 playerID PLAY Card1
 			memory.playTile(Mahjong(card1), PLAY);
 			break;
 		}
@@ -79,7 +79,8 @@ void complexInfor(istringstream& sin)
 			break;
 		}
 		case PENG: {//3 playerID PENG Card1
-			memory.playTile(Mahjong(card1), PENG);
+			memory.playTile(memory.getCurrPlayTile(), PENG);
+			memory.playTile(Mahjong(card1), PLAY);
 			break;
 		}
 		case GANG: {
@@ -113,7 +114,7 @@ void complexInfor(istringstream& sin)
 			memory.drawTile(currPlayer);
 			break;
 		}
-		case PLAY: {//3 playerID DRAW
+		case PLAY: {//3 playerID PLAY Card1
 			memory.playTile(currPlayer, Mahjong(card1), PLAY);
 			break;
 		}
