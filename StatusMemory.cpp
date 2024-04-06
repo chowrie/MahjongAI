@@ -581,18 +581,22 @@ void Hand_Claim::removeHand(Mahjong majang)
 
 void Hand_Claim::addChi(Mahjong majang, int target)
 {
-    Chi[myPosition].push_back(make_pair(majang, target));
-
-    if (target != 0) {
-        removeHand(majang.getLast());
-    }
-
-    if (target != 1) {
-        removeHand(majang);
-    }
-
-    if (target != 2) {
+    if (target == 1) {
+        Chi[myPosition].push_back(make_pair(majang.getNext(), target));
         removeHand(majang.getNext());
+        removeHand(majang.getNext().getNext());
+    }
+    else if (target == 2) {
+        Chi[myPosition].push_back(make_pair(majang, target));
+        removeHand(majang.getNext());
+        removeHand(majang.getLast());
+
+    }
+    else {
+        Chi[myPosition].push_back(make_pair(majang.getLast(), target));
+        removeHand(majang.getLast());
+        removeHand(majang.getLast().getLast());
+
     }
 
 }
@@ -609,15 +613,15 @@ void Hand_Claim::removeChi(Mahjong majang, int target)
         }
     }
 
-    if (target != 0) {
+    if (target != 1) {
         handTile.push_back(majang.getLast());
     }
 
-    if (target != 1) {
+    if (target != 2) {
         handTile.push_back(majang);
     }
 
-    if (target != 2) {
+    if (target != 3) {
         handTile.push_back(majang.getNext());
     }
 }

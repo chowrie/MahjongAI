@@ -85,6 +85,7 @@ string response()
     }
     else
     {
+
         int chiTarget = canChi();
         //GANG
         if (canMinGang())
@@ -103,6 +104,7 @@ string response()
             }
             hands.removeMinGang(currPlayTile);
         }
+
         //PENG Card1£®¥ÚCard1£©
         if (canPeng()) {
             int myP = memory.getMyPosistion(), otherP = memory.getCurrPlayer();
@@ -140,8 +142,9 @@ string response()
 
             hands.removePeng(currPlayTile);
         }
+
         //CHI Card1 Card2£®≥‘Card1¥ÚCard2£©
-        if (chiTarget != -1) {
+        if (chiTarget) {
             hands.addChi(currPlayTile, chiTarget);
             string t1 = hands.getFormatHandSting();
             int Ts = Handtiles_ShangTing_Temp(t1);
@@ -150,15 +153,15 @@ string response()
 
             Mahjong cTarget;
             switch (canChi()) {
-            case 0: {
+            case 1: {
                 cTarget = currPlayTile.getNext();
                 break;
             }
-            case 1: {
+            case 2: {
                 cTarget = currPlayTile;
                 break;
             }
-            case 2: {
+            case 3: {
                 cTarget = currPlayTile.getLast();
                 break;
             }
@@ -192,6 +195,7 @@ string response()
 
             hands.removeChi(currPlayTile, chiTarget);
         }
+
     }
 
     if (flag)return responseStr;
@@ -204,15 +208,15 @@ int canChi()
     if (memory.getCurrPlayTile().isNum() ){
         if (memory.getCntHand(memory.getCurrPlayTile().getNext()) &&
             memory.getCntHand(memory.getCurrPlayTile().getNext().getNext())
-            )return 0;
-        if (memory.getCntHand(memory.getCurrPlayTile().getLast()) &&
-            memory.getCntHand(memory.getCurrPlayTile().getNext())
             )return 1;
         if (memory.getCntHand(memory.getCurrPlayTile().getLast()) &&
-            memory.getCntHand(memory.getCurrPlayTile().getLast().getLast())
+            memory.getCntHand(memory.getCurrPlayTile().getNext())
             )return 2;
+        if (memory.getCntHand(memory.getCurrPlayTile().getLast()) &&
+            memory.getCntHand(memory.getCurrPlayTile().getLast().getLast())
+            )return 3;
     }
-    return -1;
+    return 0;
 }
 
 bool canPeng()
