@@ -129,7 +129,6 @@ extern int turn;
 class Hand_Claim {
 public:
     int myPosition;
-
     vector<Mahjong>handTile;//手牌
 
     vector<pair<Mahjong, int>>Chi[4];//1=吃第一张
@@ -139,15 +138,24 @@ public:
 
     Hand_Claim();
 
+    //1.摸后 
+
     void addHand(Mahjong majang);
+
     void removeHand(Mahjong majang);
+
     void addChi(Mahjong majang, int target);
     void removeChi(Mahjong majang, int target);
+
     void addPeng(Mahjong majang, int target);
     int removePeng(Mahjong majang);
+
     void addAnGang(Mahjong majang);
+
     void addMinGang(Mahjong majang, int target);
+
     void addBuGang(Mahjong majang);
+
     void removeAnGang(Mahjong majang);
     void removeMinGang(Mahjong majang);
     void removeBuGang(Mahjong majang);

@@ -554,6 +554,7 @@ string actionEnumToStr(action Action)
 
 Hand_Claim::Hand_Claim()
 {
+    memory.sortHand();
     myPosition = memory.getMyPosistion();
     handTile = memory.getHandTile();
     Chi[memory.getMyPosistion()] = memory.getChi(memory.getMyPosistion());
@@ -566,6 +567,7 @@ Hand_Claim::Hand_Claim()
 void Hand_Claim::addHand(Mahjong majang)
 {
     handTile.push_back(majang);
+    sort(handTile.begin(), handTile.end(), cmp());
 }
 
 void Hand_Claim::removeHand(Mahjong majang)
@@ -776,3 +778,4 @@ string Hand_Claim::getFormatHandSting()
 
     return res;
 }
+
