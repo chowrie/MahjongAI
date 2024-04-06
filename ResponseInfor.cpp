@@ -19,46 +19,51 @@ string response()
     if (!NowShang)return "HU";
     if (memory.getCurrPlayer() == memory.getMyPosistion()) {
 
-        //BUGANG Card1（摸得是Card1）
-        if (canBuGang()) {
-            responseStr = "BUGANG ";
-            memory.playTile(currPlayTile, BUGANG);
+        if (memory.getCurrAction() == DRAW) {//到自己回合并且摸牌，尚未打出牌
+            //BUGANG Card1（摸得是Card1）
+            if (canBuGang()) {
+                responseStr = "BUGANG ";
+                memory.playTile(currPlayTile, BUGANG);
 
-            responseStr += currPlayTile.getTileString();
+                responseStr += currPlayTile.getTileString();
 
-            return responseStr;
-        }
-        //GANG Card1（摸得是Card1）
-        else if (canAnGang()) {
-            responseStr = "GANG ";
-            memory.playTile(currPlayTile, ANGANG);
-            
-            responseStr += currPlayTile.getTileString();
-
-            return responseStr;
-        }
-        //PLAY Card1（打手牌Card1）
-        else {//摸切
-            responseStr = "PLAY ";
-            memory.sortHand();
-            vector<Mahjong> hand = memory.getHandTile(), thand = hand;
-            int perfectlo = 0, maxShang = INT_MAX, frotile = 0, len = thand.size();
-            for (int i=0;i<len;i++)
-            {
-                int tmp = thand[i].getTile();
-                if (tmp == frotile)continue;
-                frotile = tmp;
-                thand.erase(thand.begin()+i);
-                int tmpShang = Handtiles_ShangTing();
-                if (tmpShang<=maxShang)
-                {
-                    perfectlo = i;
-                    maxShang = tmpShang;
-                }
-                thand = hand;
+                return responseStr;
             }
-            pi = perfectlo;
-            //选择要打的牌
+            //GANG Card1（摸得是Card1）
+            else if (canAnGang()) {
+                responseStr = "GANG ";
+                memory.playTile(currPlayTile, ANGANG);
+
+                responseStr += currPlayTile.getTileString();
+
+                return responseStr;
+            }
+            //PLAY Card1（打手牌Card1）
+            else {//摸切
+                responseStr = "PLAY ";
+                memory.sortHand();
+                vector<Mahjong> hand = memory.getHandTile(), thand = hand;
+                int perfectlo = 0, maxShang = INT_MAX, frotile = 0, len = thand.size();
+                for (int i = 0; i < len; i++)
+                {
+                    int tmp = thand[i].getTile();
+                    if (tmp == frotile)continue;
+                    frotile = tmp;
+                    thand.erase(thand.begin() + i);
+                    int tmpShang = Handtiles_ShangTing();
+                    if (tmpShang <= maxShang)
+                    {
+                        perfectlo = i;
+                        maxShang = tmpShang;
+                    }
+                    thand = hand;
+                }
+                pi = perfectlo;
+                //选择要打的牌
+            }
+        }
+        else{//到自己回合已自己打出牌或吃碰杠
+            return "PASS";
         }
 
     }
@@ -98,7 +103,7 @@ string response()
             responseStr += chiTarget.getTileString() + " ";
             memory.playTile(chiTarget, CHI);
         }
-        else if (memory.getCurrAction() == DRAW) {
+        else{
             return "PASS";
         }
     }

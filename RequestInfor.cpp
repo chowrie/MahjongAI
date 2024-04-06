@@ -60,6 +60,7 @@ void drawTile(istringstream& sin)
 
 void complexInfor(istringstream& sin)
 {
+
     int currPlayer; string currAction = "", card1 = "", card2 = "";
     sin >> currPlayer >> currAction >> card1 >> card2;
 
@@ -122,7 +123,8 @@ void complexInfor(istringstream& sin)
 			break;
 		}
 		case PENG: {//3 playerID PENG Card1
-			memory.playTile(currPlayer, Mahjong(card1), PENG);
+			memory.playTile(currPlayer, memory.getCurrPlayTile(), PENG);
+			memory.playTile(currPlayer, Mahjong(card1), PLAY);
 			break;
 		}
 		case GANG: {
