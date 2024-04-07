@@ -45,7 +45,7 @@ int Count_usefultile(const tile_table_t& unplayed_table, const useful_table_t& u
         return cnt;
 }
 
-int Handtiles_ShangTing()
+int Handtiles_ShangTing()//寄存器手牌上听数
 {
         string str = memory.getFormatHandSting();
         hand_tiles_t hand_p;
@@ -87,8 +87,8 @@ int Handtiles_ShangTing()
         r[4].second = Count_usefultile(unplayed_table, useful_count);
         if (r[4].first<=0)
         {
-            int fans = Handtiles_Point(DISCARD);
-            if (fans>0&&fans < 8)r[4].first = INT_MAX;
+            int fans = Handtiles_Point(str.c_str(), DISCARD);
+            if (fans > 0 && fans < 8)return (0-fans);
         }
         for (int i = 0; i < 5; i++)
         {
@@ -97,8 +97,7 @@ int Handtiles_ShangTing()
                 result = r[i].first;
             }
         }
-        if (result != INT_MAX)return result;
-         return -100;
+         return result;
 }
 wind_t intowind(int a)
 {
@@ -111,9 +110,8 @@ wind_t intowind(int a)
     default:return wind_t::EAST;
     }
 }
-int Handtiles_Point(Win_flag_t win_flag)
+int Handtiles_Point(string str,Win_flag_t win_flag)
 {
-    string str = memory.getFormatHandSting();
     wind_t p_wind = intowind(memory.getQuan()), s_wind = intowind(memory.getMyPosistion());
     return Hpoint(str.c_str(), win_flag, p_wind, s_wind);
 }
@@ -142,12 +140,11 @@ void Unplayed_totiletable(tile_table_t &target)
     }
     return;
 }
-int Handtiles_ShangTing_Temp(string &a)
-{
-    string b = a;
+int Handtiles_ShangTing_Temp(string &a)//正常返回上听数；已胡但不够8番，返回-100；听牌返回0
+{//牌a上听数
     hand_tiles_t hand_p;
     tile_t serving_p;
-    long sign = string_to_tiles(b.c_str(), &hand_p, &serving_p);
+    long sign = string_to_tiles(a.c_str(), &hand_p, &serving_p);
     if (sign != 0)
     {
         printf("error at line %d error = %ld\n", __LINE__, sign);
@@ -184,18 +181,17 @@ int Handtiles_ShangTing_Temp(string &a)
         r[4].second = Count_usefultile(unplayed_table, useful_count);
     if (r[4].first <=0)
     {
-        int fans = Handtiles_Point(DISCARD);
-        if (fans < 8&&fans>0)r[4].first = INT_MAX;
+        int fans = Handtiles_Point(a.c_str(), DISCARD);
+        if (fans < 8&&fans>0)return (0-fans);//已胡，但番数<8
     }
     for (int i = 0; i < 5; i++)
     {
-        if (r[i].first < result && r[i].second > 0)
+        if (r[i].first < result && r[i].second >= 0)
         {
             result = r[i].first;
         }
     }
-    if (result != INT_MAX)return result;
-     return -100;
+    return result;//返回0代表已听牌
 }
 
 

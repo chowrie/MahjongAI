@@ -12,9 +12,10 @@ string response()
     if (turn == 0 || turn == 1)return "PASS";
 
     string responseStr = "";
+    string NowHands = memory.getFormatHandSting();
 
-    int NowFan = Handtiles_Point(SELFDRAWN);
-    if (NowFan != -3)return "HU";
+    int NowFan = Handtiles_Point(NowHands,SELFDRAWN);
+    if (NowFan != -3&&NowFan>=8)return "HU";
 
     Hand_Claim hands;
     int NowShang = Handtiles_ShangTing();

@@ -34,7 +34,7 @@ vector<string> rrequest, rresponse;
 
 int main()
 {
-
+ 
     Json::Value inputJSON;
     cin >> inputJSON;
     turn = inputJSON["responses"].size();
@@ -44,7 +44,6 @@ int main()
         istringstream sin(inputJSON["requests"][i].asString());
         request(sin);
     }
-
 
     Json::Value outputJSON;
     outputJSON["response"] = response();
