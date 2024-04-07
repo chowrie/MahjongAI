@@ -11,22 +11,26 @@ string response()
     Mahjong currPlayTile = memory.getCurrPlayTile();
     int currPlayer = memory.getCurrPlayer();
     action currAction = memory.getCurrAction();
+    string NowHands = memory.getFormatHandSting();
+    Hand_Claim hands;
+
 
     if (turn == 0 || turn == 1)return "PASS";
-
     string responseStr = "";
+    bool flag = false;
+
 
     //{可能需要删除的部分，我们应该先判别目前回合的状态再决定是否计算上听数以及番数
 
-    string NowHands = memory.getFormatHandSting();
+   
 
-    int NowFan = Handtiles_Point(NowHands,SELFDRAWN);
-    if (NowFan != -3&&NowFan>=8)return "HU";
+    //int NowFan = Handtiles_Point(NowHands,SELFDRAWN);
+    //if (NowFan != -3&&NowFan>=8)return "HU";
 
-    Hand_Claim hands;
-    int NowShang = Handtiles_ShangTing();
+    
+    //int NowShang = Handtiles_ShangTing();
 
-    bool flag = false;
+    
 
 
     //}
@@ -45,13 +49,20 @@ string response()
     {
         if (memory.getCurrAction() == DRAW) 
         {//到自己回合并且摸牌，尚未打出牌
+
+            int NowFan = Handtiles_Point(NowHands,SELFDRAWN);//自摸
+            if (NowFan != -3&&NowFan>=8)return "HU";
+
+
             //BUGANG Card1（摸得是Card1）
             if (canBuGang()) 
             {
+                int initShang = Handtiles_ShangTing();
+
                 hands.addBuGang(currPlayTile);
                 string h1 = hands.getFormatHandSting();
                 int TempShang = Handtiles_ShangTing_Temp(h1);
-                if (NowShang > TempShang)
+                if (initShang > TempShang)
                 {
                     responseStr = "BUGANG ";
                     responseStr += currPlayTile.getTileString();
@@ -59,13 +70,16 @@ string response()
                 hands.removeBuGang(currPlayTile);
                 return responseStr;
             }
+
+
             //GANG Card1（摸得是Card1）
             else if (canAnGang()) 
             {
+                int initShang = Handtiles_ShangTing();
                 hands.addAnGang(currPlayTile);
                 string h1 = hands.getFormatHandSting();
                 int TempShang = Handtiles_ShangTing_Temp(h1);
-                if (NowShang > TempShang)
+                if (initShang > TempShang)
                 {
                     responseStr = "GANG ";
                     responseStr += currPlayTile.getTileString();
@@ -76,9 +90,9 @@ string response()
 
             responseStr = "PLAY ";
             //PLAY Card1（打手牌Card1）
-            // 
             // //摸切
             int len = hands.handTile.size();
+            int initShang = Handtiles_ShangTing();
             int perfectlo = 0, MinShang = INT_MAX;
             for (int i = 0; i < len; i++)
             {
@@ -96,8 +110,10 @@ string response()
                 }
                 hands.addHand(tmp);
             }
-            if (MinShang != std::numeric_limits<int>::max() && MinShang <= NowShang)
+            if (MinShang != std::numeric_limits<int>::max() && MinShang <= initShang)
+            {
                 responseStr += hands.handTile[perfectlo].getTileString();
+            }
             return responseStr;
         }
     }
@@ -115,31 +131,37 @@ string response()
         //GANG
         if (canMinGang())
         {
+            int initShang = Handtiles_ShangTing();
             int myP = memory.getMyPosistion(), otherP = memory.getCurrPlayer();
             int tars = memory.getFormatPosition(myP, otherP);
+
             hands.addMinGang(currPlayTile, tars);
             string t1 = hands.getFormatHandSting();
             int Ts = Handtiles_ShangTing_Temp(t1);
-            if (NowShang > Ts)
+            if (initShang > Ts)
             {
                 responseStr = "GANG ";
                 memory.playTile(currPlayTile, GANG);
-                //     hands.
                 flag = true;
             }
             hands.removeMinGang(currPlayTile);
         }
 
         //PENG Card1（打Card1）
-        if (canPeng()) {
+        if (canPeng()) 
+        {
+            int initShang = Handtiles_ShangTing();
             int myP = memory.getMyPosistion(), otherP = memory.getCurrPlayer();
             int tars = memory.getFormatPosition(myP, otherP);
+
             hands.addPeng(currPlayTile, tars);
             string t1 = hands.getFormatHandSting();
-            int Ts = Handtiles_ShangTing_Temp(t1);
 
-            if (Ts == -1)return"HU";
+            int NowFan = Handtiles_Point(NowHands, DISCARD);//和牌：缺判断特殊 番数，先按普通
+            if (NowFan != -3 && NowFan >= 8)return "HU";//大于8番起和
 
+
+            //胡不了，选牌
             int len = hands.handTile.size();
             int perfectlo = 0, MinShang = INT_MAX;
             for (int i = 0; i < len; i++)
@@ -147,7 +169,6 @@ string response()
                 Mahjong tmp = hands.handTile[i];
                 if (i > 0 && tmp == hands.handTile[i - 1])
                     continue;
-
                 hands.removeHand(hands.handTile[i]);
                 string t1 = hands.getFormatHandSting();
                 int Ts = Handtiles_ShangTing_Temp(t1);
@@ -159,22 +180,26 @@ string response()
                 }
                 hands.addHand(tmp);
             }
-            if (MinShang != std::numeric_limits<int>::max() && MinShang <= NowShang) {
+            if (MinShang != std::numeric_limits<int>::max() && MinShang <= initShang) {
                 responseStr += hands.handTile[perfectlo].getTileString();
                 flag = true;
             }
-
             hands.removePeng(currPlayTile);
         }
 
+
         //CHI Card1 Card2（吃Card1打Card2）
         if (chiTarget) {
+
+            int initShang = Handtiles_ShangTing();
             hands.addChi(currPlayTile, chiTarget);
             string t1 = hands.getFormatHandSting();
             int Ts = Handtiles_ShangTing_Temp(t1);
 
-            if (Ts == -1)return"HU";
+            int NowFan = Handtiles_Point(NowHands, DISCARD);//和牌：缺判断特殊 番数，先按普通
+            if (NowFan != -3 && NowFan >= 8)return "HU";//大于8番起和
 
+            //胡不了
             Mahjong cTarget;
             switch (canChi()) {
             case 1: {
@@ -210,7 +235,7 @@ string response()
                 }
                 hands.addHand(tmp);
             }
-            if (MinShang != std::numeric_limits<int>::max() && MinShang <= NowShang)
+            if (MinShang != std::numeric_limits<int>::max() && MinShang <= initShang)
             {
                 responseStr += hands.handTile[perfectlo].getTileString();
                 flag = true;
