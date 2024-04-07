@@ -9,9 +9,15 @@
 string response()
 {
     Mahjong currPlayTile = memory.getCurrPlayTile();
+    int currPlayer = memory.getCurrPlayer();
+    action currAction = memory.getCurrAction();
+
     if (turn == 0 || turn == 1)return "PASS";
 
     string responseStr = "";
+
+    //{可能需要删除的部分，我们应该先判别目前回合的状态再决定是否计算上听数以及番数
+
     string NowHands = memory.getFormatHandSting();
 
     int NowFan = Handtiles_Point(NowHands,SELFDRAWN);
@@ -22,8 +28,19 @@ string response()
 
     bool flag = false;
 
+
+    //}
+
     Mahjong card1, card2;
 
+    //在自己的回合中包含以下动作，需要分别判别并进行响应：
+    //1.自家摸牌，存在暗杠、补杠、自摸的可能（这个部分是在自己回合，并且摸完牌后）
+    //应当首先判别是否自摸并计算番数（可直接调用算番器计算），如果满足要求，直接返回胡牌
+    //若不满足，考虑暗杠或补杠后是否会减少上听数（须在杠后直接计算，而不用拟丢牌）
+    //若暗杠和补杠都不能减少上听数，再考虑打出一张手牌
+    //在打出手牌时，考虑对多个上听数最大的牌建立无用牌组，用于防守或进攻
+    //2.自家打、吃碰
+    //直接返回PASS
     if (memory.getCurrPlayer() == memory.getMyPosistion())
     {
         if (memory.getCurrAction() == DRAW) 
@@ -84,6 +101,13 @@ string response()
             return responseStr;
         }
     }
+    
+    //它家吃碰杠、出牌，也需分别判别
+    // 1.它家出牌（可能是在吃碰后出牌），在它家出牌后，我们考虑这张牌能否用于吃碰杠甚至胡牌，方法如下
+    // 对于可能的吃碰，在吃碰后，首先计算是否能 胡牌 ，如果能胡且>=8番，直接返回
+    // 若不能胡，再拟丢牌进行上听数考虑是否吃碰，并建立无用牌组
+    // 对于可能的杠，在杠后直接计算计算上听数比较，不用拟丢牌
+    // 若不能吃碰杠，直接PASS
     else
     {
 
