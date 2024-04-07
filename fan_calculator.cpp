@@ -2033,6 +2033,7 @@ int check_calculator_input(const hand_tiles_t *hand_tiles, tile_t win_tile) {
 // 算番
 //
 int calculate_fan(const calculate_param_t *calculate_param, fan_table_t *fan_table) {
+
     const hand_tiles_t *hand_tiles = &calculate_param->hand_tiles;
     tile_t win_tile = calculate_param->win_tile;
     win_flag_t win_flag = calculate_param->win_flag;
@@ -2043,7 +2044,6 @@ int calculate_fan(const calculate_param_t *calculate_param, fan_table_t *fan_tab
 
     intptr_t fixed_cnt = hand_tiles->pack_count;
     intptr_t standing_cnt = hand_tiles->tile_count;
-
     // 校正和牌标记
     // 如果立牌包含和牌，则必然不是和绝张
     const bool standing_tiles_contains_win_tile = is_standing_tiles_contains_win_tile(hand_tiles->standing_tiles, standing_cnt, win_tile);
@@ -2056,7 +2056,6 @@ int calculate_fan(const calculate_param_t *calculate_param, fan_table_t *fan_tab
     if (3 == win_tile_in_fixed_packs) {
         win_flag |= WIN_FLAG_4TH_TILE;
     }
-
     // 附加杠标记
     if (win_flag & WIN_FLAG_ABOUT_KONG) {
         if (win_flag & WIN_FLAG_SELF_DRAWN) {  // 自摸
@@ -2072,20 +2071,16 @@ int calculate_fan(const calculate_param_t *calculate_param, fan_table_t *fan_tab
             }
         }
     }
-
     // 合并立牌与和牌，并排序，最多为14张
     tile_t standing_tiles[14];
     memcpy(standing_tiles, hand_tiles->standing_tiles, standing_cnt * sizeof(tile_t));
     standing_tiles[standing_cnt] = win_tile;
     std::sort(standing_tiles, standing_tiles + standing_cnt + 1);
-
     // 最大番标记
     int max_fan = 0;
     const fan_table_t *selected_fan_table = nullptr;
-
     // 特殊和型的番
     fan_table_t special_fan_table = { 0 };
-
     // 先判断各种特殊和型
     if (fixed_cnt == 0) {  // 门清状态，有可能是基本和型组合龙
         if (calculate_knitted_straight_fan(calculate_param, win_flag, special_fan_table)) {
@@ -2106,7 +2101,6 @@ int calculate_fan(const calculate_param_t *calculate_param, fan_table_t *fan_tab
             LOG("fan = %d\n\n", max_fan);
         }
     }
-
     // 无法构成特殊和型或者为七对
     // 七对也要按基本和型划分，因为极端情况下，基本和型的番会超过七对的番
     if (selected_fan_table == nullptr || special_fan_table[SEVEN_PAIRS] == 1) {
@@ -2132,20 +2126,15 @@ int calculate_fan(const calculate_param_t *calculate_param, fan_table_t *fan_tab
             }
         }
     }
-
     if (selected_fan_table == nullptr) {
         return ERROR_NOT_WIN;
     }
-
     // 加花牌
     max_fan += calculate_param->flower_count;
-
     if (fan_table != nullptr) {
         memcpy(*fan_table, *selected_fan_table, sizeof(*fan_table));
         (*fan_table)[FLOWER_TILES] = calculate_param->flower_count;
     }
-
     return max_fan;
 }
-
 }
