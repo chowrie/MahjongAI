@@ -201,7 +201,6 @@ string response()
 
         }
 
-
         //CHI Card1 Card2£®≥‘Card1¥ÚCard2£©
         if (chiTarget) {
 
