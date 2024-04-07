@@ -504,6 +504,7 @@ action actionStrToEnum(string Action)
         case'L':return PLAY; break;
         case'E':return PENG; break;
         default:
+            return PASS;
             break;
         }
         break;
@@ -523,6 +524,7 @@ action actionStrToEnum(string Action)
     case'A':return ANGANG; break;
     case'H':return HU; break;
     default:
+        return PASS;
         break;
     }
 }
@@ -552,6 +554,7 @@ string actionEnumToStr(action Action)
         case HU:return "HU";
             break;
         default:
+            return "PASS";
             break;
         }
 }

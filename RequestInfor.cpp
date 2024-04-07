@@ -84,11 +84,11 @@ void complexInfor(istringstream& sin)
 			break;
 		}
 		case GANG: {
-			if (memory.getCurrAction() == DRAW) {
-				memory.playTile(Mahjong(card1), ANGANG);
+			if (memory.getCurrAction() == DRAW) {//°µ¸Ü
+				memory.playTile(Mahjong(memory.getCurrPlayTile()), ANGANG);
 			}
-			else {
-				memory.playTile(Mahjong(card1), GANG);
+			else {//
+				memory.playTile(Mahjong(memory.getCurrPlayTile()), GANG);
 			}
 			break;
 		}
