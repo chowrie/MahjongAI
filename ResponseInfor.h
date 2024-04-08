@@ -15,9 +15,6 @@ bool canAnGang();
 
 bool canBuGang();
 
-bool isZimo();
-
-bool isMenQianQing();
 
 bool isDanDiao();
 
@@ -26,8 +23,6 @@ bool isBianZhang();
 bool isKanZhang();
 
 bool isHeJueZhang();
-
-bool isBuQiuRen();//不计自摸，不计门前清
 
 bool isQuanQiuRen();//不计单钓
 

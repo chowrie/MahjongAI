@@ -45,6 +45,7 @@ void Memory::initial(int myPos, int quan){//初始牌墙剩余
     for (int i = 0; i < 4; i++) {//番
         currFan[i] = 0;
         Hana[i] = 0;
+        tileWall[i] = 21;
     }
 }
 
@@ -430,6 +431,7 @@ void Memory::drawTile(Mahjong majang)
 
     handNum[myPosition]++;
     totalTile--;
+    tileWall[myPosition]--;
 
     Unplayed[majang]--;//手牌不算剩余的牌，用于计算可能的牌型
     cnt_hand[majang]++;
@@ -443,6 +445,7 @@ void Memory::drawTile(int idx,int num)
 {
     handNum[idx]+=num;
     totalTile-=num;
+    tileWall[idx]--;
 
     currPlayer = idx;
     currPlayTile = 0;

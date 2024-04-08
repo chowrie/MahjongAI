@@ -331,3 +331,11 @@ bool canBuGang()
     }
     return false;
 }
+
+//µ¥µö½«£¬ÌýÈ¸Í·
+bool isDanDiao()
+{
+
+
+    return false;
+}

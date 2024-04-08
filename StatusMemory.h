@@ -4,7 +4,7 @@
 #include<map>
 
 
-const int allTile = 144;
+const int allTile = 136;
 const int initialHand = 13;
 
 //手上的，场上的，未出现的，面子
@@ -54,6 +54,8 @@ private:
 
     int Hana[4];
     int currFan[4];//各自目前已有的番数，顺带计入补花数
+
+    int tileWall[4];
 
 public:
     Memory();
