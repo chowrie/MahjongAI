@@ -282,16 +282,17 @@ string response()
 int canChi()
 {
     //不用担心19边界情况，0处无牌，默认不存在
+    //暂未考虑有多种吃牌的情况下的考虑
     if (memory.getCurrPlayer()==memory.getLastPosition() && memory.getCurrPlayTile().isNum()) {
         if (memory.getCntHand(memory.getCurrPlayTile().getNext()) &&
             memory.getCntHand(memory.getCurrPlayTile().getNext().getNext())
             )return 1;
         if (memory.getCntHand(memory.getCurrPlayTile().getLast()) &&
-            memory.getCntHand(memory.getCurrPlayTile().getNext())
-            )return 2;
-        if (memory.getCntHand(memory.getCurrPlayTile().getLast()) &&
             memory.getCntHand(memory.getCurrPlayTile().getLast().getLast())
             )return 3;
+        if (memory.getCntHand(memory.getCurrPlayTile().getLast()) &&
+            memory.getCntHand(memory.getCurrPlayTile().getNext())
+            )return 2;
     }
     return 0;
 }
