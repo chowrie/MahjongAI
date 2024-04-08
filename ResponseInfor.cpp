@@ -11,7 +11,6 @@ string response()
     Mahjong currPlayTile = memory.getCurrPlayTile();
     int currPlayer = memory.getCurrPlayer();
     action currAction = memory.getCurrAction();
-    string NowHands = memory.getFormatHandSting();
     Hand_Claim hands;
 
 
@@ -47,8 +46,11 @@ string response()
     //直接返回PASS
     if (memory.getCurrPlayer() == memory.getMyPosistion())
     {
+
         if (memory.getCurrAction() == DRAW) 
         {//到自己回合并且摸牌，尚未打出牌
+
+            string NowHands = hands.getFormatHandSting();
 
             int NowFan = Handtiles_Point(NowHands,SELFDRAWN);//自摸
             if (NowFan != -3&&NowFan>=8)return "HU";
@@ -128,8 +130,9 @@ string response()
     // 若不能吃碰杠，直接PASS
     else
     {
-        int initShang = Handtiles_ShangTing();
 
+
+        int initShang = Handtiles_ShangTing();
         int chiTarget = canChi();
         //GANG
         if (canMinGang())
@@ -159,8 +162,8 @@ string response()
             int tars = memory.getFormatPosition(myP, otherP);
 
             hands.addPeng(currPlayTile, tars);
-
-            int NowFan = Handtiles_Point(NowHands, DISCARD);//和牌：缺判断特殊 番数，先按普通
+            string tPeng = hands.getFormatHandSting();
+            int NowFan = Handtiles_Point(tPeng, DISCARD);//和牌：缺判断特殊 番数，先按普通
 
             //针对可能最大番减去
 
@@ -206,9 +209,9 @@ string response()
 
             hands.addChi(currPlayTile, chiTarget);
 
-            string t1 = hands.getFormatHandSting();
+            string tChi = hands.getFormatHandSting();
 
-            int NowFan = Handtiles_Point(NowHands, DISCARD);//和牌：缺判断特殊 番数，先按普通
+            int NowFan = Handtiles_Point(tChi, DISCARD);//和牌：缺判断特殊 番数，先按普通
             if (NowFan != -3 && NowFan >= 8)return "HU";//大于8番起和
 
             //胡不了
@@ -261,6 +264,15 @@ string response()
             hands.removeChi(currPlayTile, chiTarget);
         }
 
+
+        //单钓将
+
+        hands.addHand(currPlayTile);
+        string t1 = hands.getFormatHandSting();
+        int NowFan = Handtiles_Point(t1, DISCARD);//和牌：缺判断特殊 番数，先按普通
+        if (NowFan != -3 && NowFan >= 8)return "HU";//大于8番起和
+
+        hands.removeHand(currPlayTile);
     }
 
     if (flag)return responseStr;
