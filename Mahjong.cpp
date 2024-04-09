@@ -1,6 +1,7 @@
 #include "Mahjong.h"
 #include <cctype>
-
+#include"tile.h"
+using namespace mahjong;
 Mahjong::Mahjong():tile(0)
 {
 	setFortamtStr();
@@ -212,6 +213,13 @@ void Mahjong::setFortamtStr()
 string Mahjong::getFormatStr()
 {
 	return FormatStr;
+}
+
+tile_t Mahjong::mahjong_totile()
+{
+	int h = getTypeInt(), d = getNum();
+	tile_t su = (uint8_t)h, ra = (uint8_t)(d);
+	return make_tile(su, ra);
 }
 
 
