@@ -1,4 +1,4 @@
-
+#pragma once
 #include"Mahjong.h"
 #include<vector>
 #include<map>
@@ -35,6 +35,7 @@ private:
 
     int currPlayer;
     action currAction;
+    action lastAction;//用于杠上开花
     Mahjong currPlayTile;//用于吃
     int currTurn;
     int Quan;//场风
@@ -86,7 +87,10 @@ public:
 
     void setCurrAction(action Action);
     void setCurrAction(string Action);
+
     action getCurrAction();
+    action getLastAction();
+
     Mahjong getCurrPlayTile();
 
     int getTargetTileLeft(int tileNum);
@@ -120,6 +124,9 @@ public:
 
     string getFormatHandSting();
 
+    int getTileWallNum(int idx);
+
+    int getHandNum(int idx);
 };
 
 extern Memory memory;

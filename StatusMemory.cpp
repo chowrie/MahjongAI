@@ -47,6 +47,8 @@ void Memory::initial(int myPos, int quan){//初始牌墙剩余
         Hana[i] = 0;
         tileWall[i] = 21;
     }
+
+    currAction = PASS;
 }
 
 void Memory::buHua(int idx, int num)
@@ -140,6 +142,11 @@ void Memory::setCurrAction(string Action)
 action Memory::getCurrAction()
 {
     return currAction;
+}
+
+action Memory::getLastAction()
+{
+    return lastAction;
 }
 
 Mahjong Memory::getCurrPlayTile()
@@ -302,6 +309,7 @@ void Memory::playTile(Mahjong majang, action Action)
 
     currPlayer = myPosition;
     currPlayTile = majang;
+    lastAction = currAction;
     currAction = Action;
 
 }
@@ -421,6 +429,7 @@ void Memory::playTile(int idx, Mahjong majang, action Action)
 
     currPlayer = idx;
     currPlayTile = majang;//打出的，响应的
+    lastAction = currAction;
     currAction = Action;
 }
 
@@ -494,6 +503,16 @@ string Memory::getFormatHandSting()
     }
 
     return res;
+}
+
+int Memory::getTileWallNum(int idx)
+{
+    return tileWall[idx];
+}
+
+int Memory::getHandNum(int idx)
+{
+    return handNum[idx];
 }
 
 action actionStrToEnum(string Action)

@@ -1,6 +1,7 @@
-
+#pragma once
 #include <string>
 #include "FanCalculator.h"
+#include "StatusMemory.h"
 using namespace std;
 
 string response();
@@ -15,21 +16,12 @@ bool canAnGang();
 
 bool canBuGang();
 
+bool isHeJueZhang(Mahjong& majang);
 
-bool isDanDiao();
+bool isQiangGangHe(action&currAction);
 
-bool isBianZhang();
+bool isGangShangKaiHua(action&currAction,action&lastAction);//不计自摸
 
-bool isKanZhang();
-
-bool isHeJueZhang();
-
-bool isQuanQiuRen();//不计单钓
-
-bool isQiangGangHe();//不计和决张
-
-bool isGangShangKaiHua();//不计自摸
-
-bool isSeaMoon();
+bool isSeaMoon(int idx);
 
 bool isHandSpring();//不计自摸

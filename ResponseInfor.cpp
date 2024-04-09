@@ -1,6 +1,4 @@
 #include "ResponseInfor.h"
-#include"StatusMemory.h"
-#include"FanCalculator.h"
 
 #include<algorithm>
 #include<iostream>
@@ -10,6 +8,7 @@ string response()
 {
     Mahjong currPlayTile = memory.getCurrPlayTile();
     int currPlayer = memory.getCurrPlayer();
+    action lastAction = memory.getLastAction();
     action currAction = memory.getCurrAction();
     Hand_Claim hands;
 
@@ -333,10 +332,29 @@ bool canBuGang()
     return false;
 }
 
-//µ¥µö½«£¬ÌýÈ¸Í·
-bool isDanDiao()
+bool isHeJueZhang(Mahjong& majang)
 {
+    return memory.getUnPlayed()[majang] == 0;
+}
 
+bool isQiangGangHe(action& currAction)
+{
+    return currAction == GANG;
+}
 
+bool isGangShangKaiHua(action& currAction, action& lastAction)
+{
     return false;
 }
+
+
+bool isHandSpring()
+{
+    return memory.getTileWallNum(memory.getMyPosistion());
+}
+
+bool isSeaMoon(int idx)
+{
+    return memory.getTileWallNum(idx);
+}
+
