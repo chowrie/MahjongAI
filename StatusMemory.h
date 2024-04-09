@@ -40,6 +40,8 @@ private:
     int currTurn;
     int Quan;//场风
 
+    bool GangFlag;
+
     int Unplayed[70];//对应每张牌，未出现的牌，手牌不计入
     int totalTile;//不单独对应，所有未出现的牌
     map<Mahjong, int>cnt_hand;//未有初始化为0，手牌中某种牌的数量
@@ -127,6 +129,8 @@ public:
     int getTileWallNum(int idx);
 
     int getHandNum(int idx);
+
+    bool getGangFlag();
 };
 
 extern Memory memory;
@@ -169,4 +173,5 @@ public:
     void removeBuGang(Mahjong majang);
 
     string getFormatHandSting();
+
 };

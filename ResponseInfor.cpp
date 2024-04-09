@@ -6,9 +6,12 @@
 
 string response()
 {
+    //currPlayTile：坎张、边张、单钓将
     Mahjong currPlayTile = memory.getCurrPlayTile();
+
+
     int currPlayer = memory.getCurrPlayer();
-    action lastAction = memory.getLastAction();
+    bool GangFlag = memory.getGangFlag();
     action currAction = memory.getCurrAction();
     Hand_Claim hands;
 
@@ -18,20 +21,6 @@ string response()
     bool flag = false;
 
 
-    //{可能需要删除的部分，我们应该先判别目前回合的状态再决定是否计算上听数以及番数
-
-   
-
-    //int NowFan = Handtiles_Point(NowHands,SELFDRAWN);
-    //if (NowFan != -3&&NowFan>=8)return "HU";
-
-    
-    //int NowShang = Handtiles_ShangTing();
-
-    
-
-
-    //}
 
     Mahjong card1, card2;
 
@@ -43,11 +32,23 @@ string response()
     //在打出手牌时，考虑对多个上听数最大的牌建立无用牌组，用于防守或进攻
     //2.自家打、吃碰
     //直接返回PASS
+
+
+    //胡牌标记定义处
+    //1.和绝张
+
     if (memory.getCurrPlayer() == memory.getMyPosistion())
     {
 
+
         if (memory.getCurrAction() == DRAW) 
-        {//到自己回合并且摸牌，尚未打出牌
+        {
+            //到自己回合并且摸牌，尚未打出牌
+            //2.妙手回春
+            //3.自摸
+            //4.杠上开花
+            //由于杠牌后、摸牌前一定无法胡牌，故不需要在补杠、暗杠里判断胡牌
+
 
             string NowHands = hands.getFormatHandSting();
 
@@ -75,6 +76,8 @@ string response()
             //GANG Card1（摸得是Card1）
             else if (canAnGang()) 
             {
+
+
                 hands.addAnGang(currPlayTile);
                 string h1 = hands.getFormatHandSting();
                 int TempShang = Handtiles_ShangTing_Temp(h1);
@@ -129,6 +132,9 @@ string response()
     // 若不能吃碰杠，直接PASS
     else
     {
+        //2.荣和
+        //3.海底捞月
+        //4.抢杠和
 
 
         int initShang = Handtiles_ShangTing();
@@ -136,6 +142,7 @@ string response()
         //GANG
         if (canMinGang())
         {
+
             int myP = memory.getMyPosistion(), otherP = memory.getCurrPlayer();
             int tars = memory.getFormatPosition(myP, otherP);
 
@@ -342,10 +349,11 @@ bool isQiangGangHe(action& currAction)
     return currAction == GANG;
 }
 
-bool isGangShangKaiHua(action& currAction, action& lastAction)
+bool isGangShangKaiHua(action& currAction, bool GangFlag)
 {
-    return false;
+    return currAction == DRAW && GangFlag == true;
 }
+
 
 
 bool isHandSpring()

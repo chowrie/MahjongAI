@@ -20,7 +20,7 @@ bool isHeJueZhang(Mahjong& majang);
 
 bool isQiangGangHe(action&currAction);
 
-bool isGangShangKaiHua(action&currAction,action&lastAction);//不计自摸
+bool isGangShangKaiHua(action&currAction, bool GangFlag);//不计自摸
 
 bool isSeaMoon(int idx);
 

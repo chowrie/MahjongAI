@@ -49,6 +49,7 @@ void Memory::initial(int myPos, int quan){//初始牌墙剩余
     }
 
     currAction = PASS;
+    GangFlag = false;
 }
 
 void Memory::buHua(int idx, int num)
@@ -220,6 +221,7 @@ void Memory::playTile(Mahjong majang, action Action)
 
         playTile(majang);
 
+        GangFlag = false;
         break;
     }
     case CHI: {//吃传入的参数是中间的牌
@@ -246,6 +248,7 @@ void Memory::playTile(Mahjong majang, action Action)
         else {
             Chi[myPosition].push_back(make_pair(majang, 3));
         }
+        GangFlag = false;
         break;
     }
     case PENG: {
@@ -254,6 +257,7 @@ void Memory::playTile(Mahjong majang, action Action)
         playTile(majang);
         playTile(majang);
 
+        GangFlag = false;
         break;
     }
     case GANG: {//明杠
@@ -264,6 +268,7 @@ void Memory::playTile(Mahjong majang, action Action)
         playTile(majang);
         playTile(majang);
 
+        GangFlag = true;
         break;
     }
     case ANGANG: {
@@ -274,6 +279,7 @@ void Memory::playTile(Mahjong majang, action Action)
         playTile(majang);
         playTile(majang);
 
+        GangFlag = true;
         break;
     }
     case BUGANG: {
@@ -293,6 +299,7 @@ void Memory::playTile(Mahjong majang, action Action)
             }
 
         }
+        GangFlag = true;
 
 
         break;
@@ -301,6 +308,7 @@ void Memory::playTile(Mahjong majang, action Action)
         Hana[myPosition]++;
 
         playTile(majang);
+        GangFlag = false;
         break;
     }
     default:
@@ -513,6 +521,11 @@ int Memory::getTileWallNum(int idx)
 int Memory::getHandNum(int idx)
 {
     return handNum[idx];
+}
+
+bool Memory::getGangFlag()
+{
+    return GangFlag;
 }
 
 action actionStrToEnum(string Action)
@@ -809,4 +822,5 @@ string Hand_Claim::getFormatHandSting()
 
     return res;
 }
+
 
