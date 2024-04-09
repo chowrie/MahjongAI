@@ -52,6 +52,8 @@ public:
 
     void setFortamtStr();
     string getFormatStr();
+
+    tile_t mahjong_totile();
 };
 
 

@@ -140,7 +140,6 @@ void Unplayed_totiletable(tile_table_t &target)
     }
     return;
 }
-
 int Handtiles_ShangTing_Temp(string &a)//正常返回上听数；已胡但不够8番，返回-100；听牌返回0
 {//牌a上听数
     hand_tiles_t hand_p;
