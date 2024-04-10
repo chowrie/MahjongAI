@@ -46,7 +46,7 @@ int main()
     }
 
     Json::Value outputJSON;
-    outputJSON["responses"] = response();
+    outputJSON["response"] = response();
     cout << outputJSON << endl;
     return 0;
 }

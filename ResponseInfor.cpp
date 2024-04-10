@@ -41,6 +41,7 @@ string response()
     {
         Winflag |= WIN_FLAG_4TH_TILE;
     }
+
     if (memory.getCurrPlayer() == memory.getMyPosistion())
     {
 
@@ -278,7 +279,7 @@ string response()
                 flag = true;
             }
 
-            hands.removeChi(currPlayTile, chiTarget);
+            hands.removeChi(cTarget, chiTarget);
         }
 
 
