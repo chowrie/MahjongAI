@@ -20,7 +20,7 @@
 #ifdef _BOTZONE_ONLINE
 #include "jsoncpp/json.h" // 在线环境下包含JSON库
 #else
-#include "jason\jsoncpp\json.h"// 本地环境下包含JSON库
+#include "jsoncpp/json.h" // 本地环境下包含JSON库
 #endif
 
 using namespace mahjong;
@@ -46,7 +46,7 @@ int main()
     }
 
     Json::Value outputJSON;
-    outputJSON["response"] = response();
+    outputJSON["responses"] = response();
     cout << outputJSON << endl;
     return 0;
 }
