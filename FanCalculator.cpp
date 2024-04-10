@@ -17,7 +17,7 @@
 using namespace mahjong;
 using namespace std;
 
-int Hpoint(const char* str, Win_flag_t win_flag, wind_t prevalent_wind, wind_t seat_wind)
+int Hpoint(const char* str, Win_flag_t win_flag, wind_t prevalent_wind, wind_t seat_wind,tile_t wintile)
 {
     calculate_param_t can;
     long sign = string_to_tiles(str, &can.hand_tiles, &can.win_tile);
@@ -30,6 +30,7 @@ int Hpoint(const char* str, Win_flag_t win_flag, wind_t prevalent_wind, wind_t s
     can.win_flag = win_flag;
     can.prevalent_wind = prevalent_wind;
     can.seat_wind = seat_wind;
+    can.win_tile = wintile;
     int points = calculate_fan(&can, &fan_b);
     return points;
 }
@@ -44,7 +45,12 @@ int Count_usefultile(const tile_table_t& unplayed_table, const useful_table_t& u
         }
         return cnt;
 }
-
+tile_t int_totile(int a)
+{
+    int h = (a/10), d =(a%10);
+    tile_t su = (uint8_t)h, ra = (uint8_t)(d);
+    return make_tile(su, ra);
+}
 int Handtiles_ShangTing()//寄存器手牌上听数
 {
         string str = memory.getFormatHandSting();
@@ -87,7 +93,7 @@ int Handtiles_ShangTing()//寄存器手牌上听数
         r[4].second = Count_usefultile(unplayed_table, useful_count);
         if (r[4].first<=0)
         {
-            int fans = Handtiles_Point(str.c_str(), DISCARD);
+            int fans = Handtiles_Point(str.c_str(), DISCARD,11);
             if (fans > 0 && fans < 8)return (0-fans);
         }
         for (int i = 0; i < 5; i++)
@@ -110,10 +116,11 @@ wind_t intowind(int a)
     default:return wind_t::EAST;
     }
 }
-int Handtiles_Point(string str,Win_flag_t win_flag)
+int Handtiles_Point(string str,Win_flag_t win_flag,int tile)
 {
     wind_t p_wind = intowind(memory.getQuan()), s_wind = intowind(memory.getMyPosistion());
-    return Hpoint(str.c_str(), win_flag, p_wind, s_wind);
+    tile_t wintile = int_totile(tile);
+    return Hpoint(str.c_str(), win_flag, p_wind, s_wind, wintile);
 }
 void Unplayed_totiletable(tile_table_t &target)
 {
@@ -181,7 +188,7 @@ int Handtiles_ShangTing_Temp(string &a)//正常返回上听数；已胡但不够8番，返回-100
         r[4].second = Count_usefultile(unplayed_table, useful_count);
     if (r[4].first <=0)
     {
-        int fans = Handtiles_Point(a.c_str(), DISCARD);
+        int fans = Handtiles_Point(a.c_str(), DISCARD,11);
         if (fans < 8&&fans>0)return (0-fans);//已胡，但番数<8
     }
     for (int i = 0; i < 5; i++)

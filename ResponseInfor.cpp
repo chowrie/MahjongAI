@@ -36,24 +36,32 @@ string response()
 
     //胡牌标记定义处
     //1.和绝张
-
+    win_flag_t Winflag = 0;
+    if (isHeJueZhang(currPlayTile))
+    {
+        Winflag |= WIN_FLAG_4TH_TILE;
+    }
     if (memory.getCurrPlayer() == memory.getMyPosistion())
     {
 
 
         if (memory.getCurrAction() == DRAW) 
         {
+            string NowHands = hands.getFormatHandSting();
+            Winflag |= WIN_FLAG_SELF_DRAWN;
+            if (isHandSpring())
+                Winflag |= WIN_FLAG_WALL_LAST;
+            if (isGangShangKaiHua(currAction, memory.getGangFlag()))
+                Winflag|= WIN_FLAG_ABOUT_KONG;
+            int Nowfan = Handtiles_Point(NowHands, Winflag,currPlayTile);
+            if (Nowfan >= 8)return "HU";
             //到自己回合并且摸牌，尚未打出牌
             //2.妙手回春
             //3.自摸
             //4.杠上开花
             //由于杠牌后、摸牌前一定无法胡牌，故不需要在补杠、暗杠里判断胡牌
-
-
-            string NowHands = hands.getFormatHandSting();
-
-            int NowFan = Handtiles_Point(NowHands,SELFDRAWN);//自摸
-            if (NowFan != -3&&NowFan>=8)return "HU";
+            
+            
 
             int MinShang = INT_MAX;
 
@@ -136,6 +144,11 @@ string response()
         //3.海底捞月
         //4.抢杠和
 
+        Winflag |= WIN_FLAG_DISCARD;
+        if (isSeaMoon(currPlayer))
+            Winflag |= WIN_FLAG_WALL_LAST;
+        if (isQiangGangHe(currAction))
+            Winflag |= WIN_FLAG_ABOUT_KONG;
 
         int initShang = Handtiles_ShangTing();
         int chiTarget = canChi();
@@ -168,12 +181,11 @@ string response()
             int tars = memory.getFormatPosition(myP, otherP);
 
             hands.addPeng(currPlayTile, tars);
+
+
             string tPeng = hands.getFormatHandSting();
-            int NowFan = Handtiles_Point(tPeng, DISCARD);//和牌：缺判断特殊 番数，先按普通
-
-            //针对可能最大番减去
-
-            if (NowFan != -3 && NowFan >= 8)return "HU";//大于8番起和
+            int Nowfan = Handtiles_Point(tPeng, Winflag,currPlayTile);
+            if (Nowfan >= 8)return "HU";
 
             int PengFlag = false;
 
@@ -216,9 +228,8 @@ string response()
             hands.addChi(currPlayTile, chiTarget);
 
             string tChi = hands.getFormatHandSting();
-
-            int NowFan = Handtiles_Point(tChi, DISCARD);//和牌：缺判断特殊 番数，先按普通
-            if (NowFan != -3 && NowFan >= 8)return "HU";//大于8番起和
+            int Nowfan = Handtiles_Point(tChi, Winflag,currPlayTile);
+            if (Nowfan >= 8)return "HU";
 
             //胡不了
             Mahjong cTarget;
@@ -275,8 +286,8 @@ string response()
 
         hands.addHand(currPlayTile);
         string t1 = hands.getFormatHandSting();
-        int NowFan = Handtiles_Point(t1, DISCARD);//和牌：缺判断特殊 番数，先按普通
-        if (NowFan != -3 && NowFan >= 8)return "HU";//大于8番起和
+        int Nowfan = Handtiles_Point(t1, Winflag,currPlayTile);
+        if (Nowfan >= 8)return "HU";
 
         hands.removeHand(currPlayTile);
     }
@@ -358,11 +369,11 @@ bool isGangShangKaiHua(action& currAction, bool GangFlag)
 
 bool isHandSpring()
 {
-    return memory.getTileWallNum(memory.getMyPosistion());
+    return memory.getTileWallNum(memory.getMyPosistion())==0;
 }
 
 bool isSeaMoon(int idx)
 {
-    return memory.getTileWallNum(idx);
+    return memory.getTileWallNum(idx)==0;
 }
 
