@@ -1,9 +1,10 @@
-
-
+#pragma once
 #include<string>
+#include"tile.h"
 
 using namespace std;
 
+using namespace mahjong;
 
 enum tileType {
     Empty,
@@ -53,7 +54,7 @@ public:
     void setFortamtStr();
     string getFormatStr();
 
-    tile_t mahjong_totile();
+    tile_t MahjongTotile();
 };
 
 
