@@ -139,6 +139,7 @@
     <ClInclude Include="tile.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="defend.cpp" />
     <ClCompile Include="FanCalculator.cpp" />
     <ClCompile Include="fan_calculator.cpp" />
     <ClCompile Include="Mahjong.cpp" />
@@ -151,6 +152,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README-Group.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="inWN.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
