@@ -166,7 +166,8 @@ static bool divide_recursively(tile_table_t &cnt_table, intptr_t fixed_cnt, intp
     bool ret = false;
 
     // 按牌表张遍历牌
-    for (int i = 0; i < 34; ++i) {
+    for (int i = 0; i < 34; ++i) 
+    {
         tile_t t = all_tiles[i];
         if (cnt_table[t] < 1) {
             continue;

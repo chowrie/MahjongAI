@@ -45,12 +45,23 @@ int Count_usefultile(const tile_table_t& unplayed_table, const useful_table_t& u
         }
         return cnt;
 }
+
 tile_t int_totile(int a)
 {
     int h = (a/10), d =(a%10);
-    tile_t su = (uint8_t)h, ra = (uint8_t)(d);
+    if (h ==5)
+    {
+        h = 4;
+        if (d == 1)d = 5;
+        else if (d == 2)d = 6;
+        else if (d == 3)d = 7;
+        else;
+    }
+    tile_t su = static_cast<uint8_t>(h);
+    tile_t ra = static_cast<uint8_t>(d);
     return make_tile(su, ra);
 }
+
 int Handtiles_ShangTing()//¼Ä´æÆ÷ÊÖÅÆÉÏÌıÊı
 {
         string str = memory.getFormatHandSting();

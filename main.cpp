@@ -32,9 +32,13 @@ using namespace std;
 
 vector<string> rrequest, rresponse;
 
+
 int main()
 {
     
+    //int s = Handtiles_Point("3m5m7p8p9p2s3s4s5s5s6s7sN2m", SELFDRAWN, 51);
+    //cout << s;
+
     Json::Value inputJSON;
     cin >> inputJSON;
     turn = inputJSON["responses"].size();
@@ -44,7 +48,6 @@ int main()
         istringstream sin(inputJSON["requests"][i].asString());
         request(sin);
     }
-
     Json::Value outputJSON;
     outputJSON["response"] = response();
     cout << outputJSON << endl;
