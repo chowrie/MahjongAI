@@ -109,7 +109,19 @@ public:
     int getHana(int idx);
 
     int* getUnPlayed();
-
+    //获取各玩家手牌信息
+    int gethandNum(int player)
+    {
+        return handNum[player];
+    }
+    int gettileWall(int player)
+    {
+        return tileWall[player];
+    }
+    vector<Mahjong>& getPlayed()
+    {
+        return Played;
+    };
     //记录
     void playTile(Mahjong majang, action Action);//本家出牌，包括吃碰杠花,注明动作
     void playTile(Mahjong majang);//本家出牌，包括吃碰花
