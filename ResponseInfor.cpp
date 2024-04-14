@@ -110,6 +110,8 @@ string response()
             }
             flag1 = true;
         }
+        if (flag1)return responseStr;
+        return "PASS";
     }
 
     //它家吃碰杠、出牌，也需分别判别
