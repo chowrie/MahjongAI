@@ -212,4 +212,29 @@ int Handtiles_ShangTing_Temp(string &a)//正常返回上听数；已胡但不够8番，返回-100
     return result;//返回0代表已听牌
 }
 
+Mahjong Search_Unusefultile(Hand_Claim hands,int initShang)
+{
+    Hand_Claim thand(hands);
+    int len = thand.handTile.size();
+    int perfectlo = 0;
+    bool isChange = false;
+    for (int i = 0; i < len; i++)
+    {
+        Mahjong tmp = hands.handTile[i];
+        if (i > 0 && tmp == hands.handTile[i - 1])
+            continue;
+        hands.removeHand(hands.handTile[i]);
+        string t1 = hands.getFormatHandSting();
+        int Ts = Handtiles_ShangTing_Temp(t1);
+        if (Ts <= initShang)
+        {
+            perfectlo = i;
+            initShang = Ts;
+            isChange = true;
+        }
+        hands.addHand(tmp);
+    }
+
+}
+
 
