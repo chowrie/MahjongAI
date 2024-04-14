@@ -18,7 +18,7 @@ string response()
 
     if (turn == 0 || turn == 1)return "PASS";
     string responseStr = "";
-    //    bool flag = false;
+    bool flag = false;
 
 
 
@@ -44,8 +44,6 @@ string response()
 
     if (memory.getCurrPlayer() == memory.getMyPosistion())
     {
-
-        bool flag1 = false;
         if (memory.getCurrAction() == DRAW)
         {
             //到自己回合并且摸牌，尚未打出牌
@@ -108,10 +106,8 @@ string response()
                 responseStr = "PLAY ";
                 responseStr += playedtile.getTileString();
             }
-            flag1 = true;
+            flag = true;
         }
-        if (flag1)return responseStr;
-        return "PASS";
     }
 
     //它家吃碰杠、出牌，也需分别判别
@@ -125,7 +121,6 @@ string response()
         //2.荣和
         //3.海底捞月
         //4.抢杠和
-        bool flag1 = false;
 
         Winflag |= WIN_FLAG_DISCARD;
         if (isSeaMoon(currPlayer))
@@ -159,7 +154,7 @@ string response()
             {
                 responseStr = "GANG";
 
-                flag1 = true;
+                flag = true;
 
                 initShang = Ts;
             }
@@ -209,7 +204,7 @@ string response()
             }
             if (PengFlag) {
                 responseStr += hands.handTile[perfectlo].getTileString();
-                flag1 = true;
+                flag = true;
             }
             hands.removePeng(currPlayTile);
 
@@ -268,14 +263,15 @@ string response()
             if (ChiFlag)
             {
                 responseStr += hands.handTile[perfectlo].getTileString();
-                flag1 = true;
+                flag = true;
             }
 
             hands.removeChi(cTarget, chiTarget);
         }
-        if (flag1)return responseStr;
-        return "PASS";
-    }
+    
+    }   
+    if (flag)return responseStr;
+      return "PASS";
 }
 int canChi()
 {

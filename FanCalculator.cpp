@@ -229,7 +229,7 @@ Mahjong Search_playtile(Hand_Claim hands, int initShang)
         string t1 = thand.getFormatHandSting();
         int Ts = Handtiles_ShangTing_Temp(t1);
 
-        if (Ts < initShang)
+        if (Ts <= initShang)
         {
             perfectlo = i;
             initShang = Ts;
@@ -241,7 +241,7 @@ Mahjong Search_playtile(Hand_Claim hands, int initShang)
     {
         return thand.handTile[perfectlo];
     }
-    else return -1;
+    else return 0;
 }
 
 
