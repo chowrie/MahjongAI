@@ -614,11 +614,28 @@ Hand_Claim::Hand_Claim()
     memory.sortHand();
     myPosition = memory.getMyPosistion();
     handTile = memory.getHandTile();
-    Chi[memory.getMyPosistion()] = memory.getChi(memory.getMyPosistion());
-    Peng[memory.getMyPosistion()] = memory.getPeng(memory.getMyPosistion());
-    Gang[memory.getMyPosistion()] = memory.getGang(memory.getMyPosistion());
+    Chi[myPosition] = memory.getChi(memory.getMyPosistion());
+    Peng[myPosition] = memory.getPeng(memory.getMyPosistion());
+    Gang[myPosition] = memory.getGang(memory.getMyPosistion());
 
     Hana = memory.getHana(memory.getMyPosistion());
+}
+
+Hand_Claim::Hand_Claim(Hand_Claim& other)
+{
+    if (this == &other) {
+        return;
+    }
+    
+
+    memory.sortHand();
+    myPosition = other.myPosition;
+    handTile = other.handTile;
+    Chi[myPosition] = other.Chi[myPosition];
+    Peng[myPosition] = other.Peng[myPosition];
+    Gang[myPosition] = other.Gang[myPosition];
+
+    Hana = other.Hana;
 }
 
 void Hand_Claim::addHand(Mahjong majang)

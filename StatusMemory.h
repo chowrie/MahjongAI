@@ -165,6 +165,7 @@ public:
     int Hana;
 
     Hand_Claim();
+    Hand_Claim(Hand_Claim& other);
 
     //1.Ãşºó 
 
