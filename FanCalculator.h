@@ -1,10 +1,8 @@
-
-
-//#include "tile.h"
+#include "tile.h"
 #include "shanten.h"
-//#include "stringify.h"
+#include "stringify.h"
 #include "fan_calculator.h"
-//#include "statusMemory.h"
+#include "statusMemory.h"
 
 #include <stdio.h>
 #include <iostream>

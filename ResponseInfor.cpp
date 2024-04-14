@@ -153,6 +153,7 @@ string response()
 
         int initShang = Handtiles_ShangTing();
         int chiTarget = canChi();
+
         //GANG
         if (canMinGang())
         {

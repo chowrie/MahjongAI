@@ -34,6 +34,8 @@ int Hpoint(const char* str, Win_flag_t win_flag, wind_t prevalent_wind, wind_t s
     int points = calculate_fan(&can, &fan_b);
     return points;
 }
+
+
 int Count_usefultile(const tile_table_t& unplayed_table, const useful_table_t& useful_table)
 {
         int cnt = 0;
@@ -46,20 +48,27 @@ int Count_usefultile(const tile_table_t& unplayed_table, const useful_table_t& u
         return cnt;
 }
 
-tile_t int_totile(int a)
+tile_t int_totile(int card)
 {
-    int h = (a/10), d =(a%10);
-    if (h ==5)
-    {
-        h = 4;
-        if (d == 1)d = 5;
-        else if (d == 2)d = 6;
-        else if (d == 3)d = 7;
-        else;
+    int card_type = card / 10;  // 获取牌的类型
+    int card_number = card % 10; // 获取牌的编号
+
+    switch (card_type) {
+    case 2: // 条子
+        card_type = 3; // 注意这里条子和饼子的顺序要调整
+        break;
+    case 3: // 饼子
+        card_type = 2; // 注意这里条子和饼子的顺序要调整
+        break;
+    case 5: // 箭牌
+        card_type = 4;
+        card_number = 1 + 10 - 6;
+        break;
+    default:
+        break;
     }
-    tile_t su = static_cast<uint8_t>(h);
-    tile_t ra = static_cast<uint8_t>(d);
-    return make_tile(su, ra);
+
+    return make_tile(card_type, card_number);
 }
 
 int Handtiles_ShangTing()//寄存器手牌上听数
@@ -127,6 +136,7 @@ wind_t intowind(int a)
     default:return wind_t::EAST;
     }
 }
+
 int Handtiles_Point(string str,Win_flag_t win_flag,int tile)
 {
     wind_t p_wind = intowind(memory.getQuan()), s_wind = intowind(memory.getMyPosistion());
@@ -134,9 +144,12 @@ int Handtiles_Point(string str,Win_flag_t win_flag,int tile)
     tile_t wintile = int_totile(tile);
 
 
+    //tile_t wintile = 0x36;
+
     return Hpoint(str.c_str(), win_flag, p_wind, s_wind, wintile);
 
 }
+
 void Unplayed_totiletable(tile_table_t &target)
 {
     int* a = memory.getUnPlayed();
@@ -216,29 +229,30 @@ int Handtiles_ShangTing_Temp(string &a)//正常返回上听数；已胡但不够8番，返回-100
     return result;//返回0代表已听牌
 }
 
-Mahjong Search_Unusefultile(Hand_Claim hands,int initShang)
-{
-    Hand_Claim thand(hands);
-    int len = thand.handTile.size();
-    int perfectlo = 0;
-    bool isChange = false;
-    for (int i = 0; i < len; i++)
-    {
-        Mahjong tmp = hands.handTile[i];
-        if (i > 0 && tmp == hands.handTile[i - 1])
-            continue;
-        hands.removeHand(hands.handTile[i]);
-        string t1 = hands.getFormatHandSting();
-        int Ts = Handtiles_ShangTing_Temp(t1);
-        if (Ts <= initShang)
-        {
-            perfectlo = i;
-            initShang = Ts;
-            isChange = true;
-        }
-        hands.addHand(tmp);
-    }
-
-}
+//
+//Mahjong Search_Unusefultile(Hand_Claim hands,int initShang)
+//{
+//    Hand_Claim thand(hands);
+//    int len = thand.handTile.size();
+//    int perfectlo = 0;
+//    bool isChange = false;
+//    for (int i = 0; i < len; i++)
+//    {
+//        Mahjong tmp = hands.handTile[i];
+//        if (i > 0 && tmp == hands.handTile[i - 1])
+//            continue;
+//        hands.removeHand(hands.handTile[i]);
+//        string t1 = hands.getFormatHandSting();
+//        int Ts = Handtiles_ShangTing_Temp(t1);
+//        if (Ts <= initShang)
+//        {
+//            perfectlo = i;
+//            initShang = Ts;
+//            isChange = true;
+//        }
+//        hands.addHand(tmp);
+//    }
+//
+//}
 
 
