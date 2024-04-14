@@ -20,6 +20,7 @@ using namespace std;
 int Hpoint(const char* str, Win_flag_t win_flag, wind_t prevalent_wind, wind_t seat_wind,tile_t wintile)
 {
     calculate_param_t can;
+    can.win_tile = wintile;
     long sign = string_to_tiles(str, &can.hand_tiles, &can.win_tile);
     if (sign != PARSE_NO_ERROR) {
         printf("error at line %d error = %ld\n", __LINE__, sign);
@@ -30,7 +31,6 @@ int Hpoint(const char* str, Win_flag_t win_flag, wind_t prevalent_wind, wind_t s
     can.win_flag = win_flag;
     can.prevalent_wind = prevalent_wind;
     can.seat_wind = seat_wind;
-    can.win_tile = wintile;
     int points = calculate_fan(&can, &fan_b);
     return points;
 }
