@@ -806,9 +806,10 @@ void Hand_Claim::removeBuGang(Mahjong majang)
         it != Gang[myPosition].end(); ++it) {
         if (it->first == majang) {
 
+            target = (it->second - 3+4)%4;
+
             Gang[myPosition].erase(it);
 
-            target = it->second - 3;
             break;
         }
     }
