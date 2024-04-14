@@ -37,7 +37,7 @@ string response()
     //胡牌标记定义处
     //1.和绝张
     win_flag_t Winflag = 0;
-    if (isHeJueZhang(currPlayTile))
+    if (isHeJueZhang(currPlayTile,currAction))
     {
         Winflag |= WIN_FLAG_4TH_TILE;
     }
@@ -73,7 +73,7 @@ string response()
                 hands.addBuGang(currPlayTile);
                 string h1 = hands.getFormatHandSting();
                 int TempShang = Handtiles_ShangTing_Temp(h1);
-                if (MinShang > TempShang)
+                if (MinShang >= TempShang)
                 {
                     responseStr = "BUGANG ";
                     responseStr += currPlayTile.getTileString();
@@ -89,7 +89,7 @@ string response()
                 hands.addAnGang(currPlayTile);
                 string h1 = hands.getFormatHandSting();
                 int TempShang = Handtiles_ShangTing_Temp(h1);
-                if (MinShang > TempShang)
+                if (MinShang >= TempShang)
                 {
                     responseStr = "GANG ";
                     responseStr += currPlayTile.getTileString();
@@ -102,36 +102,33 @@ string response()
             //int tempMinShang = MinShang;
             //PLAY Card1（打手牌Card1）
             // //摸切
-            //int len = hands.handTile.size();
-            //int initShang = Handtiles_ShangTing();
-            //int perfectlo = 0;
-            //for (int i = 0; i < len; i++)
-            //{
-            //    Mahjong tmp = hands.handTile[i];
-            //    if (i > 0 && tmp == hands.handTile[i - 1])
-            //        continue;
-            //    hands.removeHand(hands.handTile[i]);
-            //    string t1 = hands.getFormatHandSting();
-            //    int Ts = Handtiles_ShangTing_Temp(t1);
-            //    if (Ts < MinShang)
-            //    {
-            //        responseStr = "PLAY ";
-            //        perfectlo = i;
-            //        MinShang = Ts;
-            //        
-            //    }
-            //    hands.addHand(tmp);
-            //}
-            Mahjong playedtile = Search_playtile(hands, MinShang);
-            if (playedtile.getTile() > 0)
+            int len = hands.handTile.size();
+            int initShang = Handtiles_ShangTing();
+            int perfectlo = 0;
+            for (int i = 0; i < len; i++)
             {
-                responseStr = "PLAY ";
-                responseStr += playedtile.getTileString();
+                Mahjong tmp = hands.handTile[i];
+                if (i > 0 && tmp == hands.handTile[i - 1])
+                    continue;
+                hands.removeHand(hands.handTile[i]);
+                string t1 = hands.getFormatHandSting();
+                int Ts = Handtiles_ShangTing_Temp(t1);
+                if (Ts < MinShang)
+                {
+                    responseStr = "PLAY ";
+                    perfectlo = i;
+                    MinShang = Ts;
+                    
+                }
+                hands.addHand(tmp);
             }
-            flag1 = true;
+            if (MinShang != std::numeric_limits<int>::max() && MinShang < tempMinShang)
+            {
+                responseStr += hands.handTile[perfectlo].getTileString();
+            }
+
+            flag = true;
         }
-        if (flag1)return responseStr;
-        return "PASS";
     }
 
     //它家吃碰杠、出牌，也需分别判别
@@ -175,7 +172,7 @@ string response()
             hands.addMinGang(currPlayTile, tars);
             string t1 = hands.getFormatHandSting();
             int Ts = Handtiles_ShangTing_Temp(t1);
-            if (initShang > Ts)
+            if (initShang >= Ts)
             {
                 responseStr = "GANG";
 
@@ -217,7 +214,7 @@ string response()
                 string t1 = hands.getFormatHandSting();
                 int Ts = Handtiles_ShangTing_Temp(t1);
 
-                if (Ts < initShang)
+                if (Ts <= initShang)
                 {
                     responseStr = "PENG ";
                     perfectlo = i;
@@ -274,7 +271,7 @@ string response()
                 hands.removeHand(hands.handTile[i]);
                 string t1 = hands.getFormatHandSting();
                 int Ts = Handtiles_ShangTing_Temp(t1);
-                if (Ts < initShang)
+                if (Ts <= initShang)
                 {
                     responseStr = "CHI ";
                     responseStr += cTarget.getTileString() + " ";
@@ -351,9 +348,14 @@ bool canBuGang()
     return false;
 }
 
-bool isHeJueZhang(Mahjong& majang)
+bool isHeJueZhang(Mahjong& majang, action Action)
 {
-    return memory.getUnPlayed()[majang] == 0;
+    if (Action == DRAW) {
+        return memory.getUnPlayed()[majang] + memory.getCntHand(majang) == 1;
+    }
+    else {
+        return memory.getUnPlayed()[majang] + memory.getCntHand(majang) == 0;
+    }
 }
 
 bool isQiangGangHe(action& currAction)

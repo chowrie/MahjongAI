@@ -16,7 +16,7 @@ bool canAnGang();
 
 bool canBuGang();
 
-bool isHeJueZhang(Mahjong& majang);
+bool isHeJueZhang(Mahjong& majang,action Action);
 
 bool isQiangGangHe(action&currAction);
 

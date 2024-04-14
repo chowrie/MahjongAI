@@ -99,6 +99,9 @@ typedef uint8_t rank_t;
 #define TILE_SUIT_DOTS          3  ///< 饼子（DOTS）
 #define TILE_SUIT_HONORS        4  ///< 字牌（HONORS）
 
+
+
+typedef uint8_t suit_t;
 /**
  * @brief 牌\n
  * 内存结构：
