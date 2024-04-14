@@ -12,7 +12,6 @@
 #include "FanCalculator.h"
 
 
-
 //test
 using namespace mahjong;
 using namespace std;
@@ -22,7 +21,7 @@ int Hpoint(const char* str, Win_flag_t win_flag, wind_t prevalent_wind, wind_t s
     calculate_param_t can;
     can.win_tile = wintile;
     long sign = string_to_tiles(str, &can.hand_tiles, &can.win_tile);
-    if (sign != PARSE_NO_ERROR) {
+    if (sign != PARSE_NO_ERROR){
         printf("error at line %d error = %ld\n", __LINE__, sign);
         return -1;
     }
@@ -45,7 +44,6 @@ int Count_usefultile(const tile_table_t& unplayed_table, const useful_table_t& u
         }
         return cnt;
 }
-
 tile_t int_totile(int a)
 {
     int h = (a/10), d =(a%10);
@@ -61,7 +59,6 @@ tile_t int_totile(int a)
     tile_t ra = static_cast<uint8_t>(d);
     return make_tile(su, ra);
 }
-
 int Handtiles_ShangTing()//寄存器手牌上听数
 {
         string str = memory.getFormatHandSting();
@@ -215,30 +212,36 @@ int Handtiles_ShangTing_Temp(string &a)//正常返回上听数；已胡但不够8番，返回-100
     }
     return result;//返回0代表已听牌
 }
-
-Mahjong Search_Unusefultile(Hand_Claim hands,int initShang)
+Mahjong Search_playtile(Hand_Claim hands, int initShang)
 {
     Hand_Claim thand(hands);
     int len = thand.handTile.size();
+
     int perfectlo = 0;
     bool isChange = false;
     for (int i = 0; i < len; i++)
     {
-        Mahjong tmp = hands.handTile[i];
-        if (i > 0 && tmp == hands.handTile[i - 1])
+        Mahjong tmp = thand.handTile[i];
+        if (i > 0 && tmp == thand.handTile[i - 1])
             continue;
-        hands.removeHand(hands.handTile[i]);
-        string t1 = hands.getFormatHandSting();
+        thand.removeHand(thand.handTile[i]);
+
+        string t1 = thand.getFormatHandSting();
         int Ts = Handtiles_ShangTing_Temp(t1);
-        if (Ts <= initShang)
+
+        if (Ts < initShang)
         {
             perfectlo = i;
             initShang = Ts;
             isChange = true;
         }
-        hands.addHand(tmp);
+        thand.addHand(tmp);
     }
-
+    if (isChange)
+    {
+        return thand.handTile[perfectlo];
+    }
+    else return -1;
 }
 
 

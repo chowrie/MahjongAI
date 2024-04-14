@@ -18,7 +18,7 @@ string response()
 
     if (turn == 0 || turn == 1)return "PASS";
     string responseStr = "";
-    bool flag = false;
+    //    bool flag = false;
 
 
 
@@ -45,31 +45,31 @@ string response()
     if (memory.getCurrPlayer() == memory.getMyPosistion())
     {
 
-
-        if (memory.getCurrAction() == DRAW) 
+        bool flag1 = false;
+        if (memory.getCurrAction() == DRAW)
         {
-            string NowHands = hands.getFormatHandSting();
+            //到自己回合并且摸牌，尚未打出牌
+        //2.妙手回春
+        //3.自摸
+        //4.杠上开花
+        //由于杠牌后、摸牌前一定无法胡牌，故不需要在补杠、暗杠里判断胡牌
             Winflag |= WIN_FLAG_SELF_DRAWN;
             if (isHandSpring())
                 Winflag |= WIN_FLAG_WALL_LAST;
             if (isGangShangKaiHua(currAction, memory.getGangFlag()))
-                Winflag|= WIN_FLAG_ABOUT_KONG;
-            int Nowfan = Handtiles_Point(NowHands, Winflag,currPlayTile);
+                Winflag |= WIN_FLAG_ABOUT_KONG;
+
+
+            string NowHands = hands.getFormatHandSting();
+            int Nowfan = Handtiles_Point(NowHands, Winflag, currPlayTile);
             if (Nowfan >= 8)return "HU";
-            //到自己回合并且摸牌，尚未打出牌
-            //2.妙手回春
-            //3.自摸
-            //4.杠上开花
-            //由于杠牌后、摸牌前一定无法胡牌，故不需要在补杠、暗杠里判断胡牌
-            
-            
+
+
 
             int MinShang = INT_MAX;
-
             //BUGANG Card1（摸得是Card1）
-            if (canBuGang()) 
+            if (canBuGang())
             {
-
                 hands.addBuGang(currPlayTile);
                 string h1 = hands.getFormatHandSting();
                 int TempShang = Handtiles_ShangTing_Temp(h1);
@@ -83,9 +83,8 @@ string response()
                 hands.removeBuGang(currPlayTile);
             }
             //GANG Card1（摸得是Card1）
-            else if (canAnGang()) 
+            else if (canAnGang())
             {
-
 
                 hands.addAnGang(currPlayTile);
                 string h1 = hands.getFormatHandSting();
@@ -100,39 +99,41 @@ string response()
                 hands.removeAnGang(currPlayTile);
             }
 
-            int tempMinShang = MinShang;
-
+            //int tempMinShang = MinShang;
             //PLAY Card1（打手牌Card1）
             // //摸切
-            int len = hands.handTile.size();
-            int initShang = Handtiles_ShangTing();
-            int perfectlo = 0;
-            for (int i = 0; i < len; i++)
+            //int len = hands.handTile.size();
+            //int initShang = Handtiles_ShangTing();
+            //int perfectlo = 0;
+            //for (int i = 0; i < len; i++)
+            //{
+            //    Mahjong tmp = hands.handTile[i];
+            //    if (i > 0 && tmp == hands.handTile[i - 1])
+            //        continue;
+            //    hands.removeHand(hands.handTile[i]);
+            //    string t1 = hands.getFormatHandSting();
+            //    int Ts = Handtiles_ShangTing_Temp(t1);
+            //    if (Ts < MinShang)
+            //    {
+            //        responseStr = "PLAY ";
+            //        perfectlo = i;
+            //        MinShang = Ts;
+            //        
+            //    }
+            //    hands.addHand(tmp);
+            //}
+            Mahjong playedtile = Search_playtile(hands, MinShang);
+            if (playedtile.getTile() > 0)
             {
-                Mahjong tmp = hands.handTile[i];
-                if (i > 0 && tmp == hands.handTile[i - 1])
-                    continue;
-                hands.removeHand(hands.handTile[i]);
-                string t1 = hands.getFormatHandSting();
-                int Ts = Handtiles_ShangTing_Temp(t1);
-                if (Ts < MinShang)
-                {
-                    responseStr = "PLAY ";
-                    perfectlo = i;
-                    MinShang = Ts;
-                    
-                }
-                hands.addHand(tmp);
+                responseStr = "PLAY ";
+                responseStr += playedtile.getTileString();
             }
-            if (MinShang != std::numeric_limits<int>::max() && MinShang < tempMinShang)
-            {
-                responseStr += hands.handTile[perfectlo].getTileString();
-            }
-
-            flag = true;
+            flag1 = true;
         }
+        if (flag1)return responseStr;
+        return "PASS";
     }
-    
+
     //它家吃碰杠、出牌，也需分别判别
     // 1.它家出牌（可能是在吃碰后出牌），在它家出牌后，我们考虑这张牌能否用于吃碰杠甚至胡牌，方法如下
     // 对于可能的吃碰，在吃碰后，首先计算是否能 胡牌 ，如果能胡且>=8番，直接返回
@@ -144,12 +145,23 @@ string response()
         //2.荣和
         //3.海底捞月
         //4.抢杠和
+        bool flag1 = false;
 
         Winflag |= WIN_FLAG_DISCARD;
         if (isSeaMoon(currPlayer))
             Winflag |= WIN_FLAG_WALL_LAST;
         if (isQiangGangHe(currAction))
             Winflag |= WIN_FLAG_ABOUT_KONG;
+
+
+        //单钓将
+
+        hands.addHand(currPlayTile);
+        string t1 = hands.getFormatHandSting();
+        int Nowfan = Handtiles_Point(t1, Winflag, currPlayTile);
+        if (Nowfan >= 8)return "HU";
+        hands.removeHand(currPlayTile);
+
 
         int initShang = Handtiles_ShangTing();
         int chiTarget = canChi();
@@ -167,16 +179,16 @@ string response()
             {
                 responseStr = "GANG";
 
-                flag = true;
+                flag1 = true;
 
                 initShang = Ts;
             }
             hands.removeMinGang(currPlayTile);
-            
+
         }
 
         //PENG Card1（打Card1）
-        if (canPeng()) 
+        if (canPeng())
         {
             int myP = memory.getMyPosistion(), otherP = memory.getCurrPlayer();
             int tars = memory.getFormatPosition(myP, otherP);
@@ -185,7 +197,7 @@ string response()
 
 
             string tPeng = hands.getFormatHandSting();
-            int Nowfan = Handtiles_Point(tPeng, Winflag,currPlayTile);
+            int Nowfan = Handtiles_Point(tPeng, Winflag, currPlayTile);
             if (Nowfan >= 8)return "HU";
 
             int PengFlag = false;
@@ -217,7 +229,7 @@ string response()
             }
             if (PengFlag) {
                 responseStr += hands.handTile[perfectlo].getTileString();
-                flag = true;
+                flag1 = true;
             }
             hands.removePeng(currPlayTile);
 
@@ -229,7 +241,7 @@ string response()
             hands.addChi(currPlayTile, chiTarget);
 
             string tChi = hands.getFormatHandSting();
-            int Nowfan = Handtiles_Point(tChi, Winflag,currPlayTile);
+            int Nowfan = Handtiles_Point(tChi, Winflag, currPlayTile);
             if (Nowfan >= 8)return "HU";
 
             //胡不了
@@ -276,27 +288,15 @@ string response()
             if (ChiFlag)
             {
                 responseStr += hands.handTile[perfectlo].getTileString();
-                flag = true;
+                flag1 = true;
             }
 
             hands.removeChi(cTarget, chiTarget);
         }
-
-
-        //单钓将
-
-        hands.addHand(currPlayTile);
-        string t1 = hands.getFormatHandSting();
-        int Nowfan = Handtiles_Point(t1, Winflag,currPlayTile);
-        if (Nowfan >= 8)return "HU";
-
-        hands.removeHand(currPlayTile);
+        if (flag1)return responseStr;
+        return "PASS";
     }
-
-    if (flag)return responseStr;
-    return "PASS";
 }
-
 int canChi()
 {
     //不用担心19边界情况，0处无牌，默认不存在
