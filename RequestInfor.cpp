@@ -133,7 +133,7 @@ void complexInfor(istringstream& sin)
 				memory.playTile(currPlayer, Mahjong(card1), ANGANG);
 			}
 			else {
-				memory.playTile(currPlayer, Mahjong(card1), GANG);
+				memory.playTile(currPlayer, memory.getCurrPlayTile(), GANG);
 			}
 			break;
 		}

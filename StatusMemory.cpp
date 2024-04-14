@@ -48,6 +48,8 @@ void Memory::initial(int myPos, int quan){//≥ı º≈∆«Ω £”‡
         tileWall[i] = 21;
     }
 
+    tileWall[myPosition] = 21 + 13;
+
     currAction = PASS;
     GangFlag = false;
 }
@@ -395,10 +397,18 @@ void Memory::playTile(int idx, Mahjong majang, action Action)
         break;
     }
     case ANGANG: {
+
         Gang[idx].push_back(make_pair(majang, previousPlayer));
 
         handNum[idx] -= 4;
-        Unplayed[majang] -= 4;
+
+        if (majang.getTile() == 0) {
+            unknownTile++;
+        }
+        else {
+            Unplayed[majang] -= 4;
+        }
+
 
         break;
     }
@@ -526,6 +536,11 @@ int Memory::getHandNum(int idx)
 bool Memory::getGangFlag()
 {
     return GangFlag;
+}
+
+int Memory::getUnknownTile()
+{
+    return unknownTile;
 }
 
 action actionStrToEnum(string Action)

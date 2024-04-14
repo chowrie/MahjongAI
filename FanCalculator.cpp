@@ -130,8 +130,12 @@ wind_t intowind(int a)
 int Handtiles_Point(string str,Win_flag_t win_flag,int tile)
 {
     wind_t p_wind = intowind(memory.getQuan()), s_wind = intowind(memory.getMyPosistion());
+
     tile_t wintile = int_totile(tile);
+
+
     return Hpoint(str.c_str(), win_flag, p_wind, s_wind, wintile);
+
 }
 void Unplayed_totiletable(tile_table_t &target)
 {

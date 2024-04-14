@@ -60,6 +60,8 @@ private:
 
     int tileWall[4];
 
+    int unknownTile;
+
 public:
     Memory();
     void initial(int myPos, int quan);
@@ -131,6 +133,8 @@ public:
     int getHandNum(int idx);
 
     bool getGangFlag();
+
+    int getUnknownTile();
 };
 
 extern Memory memory;
