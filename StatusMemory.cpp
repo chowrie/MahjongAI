@@ -48,6 +48,8 @@ void Memory::initial(int myPos, int quan){//≥ı º≈∆«Ω £”‡
         tileWall[i] = 21;
     }
 
+    tileWall[myPosition] = 21 + 13;
+
     currAction = PASS;
     GangFlag = false;
 }
@@ -395,10 +397,18 @@ void Memory::playTile(int idx, Mahjong majang, action Action)
         break;
     }
     case ANGANG: {
+
         Gang[idx].push_back(make_pair(majang, previousPlayer));
 
         handNum[idx] -= 4;
-        Unplayed[majang] -= 4;
+
+        if (majang.getTile() == 0) {
+            unknownTile++;
+        }
+        else {
+            Unplayed[majang] -= 4;
+        }
+
 
         break;
     }
@@ -528,6 +538,11 @@ bool Memory::getGangFlag()
     return GangFlag;
 }
 
+int Memory::getUnknownTile()
+{
+    return unknownTile;
+}
+
 action actionStrToEnum(string Action)
 {
     switch (Action[0])
@@ -599,11 +614,28 @@ Hand_Claim::Hand_Claim()
     memory.sortHand();
     myPosition = memory.getMyPosistion();
     handTile = memory.getHandTile();
-    Chi[memory.getMyPosistion()] = memory.getChi(memory.getMyPosistion());
-    Peng[memory.getMyPosistion()] = memory.getPeng(memory.getMyPosistion());
-    Gang[memory.getMyPosistion()] = memory.getGang(memory.getMyPosistion());
+    Chi[myPosition] = memory.getChi(memory.getMyPosistion());
+    Peng[myPosition] = memory.getPeng(memory.getMyPosistion());
+    Gang[myPosition] = memory.getGang(memory.getMyPosistion());
 
     Hana = memory.getHana(memory.getMyPosistion());
+}
+
+Hand_Claim::Hand_Claim(Hand_Claim& other)
+{
+    if (this == &other) {
+        return;
+    }
+    
+
+    memory.sortHand();
+    myPosition = other.myPosition;
+    handTile = other.handTile;
+    Chi[myPosition] = other.Chi[myPosition];
+    Peng[myPosition] = other.Peng[myPosition];
+    Gang[myPosition] = other.Gang[myPosition];
+
+    Hana = other.Hana;
 }
 
 void Hand_Claim::addHand(Mahjong majang)

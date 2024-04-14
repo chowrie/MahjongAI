@@ -8,6 +8,11 @@ Mahjong::Mahjong():tile(0)
 
 Mahjong::Mahjong(const string& s)
 {
+	if (s == "") {
+		tile = 0;
+		return;
+	}
+
 	int num = s[1] - '0';
 	tile=10;
 	switch (s[0])
