@@ -1,9 +1,4 @@
-#include "tile.h"
-#include "shanten.h"
-#include "stringify.h"
-#include "fan_calculator.h"
-#include "statusMemory.h"
-
+#pragma once
 #include <stdio.h>
 #include <iostream>
 #include <climits>
@@ -12,17 +7,18 @@
 #include "FanCalculator.h"
 
 
-
 //test
 using namespace mahjong;
 using namespace std;
+
+
 
 int Hpoint(const char* str, Win_flag_t win_flag, wind_t prevalent_wind, wind_t seat_wind,tile_t wintile)
 {
     calculate_param_t can;
     can.win_tile = wintile;
     long sign = string_to_tiles(str, &can.hand_tiles, &can.win_tile);
-    if (sign != PARSE_NO_ERROR) {
+    if (sign != PARSE_NO_ERROR){
         printf("error at line %d error = %ld\n", __LINE__, sign);
         return -1;
     }
@@ -70,7 +66,6 @@ tile_t int_totile(int card)
 
     return make_tile(card_type, card_number);
 }
-
 int Handtiles_ShangTing()//寄存器手牌上听数
 {
         string str = memory.getFormatHandSting();
@@ -229,30 +224,29 @@ int Handtiles_ShangTing_Temp(string &a)//正常返回上听数；已胡但不够8番，返回-100
     return result;//返回0代表已听牌
 }
 
-//
-//Mahjong Search_Unusefultile(Hand_Claim hands,int initShang)
-//{
-//    Hand_Claim thand(hands);
-//    int len = thand.handTile.size();
-//    int perfectlo = 0;
-//    bool isChange = false;
-//    for (int i = 0; i < len; i++)
-//    {
-//        Mahjong tmp = hands.handTile[i];
-//        if (i > 0 && tmp == hands.handTile[i - 1])
-//            continue;
-//        hands.removeHand(hands.handTile[i]);
-//        string t1 = hands.getFormatHandSting();
-//        int Ts = Handtiles_ShangTing_Temp(t1);
-//        if (Ts <= initShang)
-//        {
-//            perfectlo = i;
-//            initShang = Ts;
-//            isChange = true;
-//        }
-//        hands.addHand(tmp);
-//    }
-//
-//}
+Mahjong Search_playtile(Hand_Claim hands,int initShang)
+{
+    int len = hands.handTile.size();
+    int perfectlo = 0;
+    bool isChange = false;
+    for (int i = 0; i < len; i++)
+    {
+        Mahjong tmp = hands.handTile[i];
+        if (i > 0 && tmp == hands.handTile[i - 1])
+            continue;
+        hands.removeHand(hands.handTile[i]);
+        string t1 = hands.getFormatHandSting();
+        int Ts = Handtiles_ShangTing_Temp(t1);
+        if (Ts <= initShang)
+        {
+            perfectlo = i;
+            initShang = Ts;
+            isChange = true;
+        }
+        hands.addHand(tmp);
+    }
+    if (isChange)return hands.handTile[perfectlo];
+    return 0;
+}
 
 

@@ -97,9 +97,9 @@ string response()
                 hands.removeAnGang(currPlayTile);
             }
 
-            //int tempMinShang = MinShang;
+            int tempMinShang = MinShang;
             //PLAY Card1（打手牌Card1）
-            // //摸切
+             //摸切
             Mahjong playedtile = Search_playtile(hands, MinShang);
             if (playedtile.getTile()>0)
             {
@@ -172,10 +172,6 @@ string response()
             hands.addPeng(currPlayTile, tars);
 
 
-            string tPeng = hands.getFormatHandSting();
-            int Nowfan = Handtiles_Point(tPeng, Winflag, currPlayTile);
-            if (Nowfan >= 8)return "HU";
-
             int PengFlag = false;
 
             //胡不了，选牌
@@ -215,10 +211,6 @@ string response()
         if (chiTarget) {
 
             hands.addChi(currPlayTile, chiTarget);
-
-            string tChi = hands.getFormatHandSting();
-            int Nowfan = Handtiles_Point(tChi, Winflag, currPlayTile);
-            if (Nowfan >= 8)return "HU";
 
             //胡不了
             Mahjong cTarget;

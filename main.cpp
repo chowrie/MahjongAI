@@ -35,23 +35,21 @@ vector<string> rrequest, rresponse;
 
 int main()
 {
-    tile_t wintile = make_tile(2, 6);
-
     
-    int s = Handtiles_Point("[7p8p9p,3][5s5s5s,1][PPP,3]6s6s6sCC", DISCARD, 36);
-    cout << s;
+    //int s = Handtiles_Point("[7p8p9p,3][5s5s5s,1][PPP,3][6s6s6s,3]CC", DISCARD, 36);
+    //cout << s;
 
-    //Json::Value inputJSON;
-    //cin >> inputJSON;
-    //turn = inputJSON["responses"].size();
+    Json::Value inputJSON;
+    cin >> inputJSON;
+    turn = inputJSON["responses"].size();
 
-    //string s;
-    //for (int i = 0; i <= turn; i++) {
-    //    istringstream sin(inputJSON["requests"][i].asString());
-    //    request(sin);
-    //}
-    //Json::Value outputJSON;
-    //outputJSON["response"] = response();
-    //cout << outputJSON << endl;
-    //return 0;
+    string s;
+    for (int i = 0; i <= turn; i++) {
+        istringstream sin(inputJSON["requests"][i].asString());
+        request(sin);
+    }
+    Json::Value outputJSON;
+    outputJSON["response"] = response();
+    cout << outputJSON << endl;
+    return 0;
 }
