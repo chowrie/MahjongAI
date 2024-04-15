@@ -6,6 +6,9 @@
 
 string response()
 {
+    bool noTileFlag = isNoTile();
+
+
     //currPlayTile：坎张、边张、单钓将
     Mahjong currPlayTile = memory.getCurrPlayTile();
 
@@ -53,7 +56,7 @@ string response()
         //4.杠上开花
         //由于杠牌后、摸牌前一定无法胡牌，故不需要在补杠、暗杠里判断胡牌
             Winflag |= WIN_FLAG_SELF_DRAWN;
-            if (isHandSpring())
+            if (noTileFlag)
                 Winflag |= WIN_FLAG_WALL_LAST;
             if (isGangShangKaiHua(currAction, memory.getGangFlag()))
                 Winflag |= WIN_FLAG_ABOUT_KONG;
@@ -128,6 +131,8 @@ string response()
             //PLAY Card1（打手牌Card1）
              //摸切
 
+            sort(hands.handTile.begin(), hands.handTile.end(), cmp());
+
             int len = hands.handTile.size();
             int perfectlo = 0;
             bool isChange = false;
@@ -157,6 +162,7 @@ string response()
                     responseStr = "PLAY ";
                 }
                 hands.addHand(tmp);
+                sort(hands.handTile.begin(), hands.handTile.end(), cmp());
             }
 
 
@@ -188,7 +194,7 @@ string response()
 
         Winflag |= WIN_FLAG_DISCARD;
        
-        if (isSeaMoon(currPlayer))
+        if (noTileFlag)
             Winflag |= WIN_FLAG_WALL_LAST;
         if (isQiangGangHe(currAction))
             Winflag |= WIN_FLAG_ABOUT_KONG;
@@ -200,11 +206,14 @@ string response()
         if (Nowfan >= 8)return "HU";
         hands.removeHand(currPlayTile);
 
+
+
         Minshang = Handtiles_ShangTing_Temp(t1);
 
-        if (currAction != GANG) {//对手杠牌回合中，若自己无法进行抢杠和，则不执行任何操作，直接PASS
+        //1.对手杠牌回合中，若自己无法进行抢杠和，则不执行任何操作，直接PASS
+        //2.任意一家牌墙为空时，无法吃碰杠
+        if (currAction != GANG && !noTileFlag) {
 
-        //单钓将
 
             int PengFlag = false;
 
@@ -219,6 +228,7 @@ string response()
                 int tars = memory.getFormatPosition(myP, otherP);
 
                 hands.addMinGang(currPlayTile, tars);
+                sort(hands.handTile.begin(), hands.handTile.end(), cmp());
                 string t1 = hands.getFormatHandSting();
                 int Ts = Handtiles_ShangTing_Temp(t1);
                 if (Minshang >= Ts)
@@ -230,6 +240,7 @@ string response()
                     Minshang = Ts;
                 }
                 hands.removeMinGang(currPlayTile);
+                sort(hands.handTile.begin(), hands.handTile.end(), cmp());
 
             }
 
@@ -243,6 +254,7 @@ string response()
 
 
 
+                sort(hands.handTile.begin(), hands.handTile.end(), cmp());
                 //胡不了，选牌
                 //缺少多张无用牌的情况
                 int len = hands.handTile.size();
@@ -272,11 +284,17 @@ string response()
                     else if (Ts == Minshang) {
 
                         responseStr = "PENG ";
+
+                        if (!PengFlag) {
+                            unusedTile.clear();
+                        }
+
                         unusedTile.push_back(tmp);
                         PengFlag = true;
 
                     }
                     hands.addHand(tmp);
+                    sort(hands.handTile.begin(), hands.handTile.end(), cmp());
                 }
 
                 hands.removePeng(currPlayTile);
@@ -307,6 +325,7 @@ string response()
                 }
 
 
+                sort(hands.handTile.begin(), hands.handTile.end(), cmp());
                 int len = hands.handTile.size();
                 int perfectlo = 0;
                 for (int i = 0; i < len; i++)
@@ -331,6 +350,10 @@ string response()
                         responseStr = "CHI ";
                         responseStr += cTarget.getTileString() + " ";
 
+                        if (!ChiFlag) {
+                            unusedTile.clear();
+                        }
+
                         unusedTile.push_back(tmp);
 
                         ChiFlag = true;
@@ -339,6 +362,7 @@ string response()
                     hands.addHand(tmp);
                 }
                 hands.removeChi(cTarget, chiTarget);
+                sort(hands.handTile.begin(), hands.handTile.end(), cmp());
             }
 
 
@@ -444,13 +468,10 @@ bool isGangShangKaiHua(action& currAction, bool GangFlag)
 
 
 
-bool isHandSpring()
-{
-    return memory.getTileWallNum(memory.getMyPosistion())==0;
-}
+bool isNoTile() {
+    for (int i = 0; i <= 3; i++) {
+        if (memory.getTileWallNum(i) == 0)return true;
+    }
 
-bool isSeaMoon(int idx)
-{
-    return memory.getTileWallNum(memory.getMyPosistion()) == 0;
+    return false;
 }
-

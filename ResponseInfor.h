@@ -22,6 +22,4 @@ bool isQiangGangHe(action&currAction);
 
 bool isGangShangKaiHua(action&currAction, bool GangFlag);//不计自摸
 
-bool isSeaMoon(int idx);
-
-bool isHandSpring();//不计自摸
+bool isNoTile();
