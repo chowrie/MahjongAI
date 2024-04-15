@@ -123,6 +123,7 @@ string response()
         //4.ÇÀ¸ÜºÍ
 
         Winflag |= WIN_FLAG_DISCARD;
+       
         if (isSeaMoon(currPlayer))
             Winflag |= WIN_FLAG_WALL_LAST;
         if (isQiangGangHe(currAction))
@@ -130,6 +131,7 @@ string response()
 
         hands.addHand(currPlayTile);
         string t1 = hands.getFormatHandSting();
+
         int Nowfan = Handtiles_Point(t1, Winflag, currPlayTile);
         if (Nowfan >= 8)return "HU";
         hands.removeHand(currPlayTile);
@@ -357,6 +359,6 @@ bool isHandSpring()
 
 bool isSeaMoon(int idx)
 {
-    return memory.getTileWallNum(idx)==0;
+    return memory.getTileWallNum(memory.getMyPosistion()) == 0;
 }
 
