@@ -16,7 +16,6 @@ using namespace std;
 int Hpoint(const char* str, Win_flag_t win_flag, wind_t prevalent_wind, wind_t seat_wind,tile_t wintile)
 {
     calculate_param_t can;
-    can.win_tile = wintile;
     long sign = string_to_tiles(str, &can.hand_tiles, &can.win_tile);
     if (sign != PARSE_NO_ERROR){
         printf("error at line %d error = %ld\n", __LINE__, sign);
@@ -137,9 +136,6 @@ int Handtiles_Point(string str,Win_flag_t win_flag,int tile)
     wind_t p_wind = intowind(memory.getQuan()), s_wind = intowind(memory.getMyPosistion());
 
     tile_t wintile = int_totile(tile);
-
-
-    //tile_t wintile = 0x36;
 
     return Hpoint(str.c_str(), win_flag, p_wind, s_wind, wintile);
 
