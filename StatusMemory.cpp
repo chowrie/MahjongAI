@@ -45,10 +45,9 @@ void Memory::initial(int myPos, int quan){//≥ı º≈∆«Ω £”‡
     for (int i = 0; i < 4; i++) {//∑¨
         currFan[i] = 0;
         Hana[i] = 0;
-        tileWall[i] = 21;
+        tileWall[i] = 21+13;
     }
 
-    tileWall[myPosition] = 21 + 13;
 
     currAction = PASS;
     GangFlag = false;
@@ -472,7 +471,7 @@ void Memory::drawTile(int idx,int num)
 {
     handNum[idx]+=num;
     totalTile-=num;
-    tileWall[idx]--;
+    tileWall[idx]-=num;
 
     currPlayer = idx;
     currPlayTile = 0;
