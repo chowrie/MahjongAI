@@ -21,6 +21,7 @@ string response()
     string responseStr = "";
     bool flag = false;
 
+    vector<Mahjong>unusedTile;
 
 
     Mahjong card1, card2;
@@ -71,13 +72,25 @@ string response()
                 hands.addBuGang(currPlayTile);
                 string h1 = hands.getFormatHandSting();
                 int TempShang = Handtiles_ShangTing_Temp(h1);
-                if (Minshang >= TempShang)
+                if (Minshang > TempShang)
                 {
                     responseStr = "BUGANG ";
-                    responseStr += currPlayTile.getTileString();
+                    //responseStr += currPlayTile.getTileString();
+
+                    unusedTile.clear();
+                    unusedTile.push_back(currPlayTile);
 
                     Minshang = TempShang;
                 }
+                else if(Minshang == TempShang) {
+                    responseStr = "BUGANG ";
+                    //responseStr += currPlayTile.getTileString();
+
+                    unusedTile.push_back(currPlayTile);
+
+                    Minshang = TempShang;
+                }
+
                 hands.removeBuGang(currPlayTile);
             }
             //GANG Card1（摸得是Card1）
@@ -87,25 +100,75 @@ string response()
                 hands.addAnGang(currPlayTile);
                 string h1 = hands.getFormatHandSting();
                 int TempShang = Handtiles_ShangTing_Temp(h1);
-                if (Minshang >= TempShang)
+                if (Minshang > TempShang)
                 {
                     responseStr = "GANG ";
-                    responseStr += currPlayTile.getTileString();
+                    //responseStr += currPlayTile.getTileString();
+
+                    unusedTile.clear();
+                    unusedTile.push_back(currPlayTile);
+
+
+                    Minshang = TempShang;
+                }
+                else if (Minshang == TempShang) {
+
+                    responseStr = "GANG ";
+                    //responseStr += currPlayTile.getTileString();
+
+                    unusedTile.push_back(currPlayTile);
 
                     Minshang = TempShang;
                 }
                 hands.removeAnGang(currPlayTile);
             }
 
-            int tempMinShang = Minshang;
+
+
+
             //PLAY Card1（打手牌Card1）
              //摸切
-            Mahjong playedtile = Search_playtile(hands, Minshang);
-            if (playedtile.getTile()>0)
+
+            int len = hands.handTile.size();
+            int perfectlo = 0;
+            bool isChange = false;
+            for (int i = 0; i < len; i++)
             {
-                responseStr = "PLAY ";
-                responseStr += playedtile.getTileString();
+                Mahjong tmp = hands.handTile[i];
+                if (i > 0 && tmp == hands.handTile[i - 1])
+                    continue;
+                hands.removeHand(hands.handTile[i]);
+                string t1 = hands.getFormatHandSting();
+                int Ts = Handtiles_ShangTing_Temp(t1);
+                if (Ts < Minshang)
+                {
+                    responseStr = "PLAY ";
+
+
+                    unusedTile.clear();
+                    unusedTile.push_back(tmp);
+
+                    Minshang = Ts;
+                }
+                else if (Ts == Minshang) {
+
+
+                    unusedTile.push_back(tmp);
+
+                    responseStr = "PLAY ";
+                }
+                hands.addHand(tmp);
             }
+
+
+            //在这里判断是否要弃胡，并进入防守函数获取要打出的牌
+            //用于替换下方的unusedTile.back().getTileString()
+            //若弃胡，传入handTile
+            //若不弃胡，传入unusedTile
+
+            responseStr += unusedTile.back().getTileString();
+
+
             flag = true;
         }
     }
@@ -142,8 +205,11 @@ string response()
 
         //单钓将
 
+            int PengFlag = false;
+
             int chiTarget = canChi();
 
+            int ChiFlag = false;
             //GANG
             if (canMinGang())
             {
@@ -175,7 +241,6 @@ string response()
                 hands.addPeng(currPlayTile, tars);
 
 
-                int PengFlag = false;
 
                 //胡不了，选牌
                 //缺少多张无用牌的情况
@@ -192,20 +257,26 @@ string response()
                     string t1 = hands.getFormatHandSting();
                     int Ts = Handtiles_ShangTing_Temp(t1);
 
-                    if (Ts <= Minshang)
+                    if (Ts < Minshang)
                     {
                         responseStr = "PENG ";
-                        perfectlo = i;
+                        
+                        unusedTile.clear();
+                        unusedTile.push_back(tmp);
+
                         Minshang = Ts;
 
                         PengFlag = true;
                     }
+                    else if (Ts == Minshang) {
+                        responseStr = "PENG ";
+                        unusedTile.push_back(tmp);
+                        PengFlag = true;
+
+                    }
                     hands.addHand(tmp);
                 }
-                if (PengFlag) {
-                    responseStr += hands.handTile[perfectlo].getTileString();
-                    flag = true;
-                }
+
                 hands.removePeng(currPlayTile);
 
             }
@@ -233,7 +304,6 @@ string response()
                 }
                 }
 
-                int ChiFlag = false;
 
                 int len = hands.handTile.size();
                 int perfectlo = 0;
@@ -245,34 +315,52 @@ string response()
                     hands.removeHand(hands.handTile[i]);
                     string t1 = hands.getFormatHandSting();
                     int Ts = Handtiles_ShangTing_Temp(t1);
-                    if (Ts <= Minshang)
+                    if (Ts < Minshang)
                     {
                         responseStr = "CHI ";
                         responseStr += cTarget.getTileString() + " ";
-                        perfectlo = i;
-                        Minshang = Ts;
+
+                        unusedTile.clear();
+                        unusedTile.push_back(tmp);
 
                         ChiFlag = true;
                     }
+                    else if (Ts == Minshang) {
+                        responseStr = "CHI ";
+                        responseStr += cTarget.getTileString() + " ";
+
+                        unusedTile.push_back(tmp);
+
+                        ChiFlag = true;
+                    }
+
                     hands.addHand(tmp);
                 }
-                if (ChiFlag)
-                {
-                    responseStr += hands.handTile[perfectlo].getTileString();
-                    flag = true;
-                }
-
                 hands.removeChi(cTarget, chiTarget);
             }
+
+
+
+            if (ChiFlag||PengFlag)
+            {
+                //在这里判断是否要弃胡，并进入防守函数获取要打出的牌
+                //用于替换下方的unusedTile.back().getTileString()
+                //若弃胡，传入handTile
+                //若不弃胡，传入unusedTile
+
+                responseStr += unusedTile.back().getTileString();
+                flag = true;
+            }
+
 
         }
     }   
 
-    //
 
     if (flag)return responseStr;
       return "PASS";
 }
+
 int canChi()
 {
     if (memory.getCurrAction() == PLAY) {
