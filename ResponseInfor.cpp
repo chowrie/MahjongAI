@@ -128,9 +128,6 @@ string response()
         if (isQiangGangHe(currAction))
             Winflag |= WIN_FLAG_ABOUT_KONG;
 
-
-        //单钓将
-
         hands.addHand(currPlayTile);
         string t1 = hands.getFormatHandSting();
         int Nowfan = Handtiles_Point(t1, Winflag, currPlayTile);
@@ -138,149 +135,158 @@ string response()
         hands.removeHand(currPlayTile);
 
 
-        int initShang = Handtiles_ShangTing();
-        int chiTarget = canChi();
+        if (currAction != GANG) {//对手杠牌回合中，若自己无法进行抢杠和，则不执行任何操作，直接PASS
 
-        //GANG
-        if (canMinGang())
-        {
+        //单钓将
 
-            int myP = memory.getMyPosistion(), otherP = memory.getCurrPlayer();
-            int tars = memory.getFormatPosition(myP, otherP);
 
-            hands.addMinGang(currPlayTile, tars);
-            string t1 = hands.getFormatHandSting();
-            int Ts = Handtiles_ShangTing_Temp(t1);
-            if (initShang >= Ts)
+            int initShang = Handtiles_ShangTing();
+            int chiTarget = canChi();
+
+            //GANG
+            if (canMinGang())
             {
-                responseStr = "GANG";
 
-                flag = true;
+                int myP = memory.getMyPosistion(), otherP = memory.getCurrPlayer();
+                int tars = memory.getFormatPosition(myP, otherP);
 
-                initShang = Ts;
-            }
-            hands.removeMinGang(currPlayTile);
-
-        }
-
-        //PENG Card1（打Card1）
-        if (canPeng())
-        {
-            int myP = memory.getMyPosistion(), otherP = memory.getCurrPlayer();
-            int tars = memory.getFormatPosition(myP, otherP);
-
-            hands.addPeng(currPlayTile, tars);
-
-
-            int PengFlag = false;
-
-            //胡不了，选牌
-            //缺少多张无用牌的情况
-            int len = hands.handTile.size();
-            int perfectlo = 0;
-            for (int i = 0; i < len; i++)
-            {
-                Mahjong tmp = hands.handTile[i];
-                if (i > 0 && tmp == hands.handTile[i - 1])
-                    continue;
-
-                hands.removeHand(hands.handTile[i]);
-
+                hands.addMinGang(currPlayTile, tars);
                 string t1 = hands.getFormatHandSting();
                 int Ts = Handtiles_ShangTing_Temp(t1);
-
-                if (Ts <= initShang)
+                if (initShang >= Ts)
                 {
-                    responseStr = "PENG ";
-                    perfectlo = i;
-                    initShang = Ts;
+                    responseStr = "GANG";
 
-                    PengFlag = true;
+                    flag = true;
+
+                    initShang = Ts;
                 }
-                hands.addHand(tmp);
+                hands.removeMinGang(currPlayTile);
+
             }
-            if (PengFlag) {
-                responseStr += hands.handTile[perfectlo].getTileString();
-                flag = true;
+
+            //PENG Card1（打Card1）
+            if (canPeng())
+            {
+                int myP = memory.getMyPosistion(), otherP = memory.getCurrPlayer();
+                int tars = memory.getFormatPosition(myP, otherP);
+
+                hands.addPeng(currPlayTile, tars);
+
+
+                int PengFlag = false;
+
+                //胡不了，选牌
+                //缺少多张无用牌的情况
+                int len = hands.handTile.size();
+                int perfectlo = 0;
+                for (int i = 0; i < len; i++)
+                {
+                    Mahjong tmp = hands.handTile[i];
+                    if (i > 0 && tmp == hands.handTile[i - 1])
+                        continue;
+
+                    hands.removeHand(hands.handTile[i]);
+
+                    string t1 = hands.getFormatHandSting();
+                    int Ts = Handtiles_ShangTing_Temp(t1);
+
+                    if (Ts <= initShang)
+                    {
+                        responseStr = "PENG ";
+                        perfectlo = i;
+                        initShang = Ts;
+
+                        PengFlag = true;
+                    }
+                    hands.addHand(tmp);
+                }
+                if (PengFlag) {
+                    responseStr += hands.handTile[perfectlo].getTileString();
+                    flag = true;
+                }
+                hands.removePeng(currPlayTile);
+
             }
-            hands.removePeng(currPlayTile);
+
+            //CHI Card1 Card2（吃Card1打Card2）
+            if (chiTarget) {
+
+                hands.addChi(currPlayTile, chiTarget);
+
+                //胡不了
+                Mahjong cTarget;
+
+                switch (chiTarget) {
+                case 1: {
+                    cTarget = currPlayTile.getNext();
+                    break;
+                }
+                case 2: {
+                    cTarget = currPlayTile;
+                    break;
+                }
+                case 3: {
+                    cTarget = currPlayTile.getLast();
+                    break;
+                }
+                }
+
+                int ChiFlag = false;
+
+                int len = hands.handTile.size();
+                int perfectlo = 0;
+                for (int i = 0; i < len; i++)
+                {
+                    Mahjong tmp = hands.handTile[i];
+                    if (i > 0 && tmp == hands.handTile[i - 1])
+                        continue;
+                    hands.removeHand(hands.handTile[i]);
+                    string t1 = hands.getFormatHandSting();
+                    int Ts = Handtiles_ShangTing_Temp(t1);
+                    if (Ts <= initShang)
+                    {
+                        responseStr = "CHI ";
+                        responseStr += cTarget.getTileString() + " ";
+                        perfectlo = i;
+                        initShang = Ts;
+
+                        ChiFlag = true;
+                    }
+                    hands.addHand(tmp);
+                }
+                if (ChiFlag)
+                {
+                    responseStr += hands.handTile[perfectlo].getTileString();
+                    flag = true;
+                }
+
+                hands.removeChi(cTarget, chiTarget);
+            }
 
         }
-
-        //CHI Card1 Card2（吃Card1打Card2）
-        if (chiTarget) {
-
-            hands.addChi(currPlayTile, chiTarget);
-
-            //胡不了
-            Mahjong cTarget;
-
-            switch (chiTarget) {
-            case 1: {
-                cTarget = currPlayTile.getNext();
-                break;
-            }
-            case 2: {
-                cTarget = currPlayTile;
-                break;
-            }
-            case 3: {
-                cTarget = currPlayTile.getLast();
-                break;
-            }
-            }
-
-            int ChiFlag = false;
-
-            int len = hands.handTile.size();
-            int perfectlo = 0;
-            for (int i = 0; i < len; i++)
-            {
-                Mahjong tmp = hands.handTile[i];
-                if (i > 0 && tmp == hands.handTile[i - 1])
-                    continue;
-                hands.removeHand(hands.handTile[i]);
-                string t1 = hands.getFormatHandSting();
-                int Ts = Handtiles_ShangTing_Temp(t1);
-                if (Ts <= initShang)
-                {
-                    responseStr = "CHI ";
-                    responseStr += cTarget.getTileString() + " ";
-                    perfectlo = i;
-                    initShang = Ts;
-
-                    ChiFlag = true;
-                }
-                hands.addHand(tmp);
-            }
-            if (ChiFlag)
-            {
-                responseStr += hands.handTile[perfectlo].getTileString();
-                flag = true;
-            }
-
-            hands.removeChi(cTarget, chiTarget);
-        }
-    
     }   
     if (flag)return responseStr;
       return "PASS";
 }
 int canChi()
 {
-    //不用担心19边界情况，0处无牌，默认不存在
-    //暂未考虑有多种吃牌的情况下的考虑
-    if (memory.getCurrPlayer()==memory.getLastPosition() && memory.getCurrPlayTile().isNum()) {
-        if (memory.getCntHand(memory.getCurrPlayTile().getNext()) &&
-            memory.getCntHand(memory.getCurrPlayTile().getNext().getNext())
-            )return 1;
-        if (memory.getCntHand(memory.getCurrPlayTile().getLast()) &&
-            memory.getCntHand(memory.getCurrPlayTile().getLast().getLast())
-            )return 3;
-        if (memory.getCntHand(memory.getCurrPlayTile().getLast()) &&
-            memory.getCntHand(memory.getCurrPlayTile().getNext())
-            )return 2;
+    if (memory.getCurrAction() == PLAY) {
+        //不用担心19边界情况，0处无牌，默认不存在
+        //暂未考虑有多种吃牌的情况下的考虑
+        if (memory.getCurrPlayer() == memory.getLastPosition() && memory.getCurrPlayTile().isNum()) {
+            if (memory.getCntHand(memory.getCurrPlayTile().getNext()) &&
+                memory.getCntHand(memory.getCurrPlayTile().getNext().getNext())
+                )return 1;
+            if (memory.getCntHand(memory.getCurrPlayTile().getLast()) &&
+                memory.getCntHand(memory.getCurrPlayTile().getLast().getLast())
+                )return 3;
+            if (memory.getCntHand(memory.getCurrPlayTile().getLast()) &&
+                memory.getCntHand(memory.getCurrPlayTile().getNext())
+                )return 2;
+        }
     }
+
     return 0;
 }
 

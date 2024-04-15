@@ -77,9 +77,6 @@
     <ClCompile Include="stringify.cpp">
       <Filter>源文件\outerTools</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>源文件\outerTools</Filter>
-    </ClCompile>
     <ClCompile Include="ResponseInfor.cpp">
       <Filter>源文件\inner</Filter>
     </ClCompile>
@@ -87,6 +84,9 @@
       <Filter>源文件\inner</Filter>
     </ClCompile>
     <ClCompile Include="defend.cpp">
+      <Filter>源文件\inner</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
       <Filter>源文件\inner</Filter>
     </ClCompile>
   </ItemGroup>
