@@ -134,6 +134,7 @@ string response()
         if (Nowfan >= 8)return "HU";
         hands.removeHand(currPlayTile);
 
+        Minshang = Handtiles_ShangTing_Temp(t1);
 
         if (currAction != GANG) {//对手杠牌回合中，若自己无法进行抢杠和，则不执行任何操作，直接PASS
 
