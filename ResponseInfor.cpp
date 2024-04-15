@@ -165,6 +165,8 @@ string response()
             //若弃胡，传入handTile
             //若不弃胡，传入unusedTile
 
+            sort(unusedTile.begin(), unusedTile.end(), cmp());
+
             responseStr += unusedTile.back().getTileString();
 
 
@@ -268,6 +270,7 @@ string response()
                         PengFlag = true;
                     }
                     else if (Ts == Minshang) {
+
                         responseStr = "PENG ";
                         unusedTile.push_back(tmp);
                         PengFlag = true;
@@ -346,6 +349,8 @@ string response()
                 //用于替换下方的unusedTile.back().getTileString()
                 //若弃胡，传入handTile
                 //若不弃胡，传入unusedTile
+
+                sort(unusedTile.begin(), unusedTile.end(), cmp());
 
                 responseStr += unusedTile.back().getTileString();
                 flag = true;
