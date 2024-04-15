@@ -249,4 +249,15 @@ Mahjong Search_playtile(Hand_Claim hands,int initShang)
     return 0;
 }
 
+bool quitHu(int Shangting)
+{
+    if (!Shangting)return false;
+    for (int i = 0;i < 4;i++)
+    {
+        int nums = memory.gethandNum(i);
+        if (nums == 1)return true;
+    }
+    return false;
+}
+
 

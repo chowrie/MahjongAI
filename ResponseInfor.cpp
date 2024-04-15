@@ -14,6 +14,7 @@ string response()
     bool GangFlag = memory.getGangFlag();
     action currAction = memory.getCurrAction();
     Hand_Claim hands;
+    int Minshang = INT_MAX;
 
 
     if (turn == 0 || turn == 1)return "PASS";
@@ -64,19 +65,18 @@ string response()
 
 
 
-            int MinShang = INT_MAX;
             //BUGANG Card1（摸得是Card1）
             if (canBuGang())
             {
                 hands.addBuGang(currPlayTile);
                 string h1 = hands.getFormatHandSting();
                 int TempShang = Handtiles_ShangTing_Temp(h1);
-                if (MinShang >= TempShang)
+                if (Minshang >= TempShang)
                 {
                     responseStr = "BUGANG ";
                     responseStr += currPlayTile.getTileString();
 
-                    MinShang = TempShang;
+                    Minshang = TempShang;
                 }
                 hands.removeBuGang(currPlayTile);
             }
@@ -87,20 +87,20 @@ string response()
                 hands.addAnGang(currPlayTile);
                 string h1 = hands.getFormatHandSting();
                 int TempShang = Handtiles_ShangTing_Temp(h1);
-                if (MinShang >= TempShang)
+                if (Minshang >= TempShang)
                 {
                     responseStr = "GANG ";
                     responseStr += currPlayTile.getTileString();
 
-                    MinShang = TempShang;
+                    Minshang = TempShang;
                 }
                 hands.removeAnGang(currPlayTile);
             }
 
-            int tempMinShang = MinShang;
+            int tempMinShang = Minshang;
             //PLAY Card1（打手牌Card1）
              //摸切
-            Mahjong playedtile = Search_playtile(hands, MinShang);
+            Mahjong playedtile = Search_playtile(hands, Minshang);
             if (playedtile.getTile()>0)
             {
                 responseStr = "PLAY ";
@@ -139,8 +139,6 @@ string response()
 
         //单钓将
 
-
-            int initShang = Handtiles_ShangTing();
             int chiTarget = canChi();
 
             //GANG
@@ -153,13 +151,13 @@ string response()
                 hands.addMinGang(currPlayTile, tars);
                 string t1 = hands.getFormatHandSting();
                 int Ts = Handtiles_ShangTing_Temp(t1);
-                if (initShang >= Ts)
+                if (Minshang >= Ts)
                 {
                     responseStr = "GANG";
 
                     flag = true;
 
-                    initShang = Ts;
+                    Minshang = Ts;
                 }
                 hands.removeMinGang(currPlayTile);
 
@@ -191,11 +189,11 @@ string response()
                     string t1 = hands.getFormatHandSting();
                     int Ts = Handtiles_ShangTing_Temp(t1);
 
-                    if (Ts <= initShang)
+                    if (Ts <= Minshang)
                     {
                         responseStr = "PENG ";
                         perfectlo = i;
-                        initShang = Ts;
+                        Minshang = Ts;
 
                         PengFlag = true;
                     }
@@ -244,12 +242,12 @@ string response()
                     hands.removeHand(hands.handTile[i]);
                     string t1 = hands.getFormatHandSting();
                     int Ts = Handtiles_ShangTing_Temp(t1);
-                    if (Ts <= initShang)
+                    if (Ts <= Minshang)
                     {
                         responseStr = "CHI ";
                         responseStr += cTarget.getTileString() + " ";
                         perfectlo = i;
-                        initShang = Ts;
+                        Minshang = Ts;
 
                         ChiFlag = true;
                     }
@@ -266,6 +264,9 @@ string response()
 
         }
     }   
+
+    //
+
     if (flag)return responseStr;
       return "PASS";
 }
