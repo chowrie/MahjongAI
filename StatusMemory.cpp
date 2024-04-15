@@ -646,6 +646,7 @@ void Hand_Claim::removeHand(Mahjong majang)
         handTile.erase(it);
     }
 
+    sort(handTile.begin(), handTile.end(), cmp());
 }
 
 void Hand_Claim::addChi(Mahjong majang, int target)
