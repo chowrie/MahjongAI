@@ -9,7 +9,6 @@ string response()
     //currPlayTile：坎张、边张、单钓将
     Mahjong currPlayTile = memory.getCurrPlayTile();
 
-
     int currPlayer = memory.getCurrPlayer();
     bool GangFlag = memory.getGangFlag();
     action currAction = memory.getCurrAction();

@@ -610,7 +610,6 @@ string actionEnumToStr(action Action)
 
 Hand_Claim::Hand_Claim()
 {
-    memory.sortHand();
     myPosition = memory.getMyPosistion();
     handTile = memory.getHandTile();
     Chi[myPosition] = memory.getChi(memory.getMyPosistion());
@@ -626,8 +625,6 @@ Hand_Claim::Hand_Claim(Hand_Claim& other)
         return;
     }
     
-
-    memory.sortHand();
     myPosition = other.myPosition;
     handTile = other.handTile;
     Chi[myPosition] = other.Chi[myPosition];
@@ -640,7 +637,6 @@ Hand_Claim::Hand_Claim(Hand_Claim& other)
 void Hand_Claim::addHand(Mahjong majang)
 {
     handTile.push_back(majang);
-    sort(handTile.begin(), handTile.end(), cmp());
 }
 
 void Hand_Claim::removeHand(Mahjong majang)
