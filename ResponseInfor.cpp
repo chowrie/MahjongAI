@@ -466,12 +466,9 @@ bool isGangShangKaiHua(action& currAction, bool GangFlag)
     return currAction == DRAW && GangFlag == true;
 }
 
-
-
 bool isNoTile() {
-    for (int i = 0; i <= 3; i++) {
-        if (memory.getTileWallNum(i) == 0)return true;
-    }
+    int currPlayer = memory.getCurrPlayer();
+    int nextPlayer = memory.getNextPosition(currPlayer);
 
-    return false;
+    return memory.getTileWallNum(nextPlayer) == 0;
 }
