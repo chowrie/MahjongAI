@@ -64,6 +64,7 @@ int tile_get_rank(int tile)
 void Init_table()
 {
 	//risk_table.resize(4);
+	WN_poss_table.resize(7);
 	for (int i = 1; i < 4; i++)
 	{
 		int handNum = memory.gethandNum(i);
@@ -291,7 +292,8 @@ void Calculate_risk()
 	Init_table();
 	int* unplayed = memory.getUnPlayed();
 	//turn 为全局变量
-	vector<double> WN_list = WN_poss_table[turn];
+	int turn_ = turn%7;
+	vector<double> WN_list = WN_poss_table[turn_];
 	for (int i = 0; i < 3; i ++)
 	{
 		int player = positions[i];
