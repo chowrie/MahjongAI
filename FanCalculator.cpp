@@ -251,9 +251,9 @@ bool quitHu(int Shangting)
     int pao = 0;
     for (int i = 0;i < 4;i++)
     {
-        if (i == memory.getCurrPlayer())continue;
+        if (i == memory.getMyPosistion())continue;
         int nums = memory.gethandNum(i);
-      //  if (nums == 1)return true;
+        if (nums == 1)return true;
         if (nums <= 4)pao++;
     }
     if (pao >= 2)return true;
