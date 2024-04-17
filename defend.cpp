@@ -16,6 +16,11 @@
 		2)对于每一个分配的上听数, 分配其可能的刻子数与未完成搭子数的所有情况
 		3)对于每一个分配的情况, 加概率权计算修正牌危险度
 
+分配度计算:
+	P(AAA) = Na >= 3 ? 2 + bias : 0
+	P(ABC) = min{Na, Nb, Nc} + bias
+	P(AA) = Na >= 2 ? 2 + bias : 0
+	P(AB/AC) = min{N1,N2} + bias
  ****************************************************************************/
 #define _CRT_SECURE_NO_WARNINGS
 #include "StatusMemory.h"
