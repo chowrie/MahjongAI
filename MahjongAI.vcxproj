@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="defend.h" />
     <ClInclude Include="FanCalculator.h" />
     <ClInclude Include="fan_calculator.h" />
     <ClInclude Include="Mahjong.h" />
@@ -155,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="inWN.txt" />
+    <Text Include="tmp.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

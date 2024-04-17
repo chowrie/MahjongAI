@@ -23,18 +23,12 @@
 	P(AB/AC) = min{N1,N2} + bias
  ****************************************************************************/
 #define _CRT_SECURE_NO_WARNINGS
-#include "StatusMemory.h"
-#include "shanten.h"
-#include <set>
-
-
-#include <map>
-#include <algorithm>
+#include "defend.h"
 
 #define INF 0x3ffffff
 #define limit_turn 8	// <= limit_turn
 #define max_recent 8	// 实际是读取所有打出的牌
-typedef double tile_risk_table_t[TILE_TABLE_SIZE];
+
 
 //座次信息	1-上家，2-对家，3-下家
 int mypos0;
@@ -57,6 +51,8 @@ set<int> safe_t_table;	//安全牌
 double sigma = 0.01;	//概率下限，在表输入中进行控制
 vector<vector<double>> WN_poss_table;	//由实验数据所得的某一轮的上听数概率表
 //得到数牌值,非数牌返回11
+
+
 int tile_get_rank(int tile)
 {
 	if (11 <= tile && tile <= 39)
@@ -197,26 +193,26 @@ void Calculate_poss()
 		else if (unplayed[i] == 1)
 		{
 			//顺子或搭子
-			
+			int bias = 0;
 			//顺子
 			if (tile_get_rank(i) < 8 && unplayed[i + 1] && unplayed[i + 2])
 			{
-				int min = std::min(unplayed[i], unplayed[i + 1], unplayed[i + 2]);
-				int bias = Special_solve(bias, i + 1, 1);
+				int min = std::min(std::min(unplayed[i], unplayed[i + 1]), unplayed[i + 2]);
+				bias = Special_solve(bias, i + 1, 1);
 				straight_table.push_back(make_pair(all_tiles[in + 1], min + bias));
 			}
 			//AB搭子 或包含在顺子中一起讨论
 			if (tile_get_rank(i) < 8 && unplayed[i + 1])
 			{
 				int min = std::min(unplayed[i], unplayed[i + 1]);
-				int bias = Special_solve(bias, i+1, 3);
+				bias = Special_solve(bias, i+1, 3);
 				dazi_table.push_back(make_pair(make_pair(all_tiles[in + 1], all_tiles[in + 2]), min + bias));
 			}
 			//AC搭子
 			if (tile_get_rank(i) < 8 && unplayed[i + 2])
 			{
 				int min = std::min(unplayed[i], unplayed[i + 2]);
-				int bias = Special_solve(bias, i + 1, 3);
+				bias = Special_solve(bias, i + 1, 3);
 				dazi_table.push_back(make_pair(make_pair(all_tiles[in + 1], all_tiles[in + 1]), min + bias));
 			}
 
@@ -224,29 +220,30 @@ void Calculate_poss()
 		else if (unplayed[i] == 2)
 		{
 			//对子或顺子或搭子
+			int bias = 0;
 			//对子
-			int bias = Special_solve(bias, i, 2);
+			bias = Special_solve(bias, i, 2);
 			pair_table.push_back(make_pair(all_tiles[in], 2 + bias));
 
 			//顺子
 			if (tile_get_rank(i) < 8 && unplayed[i + 1] && unplayed[i + 2])
 			{
-				int min = std::min(unplayed[i], unplayed[i + 1], unplayed[i + 2]);
-				int bias = Special_solve(bias, i+1,1);
+				int min = std::min(std::min(unplayed[i], unplayed[i + 1]), unplayed[i + 2]);
+				bias = Special_solve(bias, i+1,1);
 				straight_table.push_back(make_pair(all_tiles[in + 1], min + bias));
 			}
 			//AB搭子 或包含在顺子中一起讨论
 			if (tile_get_rank(i) < 8 && unplayed[i + 1])
 			{
 				int min = std::min(unplayed[i], unplayed[i + 1]);
-				int bias = Special_solve(bias, i+1, 3);
+				bias = Special_solve(bias, i+1, 3);
 				dazi_table.push_back(make_pair(make_pair(all_tiles[in + 1], all_tiles[in + 2]), min + bias));
 			}
 			//AC搭子
 			if (tile_get_rank(i) < 8 && unplayed[i + 2])
 			{
 				int min = std::min(unplayed[i], unplayed[i + 2]);
-				int bias = Special_solve(bias, i+1, 3);
+				bias = Special_solve(bias, i+1, 3);
 				dazi_table.push_back(make_pair(make_pair(all_tiles[in + 1], all_tiles[in + 1]), min + bias));
 			}
 
@@ -255,37 +252,39 @@ void Calculate_poss()
 		else if (unplayed[i] >= 3)
 		{
 			//四种可能
+			int bias = 0;
 			//刻子
-			int bias = Special_solve(bias, i, 0);
+			bias = Special_solve(bias, i, 0);
 			triplet_table.push_back(make_pair(all_tiles[in], 2 + bias));
 			//对子
-			int bias = Special_solve(bias,i+1, 2);
+			bias = Special_solve(bias,i+1, 2);
 			pair_table.push_back(make_pair(all_tiles[in], 2 + bias));
 
 			//顺子
 			if (tile_get_rank(i) < 8 && unplayed[i + 1] && unplayed[i + 2])
 			{
-				int min = std::min(unplayed[i], unplayed[i + 1], unplayed[i + 2]);
-				int bias = Special_solve(bias, i+1, 1);
+				int min = std::min(std::min(unplayed[i], unplayed[i + 1]), unplayed[i + 2]);
+				bias = Special_solve(bias, i+1, 1);
 				straight_table.push_back(make_pair(all_tiles[in + 1], min + bias));
 			}
 			//AB搭子 或包含在顺子中一起讨论
 			if (tile_get_rank(i) < 8 && unplayed[i + 1])
 			{
 				int min = std::min(unplayed[i], unplayed[i + 1]);
-				int bias = Special_solve(bias,i+1, 3);
+				bias = Special_solve(bias,i+1, 3);
 				dazi_table.push_back(make_pair(make_pair(all_tiles[in + 1], all_tiles[in + 2]), min + bias));
 			}
 			//AC搭子
 			if (tile_get_rank(i) < 8 && unplayed[i + 2])
 			{
 				int min = std::min(unplayed[i], unplayed[i + 2]);
-				int bias = Special_solve(bias, i+1, 3);
+				bias = Special_solve(bias, i+1, 3);
 				dazi_table.push_back(make_pair(make_pair(all_tiles[in + 1], all_tiles[in + 1]), min + bias));
 			}
 		}
 	}
 }
+
 //设置可能的面子数与搭子数
 void Calculate_risk()
 {
@@ -353,8 +352,9 @@ void Calculate_risk()
 void Calculate_risk_table(int pack_cnt, int incomplete_cnt, tile_risk_table_t& oper, int player)
 {
 	//依据个人出牌微调？	或者说，根据对手的上听数（模拟值）/副露数（真实值）设置紧急权重，若其即将听牌则权重提升
-	
-	double total_tri_p, total_straight_p, total_pair_p, total_dazi_p;
+
+	double total_tri_p = 0, total_straight_p = 0, total_pair_p = 0, total_dazi_p = 0;
+
 	if (1)
 	{
 		for (int i = 0; i < triplet_table.size(); i++)
@@ -375,14 +375,14 @@ void Calculate_risk_table(int pack_cnt, int incomplete_cnt, tile_risk_table_t& o
 			total_dazi_p += dazi_table[i].second;
 		}
 	}
-	
+
 	if (total_tri_p > 0)
 	{
 		//刻子存在杠可能
 		for (int i = 0; i < triplet_table.size(); i++)
 		{
 			tile_t t = triplet_table[i].first;
-			double p = triplet_table[i].second/total_tri_p;
+			double p = triplet_table[i].second / total_tri_p;
 			oper[t] += p;
 		}
 	}
@@ -412,6 +412,7 @@ void Calculate_risk_table(int pack_cnt, int incomplete_cnt, tile_risk_table_t& o
 		}
 	}
 }
+
 
 int Get_safe_tile(vector<Mahjong>& handTile)
 {

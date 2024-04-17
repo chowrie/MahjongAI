@@ -57,6 +57,9 @@
     <ClInclude Include="ResponseInfor.h">
       <Filter>头文件\inner</Filter>
     </ClInclude>
+    <ClInclude Include="defend.h">
+      <Filter>头文件\inner</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Mahjong.cpp">
@@ -99,5 +102,6 @@
     <Text Include="inWN.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="tmp.txt" />
   </ItemGroup>
 </Project>

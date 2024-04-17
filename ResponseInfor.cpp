@@ -1,5 +1,5 @@
 #include "ResponseInfor.h"
-#include "defend.cpp"
+#include "defend.h"
 
 #include<algorithm>
 #include<iostream>
