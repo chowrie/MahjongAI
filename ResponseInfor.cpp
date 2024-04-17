@@ -176,7 +176,7 @@ string response()
 
             sort(unusedTile.begin(), unusedTile.end(), cmp());
             Mahjong playedTile;
-            if (quitHu(Shang_tocheck))
+            if (!quitHu(Shang_tocheck))
                 playedTile = get_defend_tile(unusedTile);
             else
                 playedTile = get_defend_tile(hands.handTile);
@@ -375,7 +375,7 @@ string response()
             {
                 sort(unusedTile.begin(), unusedTile.end(), cmp());
                 Mahjong playedTile;
-                if (quitHu(Shang_tocheck))
+                if (!quitHu(Shang_tocheck))
                     playedTile = get_defend_tile(unusedTile);
                 else
                     playedTile = get_defend_tile(hands.handTile);
