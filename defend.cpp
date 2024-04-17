@@ -1,5 +1,21 @@
 /****************************************************************************
-总策略：手牌分配度
+总策略：(一)非弃胡状态选择	(二)弃胡状态防守
+	(一)
+	(1)前期:1.按花箭风打出所有的字牌  2.搜索安全牌  3.任意打出
+	(2)后期:1.打出所有的孤张字牌  2.搜索安全牌	3.对手建模计算危险度,打出危险度最小的牌
+
+	(二)
+	1.打出所有的孤张或成刻字牌	2.搜索安全牌	3.对手建模计算危险度,打出危险度最小的牌
+
+对手建模:
+	1.依据场上未出现的牌, 计算其成刻/顺/搭/对 的分配度
+	2.依据知识与经验修正分配度bias值
+	3.依据对手副露数修正urgent值
+	4.模拟:
+		1)按照数据表为对手分配该轮所有较大可能的上听数与概率(如 {(0,0.3), (1, 0.5), (2, 0.4)}
+		2)对于每一个分配的上听数, 分配其可能的刻子数与未完成搭子数的所有情况
+		3)对于每一个分配的情况, 加概率权计算修正牌危险度
+
  ****************************************************************************/
 #define _CRT_SECURE_NO_WARNINGS
 #include "StatusMemory.h"
@@ -28,12 +44,14 @@ vector<pair<tile_t,double>> triplet_table;		//<可能的未知刻子组合，分配度>
 vector<pair<tile_t, double>> straight_table;		//<可能的未知顺子组合，分配度>
 vector<pair<tile_t, double>> pair_table;		//<可能的未知对子组合，分配度>
 vector<pair<pair<tile_t,tile_t>, double>> dazi_table;		//<可能的未知搭子组合，分配度>	记录顺子最左边牌及所差的牌
+
 tile_risk_table_t risk_table[4];	//每一张牌的对于对手i的危险度，初始化都为0
 double urgent_table[4];		//依据对手立牌数设置的紧急程度
 set<int> safe_t_table;	//安全牌
 
 double sigma = 0.01;	//概率下限，在表输入中进行控制
 vector<vector<double>> WN_poss_table;	//由实验数据所得的某一轮的上听数概率表
+//得到数牌值,非数牌返回11
 int tile_get_rank(int tile)
 {
 	if (11 <= tile && tile <= 39)
@@ -108,18 +126,19 @@ void Init_table()
 	oppopos2 = memory.getoppoPosition();
 	nextpos3 = memory.getNextPosition();
 }
-//依据知识与经验，修改bias,未完成
+//依据知识与经验，修改bias,可扩展
 int Special_solve(int bias, int tn, int flag)		//0-刻子 1-顺子 2-对子 3-搭子
 {
 	//经验策略	在该牌已经有成为**可能的情况下
 	//策略1：若该牌每有一单边无法成顺，则成刻概率增大
-	//策略2：若该牌是
+	//策略2：
 	//策略3：边张成刻概率增大
 	//策略4：字牌成刻概率增大
 	bias = 0;
 	int* unplayed = memory.getUnPlayed();
 	switch (flag)
 	{
+		//刻子
 	case 0:
 	{
 		Mahjong t(tn);
@@ -143,14 +162,17 @@ int Special_solve(int bias, int tn, int flag)		//0-刻子 1-顺子 2-对子 3-搭子
 		}
 	
 	}
+	//顺子
 	case 1:
 	{
 
 	}
+	//对子
 	case 2:
 	{
 
 	}
+	//搭子
 	case 3:
 	{
 
@@ -534,7 +556,7 @@ int get_defend_tile(vector<Mahjong>& handTile)
 	for (int i = 0; i < handTile.size(); i++)
 	{
 		int t = handTile[i].getTile() - 11;
-		double p = risk_table[1][t]*urgent_table[i] + risk_table[2][t]*urgent_table[i] + risk_table[3][t]*urgent_table[i];
+		double p = risk_table[lastpos1][t]*urgent_table[lastpos1] + risk_table[oppopos2][t]*urgent_table[oppopos2] + risk_table[nextpos3][t]*urgent_table[nextpos3];
 		if (p < min_p)
 		{
 			min_p = p;
