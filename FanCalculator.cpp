@@ -248,11 +248,18 @@ Mahjong Search_playtile(Hand_Claim hands,int initShang)
 bool quitHu(int Shangting)
 {
     if (!Shangting)return false;
+    int pao = 0;
     for (int i = 0;i < 4;i++)
     {
+        if (i == memory.getCurrPlayer())continue;
         int nums = memory.gethandNum(i);
-        if (nums == 1)return true;
+      //  if (nums == 1)return true;
+        if (nums <= 4)pao++;
     }
+    if (pao >= 2)return true;
+    if (turn >= 130 && pao)return true;
+
+
     return false;
 }
 

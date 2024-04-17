@@ -1,8 +1,10 @@
 #include "ResponseInfor.h"
+#include "defend.cpp"
 
 #include<algorithm>
 #include<iostream>
 #include<climits>
+
 
 string response()
 {
@@ -164,7 +166,8 @@ string response()
                 hands.addHand(tmp);
                 sort(hands.handTile.begin(), hands.handTile.end(), cmp());
             }
-
+            string temphands = hands.getFormatHandSting();
+            int Shang_tocheck = Handtiles_ShangTing_Temp(temphands);
 
             //在这里判断是否要弃胡，并进入防守函数获取要打出的牌
             //用于替换下方的unusedTile.back().getTileString()
@@ -172,7 +175,11 @@ string response()
             //若不弃胡，传入unusedTile
 
             sort(unusedTile.begin(), unusedTile.end(), cmp());
-
+            Mahjong playedTile;
+            if (quitHu(Shang_tocheck))
+                playedTile = get_defend_tile(unusedTile);
+            else
+                playedTile = get_defend_tile(hands.handTile);
             responseStr += unusedTile.back().getTileString();
 
 
@@ -209,6 +216,7 @@ string response()
 
 
         Minshang = Handtiles_ShangTing_Temp(t1);
+        int Shang_tocheck = Minshang;
 
         //1.对手杠牌回合中，若自己无法进行抢杠和，则不执行任何操作，直接PASS
         //2.任意一家牌墙为空时，无法吃碰杠
@@ -358,24 +366,19 @@ string response()
 
                         ChiFlag = true;
                     }
-
                     hands.addHand(tmp);
                 }
                 hands.removeChi(cTarget, chiTarget);
                 sort(hands.handTile.begin(), hands.handTile.end(), cmp());
             }
-
-
-
             if (ChiFlag||PengFlag)
             {
-                //在这里判断是否要弃胡，并进入防守函数获取要打出的牌
-                //用于替换下方的unusedTile.back().getTileString()
-                //若弃胡，传入handTile
-                //若不弃胡，传入unusedTile
-
                 sort(unusedTile.begin(), unusedTile.end(), cmp());
-
+                Mahjong playedTile;
+                if (quitHu(Shang_tocheck))
+                    playedTile = get_defend_tile(unusedTile);
+                else
+                    playedTile = get_defend_tile(hands.handTile);
                 responseStr += unusedTile.back().getTileString();
                 flag = true;
             }
