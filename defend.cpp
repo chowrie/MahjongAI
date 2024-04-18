@@ -22,6 +22,16 @@
 	P(AA) = Na >= 2 ? 2 + bias : 0
 	P(AB/AC) = min{N1,N2} + bias
  ****************************************************************************/
+
+/******************************************************************
+优化事宜: 
+1. turn的界定
+2. 保留自己的风
+3. 任意出牌时从边张开始出
+4. 
+
+
+*******************************************************************/
 #define _CRT_SECURE_NO_WARNINGS
 #include "defend.h"
 
@@ -286,13 +296,22 @@ void Calculate_poss()
 	}
 }
 
+int reset(int turn)
+{
+	//按照情况设置为0-6的档
+	int delta = turn - 60; 
+	if (delta < 0) return 0;
+	if (delta >= 70) return 6;
+	int layer = delta / 10;
+	return layer;
+}
 //设置可能的面子数与搭子数
 void Calculate_risk()
 {
-	Init_table();
+	//Init_table();
 	int* unplayed = memory.getUnPlayed();
 	//turn 为全局变量
-	int turn_ = turn%7;
+	int turn_ = reset(turn);
 	vector<double> WN_list = WN_poss_table[turn_];
 	for (int i = 0; i < 3; i ++)
 	{
