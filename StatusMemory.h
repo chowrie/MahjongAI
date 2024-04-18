@@ -122,6 +122,17 @@ public:
     }
     vector<Mahjong>& getPlayed()
     {
+        for (int i = 0; i < 4; i++)
+        {
+            if (1)
+            {
+                vector<Mahjong>& oper = eachPlayed[i];
+                for (int i = 0; i < oper.size(); i++)
+                {
+                    Played.push_back(oper[i]);
+                }
+            }
+        }
         return Played;
     };
     //¼ÇÂ¼

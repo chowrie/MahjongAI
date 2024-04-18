@@ -235,22 +235,56 @@ Mahjong Search_playtile(Hand_Claim hands, int initShang)
     //if (isChange)return hands.handTile[perfectlo];
     return 0;
 }
-bool quitHu(int Shangting)
+bool quitHu(int Shangting, vector<Mahjong>& unused)//要弃胡，返回true;
 {
 
-    if (!Shangting)return false;
     int pao = 0;
+    int subPao = 0;
+
+    int currPlayer = memory.getCurrPlayer();
+
+    if (currPlayer == memory.getMyPosistion()) {
+
+        Mahjong currDrawTile = memory.getCurrPlayTile();
+
+        //后期
+        if (turn >= 135) {
+
+            bool dangerousFlag = true;
+
+            for (auto& it : unused) {
+                if (memory.getUnPlayed()[currDrawTile] < 3) {
+                    dangerousFlag = false;
+                }
+            }
+
+            //无用牌全危险&&后期状态
+            if (dangerousFlag)return true;
+        }
+    }
+
+    if (Shangting == 0)return false;
+
     for (int i = 0; i < 4; i++)
     {
         if (i == memory.getMyPosistion())continue;
         int nums = memory.gethandNum(i);
+
+        //自己没听牌，并且确定有人听牌
+        if (nums == 1) {
+            return true;
+        }
+
         if (nums <= 4)pao++;
+        else if (nums <= 7)subPao++;
     }
+
     if (pao >= 2)return true;
     if (turn >= 130 && pao)return true;
-
+    if (turn >= 110 && subPao > 2)return true;
 
     return false;
+
 }
 int Tingtilenum(string& a)
 {

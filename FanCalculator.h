@@ -25,7 +25,7 @@ wind_t intowind(int a);
 int Count_usefultile(const tile_table_t& unplayed_table, const useful_table_t& useful_table);
 int Handtiles_ShangTing_Temp(string& a, int& useTilenum);
 Mahjong Search_playtile(Hand_Claim hands, int initShang);
-bool quitHu(int Shangting);//trueÆúºú
+bool quitHu(int Shangting,vector<Mahjong>& unused);//trueÆúºú
 int Tingtilenum(string& a);
 Mahjong Searchting(map<Mahjong, int>& a);
 
