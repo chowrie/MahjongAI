@@ -160,7 +160,7 @@ string response()
                 if (Ts < Minshang)
                 {
                     responseStr = "PLAY ";
-
+                    //
 
                     unusedTile.clear();
                     usednum.clear();
