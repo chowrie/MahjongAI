@@ -191,7 +191,7 @@ string response()
 
             sort(unusedTile.begin(), unusedTile.end(), cmp());
             Mahjong playedTile;
-            playedTile = Searchting(usednum);
+            playedTile = get_defend_tile(hands.handTile);
             responseStr += playedTile.getTileString();
 
 
@@ -400,12 +400,11 @@ string response()
             {
                 sort(unusedTile.begin(), unusedTile.end(), cmp());
                 Mahjong playedTile;
-                playedTile = Searchting(usednum);
+           //
+                playedTile = get_defend_tile(hands.handTile);
                 responseStr += playedTile.getTileString();
                 flag = true;
             }
-
-
         }
     }
 

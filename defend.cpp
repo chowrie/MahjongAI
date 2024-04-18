@@ -130,7 +130,7 @@ void Init_table()
 			int index = i * 9 + j;
 			int wn = inWN[index];		
 			if (wn <= 20) wn = 0;
-			double p = wn / 10000;
+			double p = (double)wn / 10000;
 			WN_poss_table[i].push_back(p);
 		}
 	}
@@ -140,6 +140,11 @@ void Init_table()
 	lastpos1 = memory.getLastPosition();
 	oppopos2 = memory.getoppoPosition();
 	nextpos3 = memory.getNextPosition();
+
+	
+	positions[0] = lastpos1;
+	positions[1] = oppopos2;
+	positions[2] = nextpos3;
 }
 //依据知识与经验，修改bias,可扩展
 int Special_solve(int bias, int tn, int flag)		//0-刻子 1-顺子 2-对子 3-搭子
@@ -557,6 +562,7 @@ int get_defend_tile_1(vector<Mahjong>& useless)
 		int safe_t = Get_safe_tile(useless);
 		if (safe_t > 0) return safe_t;
 
+
 		//3.计算危险度
 		Init_table();
 		Calculate_poss();
@@ -590,8 +596,8 @@ int get_defend_tile(vector<Mahjong>& handTile)
 
 	//2.弃胡状态
 	//1)检查是否有安全牌
-	int safe_t = Get_safe_tile(handTile);
-	if (safe_t > 0) return safe_t;
+	//int safe_t = Get_safe_tile(handTile);
+	//if (safe_t > 0) return safe_t;
 
 	//2)计算危险度
 	Init_table();
