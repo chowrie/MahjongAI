@@ -461,7 +461,7 @@ bool isHeJueZhang(Mahjong& majang, action Action)
 
 bool isQiangGangHe(action& currAction)
 {
-    return currAction == GANG;
+    return currAction == BUGANG;
 }
 
 bool isGangShangKaiHua(action& currAction, bool GangFlag)
