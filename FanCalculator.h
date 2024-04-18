@@ -5,7 +5,6 @@
 #include "fan_calculator.h"
 #include "statusMemory.h"
 
-
 //test
 using namespace mahjong;
 using namespace std;
@@ -20,11 +19,13 @@ typedef uint8_t Win_flag_t;
 
 int Hpoint(const char* str, Win_flag_t win_flag, wind_t prevalent_wind, wind_t seat_wind, tile_t wintile);
 int Handtiles_ShangTing();//¼ÆËãÉÏÌıÊı
-int Handtiles_Point(string str,Win_flag_t win_flag,int tile);
+int Handtiles_Point(string str, Win_flag_t win_flag, int tile);
 void Unplayed_totiletable(tile_table_t& target);
 wind_t intowind(int a);
 int Count_usefultile(const tile_table_t& unplayed_table, const useful_table_t& useful_table);
-int Handtiles_ShangTing_Temp(string &a);
+int Handtiles_ShangTing_Temp(string& a, int& useTilenum);
 Mahjong Search_playtile(Hand_Claim hands, int initShang);
 bool quitHu(int Shangting);//trueÆúºú
+int Tingtilenum(string& a);
+Mahjong Searchting(map<Mahjong, int>& a);
 
