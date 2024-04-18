@@ -149,7 +149,7 @@ string response()
                 if (Ts < Minshang)
                 {
                     responseStr = "PLAY ";
-
+                    //
 
                     unusedTile.clear();
                     unusedTile.push_back(tmp);
