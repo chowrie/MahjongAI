@@ -180,7 +180,7 @@ string response()
                 playedTile = get_defend_tile(unusedTile);
             else
                 playedTile = get_defend_tile(hands.handTile);
-            responseStr += unusedTile.back().getTileString();
+            responseStr += playedTile.getTileString();
 
 
             flag = true;
@@ -379,7 +379,7 @@ string response()
                     playedTile = get_defend_tile(unusedTile);
                 else
                     playedTile = get_defend_tile(hands.handTile);
-                responseStr += unusedTile.back().getTileString();
+                responseStr += playedTile.getTileString();
                 flag = true;
             }
 
