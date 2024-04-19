@@ -448,9 +448,7 @@ void Calculate_risk_table(int pack_cnt, int incomplete_cnt, tile_risk_table_t& o
 
 int Get_safe_tile(vector<Mahjong>& handTile)
 {
-	//
 	vector<Mahjong>& played = memory.getPlayed();
-
 	for (int i = played.size() - 1; i >= 0; i--)
 	{
 		Mahjong rplayed = played[i];
