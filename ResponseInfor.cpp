@@ -236,7 +236,7 @@ string response()
                     //此处无论能否杠我们都不打算杠
                     //换言之进入时 responseStr = "PLAY ";
                     responseStr = "PLAY ";//保险处理
-                    playedTile = get_defend_tile_1(hands.handTile);
+                    playedTile = get_defend_tile_1(unusedTile);
                     responseStr += playedTile.getTileString();
                 }
             }
@@ -470,7 +470,7 @@ string response()
                 sort(unusedTile.begin(), unusedTile.end(), cmp());
                 Mahjong playedTile;
 
-                playedTile = get_defend_tile(hands.handTile);
+                playedTile = get_defend_tile(unusedTile);
                 responseStr += playedTile.getTileString();
                 flag = true;
             }
