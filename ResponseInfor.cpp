@@ -149,7 +149,7 @@ string response()
 
                     Minshang = TempShang;
 
-                    buGangFlag = true;
+                    anGangFlag = true;
                 }
                 hands.removeAnGang(currPlayTile);
             }
@@ -193,14 +193,18 @@ string response()
                 }
                 else if (Ts == Minshang) {
 
+                    //优先选择暗杠
+                    if (!anGangFlag) {
+                        unusedTile.push_back(tmp);
+                        usednum.insert({ tmp, usenums });
 
-                    unusedTile.push_back(tmp);
-                    usednum.insert({ tmp, usenums });
+                        responseStr = "PLAY ";
 
-                    responseStr = "PLAY ";
+                        //补杠虽然加番，但是存在点炮风险，此处待定
+                        buGangFlag = false;
 
-                    //补杠虽然加番，但是存在点炮风险，此处待定
-                    buGangFlag = false;
+                    }
+
                 }
                 hands.addHand(tmp);
                 sort(hands.handTile.begin(), hands.handTile.end(), cmp());
