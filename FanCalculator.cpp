@@ -279,9 +279,11 @@ bool quitHu(int Shangting, vector<Mahjong>& unused)//要弃胡，返回true;
         else if (nums <= 7)subPao++;
     }
 
-    if (pao >= 2)return true;
-    if (turn >= 130 && pao)return true;
-    if (turn >= 110 && subPao > 2)return true;
+    if (pao >= 2&& Shangting > 2)return true;
+    if (turn >= 135 && pao && Shangting > 2)return true;
+
+    //130回合还差3步+，大概是真胡不了了
+    if (turn >= 130 && Shangting > 3)return true;
 
     return false;
 

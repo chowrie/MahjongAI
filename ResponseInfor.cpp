@@ -53,7 +53,11 @@ string response()
     {
         if (memory.getCurrAction() == DRAW)
         {
-            //到自己回合并且摸牌，尚未打出牌
+            //是否打算杠
+            bool anGangFlag = false;
+            bool buGangFlag = false;
+
+        //到自己回合并且摸牌，尚未打出牌
         //2.妙手回春
         //3.自摸
         //4.杠上开花
@@ -69,7 +73,7 @@ string response()
             int Nowfan = Handtiles_Point(NowHands, Winflag, currPlayTile);
             if (Nowfan >= 8)return "HU";
 
-
+            //杠牌没有出牌，因此没有所谓的无效牌供选择
 
             //BUGANG Card1（摸得是Card1）
             if (canBuGang())
@@ -81,22 +85,26 @@ string response()
                 if (Minshang > TempShang)
                 {
                     responseStr = "BUGANG ";
-                    //responseStr += currPlayTile.getTileString();
+                    responseStr += currPlayTile.getTileString();
 
-                    unusedTile.clear();
-                    usednum.clear();
+                    //unusedTile.clear();
+                    //usednum.clear();
 
-                    unusedTile.push_back(currPlayTile);
-                    usednum.insert({ currPlayTile, usenums });
+                    //unusedTile.push_back(currPlayTile);
+                    //usednum.insert({ currPlayTile, usenums });
 
                     Minshang = TempShang;
+
+                    buGangFlag = true;
                 }
                 else if (Minshang == TempShang) {
-                    responseStr = "BUGANG ";
-                    //responseStr += currPlayTile.getTileString();
 
-                    unusedTile.push_back(currPlayTile);
-                    usednum.insert({ currPlayTile, usenums });
+                    //补杠需注明杠牌
+                    responseStr = "BUGANG ";
+                    responseStr += currPlayTile.getTileString();
+
+                    //unusedTile.push_back(currPlayTile);
+                    //usednum.insert({ currPlayTile, usenums });
 
                     Minshang = TempShang;
                 }
@@ -113,26 +121,35 @@ string response()
                 int TempShang = Handtiles_ShangTing_Temp(h1, usenums);
                 if (Minshang > TempShang)
                 {
-                    responseStr = "GANG ";
+
+
+                    //暗杠无需注明杠牌
+                    //换言之，对手之间不清楚彼此暗杠的牌
+                    responseStr = "GANG";
                     //responseStr += currPlayTile.getTileString();
 
-                    unusedTile.clear();
-                    usednum.clear();
+                    //unusedTile.clear();
+                    //usednum.clear();
 
-                    unusedTile.push_back(currPlayTile);
-                    usednum.insert({ currPlayTile, usenums });
+                    //unusedTile.push_back(currPlayTile);
+                    //usednum.insert({ currPlayTile, usenums });
 
                     Minshang = TempShang;
+
+                    buGangFlag = true;
+                    anGangFlag = false;
                 }
                 else if (Minshang == TempShang) {
 
                     responseStr = "GANG ";
                     //responseStr += currPlayTile.getTileString();
 
-                    unusedTile.push_back(currPlayTile);
-                    usednum.insert({ currPlayTile, usenums });
+                    //unusedTile.push_back(currPlayTile);
+                    //usednum.insert({ currPlayTile, usenums });
 
                     Minshang = TempShang;
+
+                    buGangFlag = true;
                 }
                 hands.removeAnGang(currPlayTile);
             }
@@ -169,6 +186,10 @@ string response()
                     usednum.insert({ tmp, usenums });
 
                     Minshang = Ts;
+
+
+                    buGangFlag = false;
+                    anGangFlag = false;
                 }
                 else if (Ts == Minshang) {
 
@@ -177,22 +198,49 @@ string response()
                     usednum.insert({ tmp, usenums });
 
                     responseStr = "PLAY ";
+
+                    //补杠虽然加番，但是存在点炮风险，此处待定
+                    buGangFlag = false;
                 }
                 hands.addHand(tmp);
                 sort(hands.handTile.begin(), hands.handTile.end(), cmp());
             }
             string temphands = hands.getFormatHandSting();
             //   int Shang_tocheck = Handtiles_ShangTing_Temp(temphands);
+            
 
-               //在这里判断是否要弃胡，并进入防守函数获取要打出的牌
-               //用于替换下方的unusedTile.back().getTileString()
-               //若弃胡，传入handTile
-               //若不弃胡，传入unusedTile
 
             sort(unusedTile.begin(), unusedTile.end(), cmp());
+
+
             Mahjong playedTile;
-            playedTile = get_defend_tile(hands.handTile);
-            responseStr += playedTile.getTileString();
+
+            //到达此处意味着在摸牌阶段
+            if (quitHu(Minshang,unusedTile)) {//弃胡
+
+
+                //若Shanten杠<Shanten切，但弃胡，则不杠，选择切，更改responseStr
+                //防止安全牌减少和补杠点炮
+
+                responseStr = "PLAY ";
+                playedTile = get_defend_tile(hands.handTile);
+                responseStr += playedTile.getTileString();
+
+
+            }
+            else{//不弃胡
+
+                if (!buGangFlag && !anGangFlag) {
+
+
+                    //此处无论能否杠我们都不打算杠
+                    //换言之进入时 responseStr = "PLAY ";
+                    responseStr = "PLAY ";//保险处理
+                    playedTile = get_defend_tile_1(hands.handTile);
+                    responseStr += playedTile.getTileString();
+                }
+            }
+
 
 
             flag = true;
@@ -227,19 +275,30 @@ string response()
 
 
         int rr = 0;
-        Minshang = Handtiles_ShangTing_Temp(t1, rr);
+
+        //留牌或许是更好的选择？
+        //将计算手牌上听数放在最后
+
+        Minshang = INT_MAX;
+
+        //Minshang = Handtiles_ShangTing_Temp(t1, rr);
         int Shang_tocheck = Minshang;
 
         //1.对手杠牌回合中，若自己无法进行抢杠和，则不执行任何操作，直接PASS
         //2.任意一家牌墙为空时，无法吃碰杠
         if (currAction != GANG && !noTileFlag) {
 
+            int GangFlag = false;
 
             int PengFlag = false;
 
             int chiTarget = canChi();
 
             int ChiFlag = false;
+
+
+            //首先获取当前情况下副露
+
             //GANG
             if (canMinGang())
             {
@@ -256,7 +315,7 @@ string response()
                 {
                     responseStr = "GANG";
 
-                    flag = true;
+                    GangFlag = true;
 
                     Minshang = Ts;
                 }
@@ -396,15 +455,26 @@ string response()
                 hands.removeChi(cTarget, chiTarget);
                 sort(hands.handTile.begin(), hands.handTile.end(), cmp());
             }
-            if (ChiFlag || PengFlag)
-            {
+
+
+            //弃胡，无需判断
+            if (quitHu(Minshang, unusedTile)) {
+                return "PASS";
+            }
+            //吃碰杠谁更好呢？
+            //杠牌不用选无用牌
+            else if (GangFlag) {
+
+            }
+            else if (ChiFlag || PengFlag) {
                 sort(unusedTile.begin(), unusedTile.end(), cmp());
                 Mahjong playedTile;
-           //
+
                 playedTile = get_defend_tile(hands.handTile);
                 responseStr += playedTile.getTileString();
                 flag = true;
             }
+
         }
     }
 

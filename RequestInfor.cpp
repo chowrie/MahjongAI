@@ -130,7 +130,16 @@ void complexInfor(istringstream& sin)
 		}
 		case GANG: {
 			if (memory.getCurrAction() == DRAW) {
-				memory.playTile(currPlayer, Mahjong(card1), ANGANG);
+
+				//自家暗杠，知道暗杠何牌
+				if (currPlayer == memory.getCurrPlayer()) {
+					memory.playTile(currPlayer, memory.getCurrPlayTile(), ANGANG);
+				}
+				//它家暗杠，不知暗杠何牌
+				else {
+					//card1默认为""，传入为未知
+					memory.playTile(currPlayer, Mahjong(card1), ANGANG);
+				}
 			}
 			else {
 				memory.playTile(currPlayer, memory.getCurrPlayTile(), GANG);
