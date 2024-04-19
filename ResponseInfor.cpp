@@ -165,6 +165,7 @@ string response()
             int len = hands.handTile.size();
             int perfectlo = 0;
             bool isChange = false;
+
             for (int i = 0; i < len; i++)
             {
                 Mahjong tmp = hands.handTile[i];
@@ -240,7 +241,7 @@ string response()
                     //此处无论能否杠我们都不打算杠
                     //换言之进入时 responseStr = "PLAY ";
                     responseStr = "PLAY ";//保险处理
-                    playedTile = get_defend_tile_1(unusedTile);
+                    playedTile = Searchting(usednum);
                     responseStr += playedTile.getTileString();
                 }
             }
@@ -476,7 +477,7 @@ string response()
                 sort(unusedTile.begin(), unusedTile.end(), cmp());
                 Mahjong playedTile;
 
-                playedTile = get_defend_tile(unusedTile);
+                playedTile = Searchting(usednum);
                 responseStr += playedTile.getTileString();
                 flag = true;
             }

@@ -359,3 +359,4 @@ Mahjong Searchting(map<Mahjong, int>& a)
     }
     return pt;
 }
+
