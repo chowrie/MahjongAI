@@ -36,13 +36,14 @@
 4.19
 1. 对安全牌也按照字牌->边张->里张的顺序出
 
+说明:由于弃胡逻辑上应该是在后期调用, 故即便前期调用不会立即打出字牌
 
 *******************************************************************/
 #define _CRT_SECURE_NO_WARNINGS
 #include "defend.h"
 
 #define INF 0x3ffffff
-#define limit_turn 8	// <= limit_turn
+#define limit_turn 3	// reset(turn) <= limit_turn 相较于8轮的轮次
 #define max_recent 8	// 实际是读取所有打出的牌
 
 
@@ -520,9 +521,9 @@ int get_defend_tile_1(vector<Mahjong>& useless)
 	}
 	
 	//判断牌局时期情况
-	
+	int turn_ = reset(turn);
 	//前期:
-	if (turn <= limit_turn)
+	if (turn_ <= limit_turn)
 	{
 		//有字牌, 打字牌
 		int tile = -1;
