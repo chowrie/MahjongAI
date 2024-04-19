@@ -35,8 +35,8 @@
 
 4.19
 1. 对安全牌也按照字牌->边张->里张的顺序出
-
 说明:由于弃胡逻辑上应该是在后期调用, 故即便前期调用不会立即打出字牌
+2. 依据实际robot对战经验, 对手听字牌情况稀少, 故不额外考虑弃胡阶段对手单听字牌情况: 只要字牌在手牌中数量>=3可视为安全牌
 
 *******************************************************************/
 #define _CRT_SECURE_NO_WARNINGS
@@ -494,6 +494,15 @@ int Get_safe_tile(vector<Mahjong>& handTile)
 int get_defend_tile_1(vector<Mahjong>& useless)
 {
 	if (useless.size() == 1) return useless[0].getTile();
+	//清洗无用牌
+	vector<Mahjong>& tmp = useless;
+	for (int i = 0; i < tmp.size(); i++)
+	{
+		Mahjong tile = tmp[i];
+		if (!tile.isNum() && memory.getCntHand(tile) >= 2)
+			tmp.erase(tmp.begin() + i);
+	}
+	if (tmp.size() != 0)	useless = tmp;
 	//策略:
 	//牌局前期: 依照花牌 - 箭牌 - 风牌的次序打出
 	//牌局后期: 不考虑十三幺这类极低概率事件(若要考虑则额外增加读牌河,判剩余幺九牌数量),当字牌仅剩手上这一张时打出
@@ -588,6 +597,7 @@ int get_defend_tile_1(vector<Mahjong>& useless)
 		}
 
 		//2.找安全牌
+		
 		int safe_t = Get_safe_tile(useless);
 		if (safe_t > 0) return safe_t;
 
@@ -626,6 +636,19 @@ int get_defend_tile(vector<Mahjong>& handTile)
 	//2.弃胡状态
 	 
 	//1)检查是否有安全牌
+	//优先安全牌判别:	检查手牌中>= 3的字牌和 余牌都在手牌中的字牌(分别包含于 >= 3和对手出过的情况)
+	for (int i = 0; i < handTile.size(); i++)
+	{
+		Mahjong tile = handTile[i];
+		if (!tile.isNum())
+		{
+			int cnt = memory.getCntHand(tile);
+			if (cnt >= 3)
+				return tile;
+		}
+	}
+
+
 	int safe_t = Get_safe_tile(handTile);
 	if (safe_t > 0) return safe_t;
 
