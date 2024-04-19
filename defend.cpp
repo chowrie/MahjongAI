@@ -33,6 +33,9 @@
 1. turn的界定	√
 2. 任意出牌时从边张开始出	√
 
+4.19
+1. 对安全牌也按照字牌->边张->里张的顺序出
+
 
 *******************************************************************/
 #define _CRT_SECURE_NO_WARNINGS
@@ -453,14 +456,40 @@ int Get_safe_tile(vector<Mahjong>& handTile)
 		Mahjong rplayed = played[i];
 		safe_t_table.insert(rplayed);
 	}
+	//	11-19
+	//	21-29
+	//	31-39
+	int safe_t = -1;
+	int isZi = 0;
+	int max_to_5 = -1;
 	for (int i = 0; i < handTile.size(); i++)
 	{
 		Mahjong tile = handTile[i];
 		auto it = safe_t_table.find(tile);
 		if (it != safe_t_table.end())
-			return tile;
+		{
+			if (tile.isFeng() || tile.isHana() || tile.isJian())
+			{
+				isZi = 1;
+				if (tile.getNum() > safe_t)
+					tile = safe_t;
+			}
+			else if (!isZi)
+			{
+				//数牌排最优
+				int num = tile.getNum();
+				int delta = num >= 5 ? num - 5 : 5 - num;
+				if (delta > max_to_5)
+				{
+					max_to_5 = delta;
+					safe_t = tile;
+				}
+			}
+		}
+
 	}
-	return -1;
+	
+	return safe_t;
 }
 //非弃胡出牌策略
 int get_defend_tile_1(vector<Mahjong>& useless)
@@ -596,8 +625,8 @@ int get_defend_tile(vector<Mahjong>& handTile)
 
 	//2.弃胡状态
 	//1)检查是否有安全牌
-	//int safe_t = Get_safe_tile(handTile);
-	//if (safe_t > 0) return safe_t;
+	int safe_t = Get_safe_tile(handTile);
+	if (safe_t > 0) return safe_t;
 
 	//2)计算危险度
 	Init_table();
