@@ -471,7 +471,7 @@ int Get_safe_tile(vector<Mahjong>& handTile)
 			{
 				isZi = 1;
 				if (tile.getTile() > safe_t)
-					tile = safe_t;
+					safe_t = tile;
 			}
 			else if (!isZi)
 			{
