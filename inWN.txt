@@ -12,3 +12,53 @@ AllTIles:
 18-26: 筒
 27-31: 西 南 东 北
 32-34: 箭牌
+
+
+值得关注的数据，杠牌是否会增加收益？
+{
+	"requests": [
+		"0 2 2",
+		"1 0 0 0 0 F2 T4 W4 F3 W3 T2 J1 F3 B1 W2 F4 F3 B2",
+		"3 0 DRAW",
+		"3 0 PLAY F1",
+		"3 1 DRAW",
+		"3 1 PLAY J3",
+		"2 J2",
+		"3 2 PLAY J1",
+		"3 3 DRAW",
+		"3 3 PLAY J2",
+		"3 0 DRAW",
+		"3 0 PLAY W1",
+		"3 1 DRAW",
+		"3 1 PLAY F1",
+		"2 W8",
+		"3 2 PLAY J2",
+		"3 3 DRAW",
+		"3 3 PLAY J3",
+		"3 0 DRAW",
+		"3 0 PLAY B9",
+		"3 1 CHI B8 F3"
+	],
+	"responses": [
+		"PASS",
+		"PASS",
+		"PASS",
+		"PASS",
+		"PASS",
+		"PASS",
+		"PLAY J1",
+		"PASS",
+		"PASS",
+		"PASS",
+		"PASS",
+		"PASS",
+		"PASS",
+		"PASS",
+		"PLAY J2",
+		"PASS",
+		"PASS",
+		"PASS",
+		"PASS",
+		"PASS"
+	]
+}
