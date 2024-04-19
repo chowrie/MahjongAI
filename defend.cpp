@@ -625,8 +625,8 @@ int get_defend_tile(vector<Mahjong>& handTile)
 	//2.弃胡状态
 	 
 	//1)检查是否有安全牌
-	//int safe_t = Get_safe_tile(handTile);
-	//if (safe_t > 0) return safe_t;
+	int safe_t = Get_safe_tile(handTile);
+	if (safe_t > 0) return safe_t;
 
 	//2)计算危险度
 	Init_table();
