@@ -141,7 +141,7 @@ string response()
                 }
                 else if (Minshang == TempShang) {
 
-                    responseStr = "GANG ";
+                    responseStr = "GANG";
                     //responseStr += currPlayTile.getTileString();
 
                     //unusedTile.push_back(currPlayTile);
@@ -299,30 +299,6 @@ string response()
 
             //首先获取当前情况下副露
 
-            //GANG
-            if (canMinGang())
-            {
-
-                int myP = memory.getMyPosistion(), otherP = memory.getCurrPlayer();
-                int tars = memory.getFormatPosition(myP, otherP);
-
-                hands.addMinGang(currPlayTile, tars);
-                sort(hands.handTile.begin(), hands.handTile.end(), cmp());
-                string t1 = hands.getFormatHandSting();
-                int usenums = 0;
-                int Ts = Handtiles_ShangTing_Temp(t1, usenums);
-                if (Minshang >= Ts)
-                {
-                    responseStr = "GANG";
-
-                    GangFlag = true;
-
-                    Minshang = Ts;
-                }
-                hands.removeMinGang(currPlayTile);
-                sort(hands.handTile.begin(), hands.handTile.end(), cmp());
-
-            }
 
             //PENG Card1（打Card1）
             if (canPeng())
@@ -341,6 +317,7 @@ string response()
                 int perfectlo = 0;
                 for (int i = 0; i < len; i++)
                 {
+                    sort(hands.handTile.begin(), hands.handTile.end(), cmp());
                     Mahjong tmp = hands.handTile[i];
                     if (i > 0 && tmp == hands.handTile[i - 1])
                         continue;
@@ -416,6 +393,7 @@ string response()
                 int perfectlo = 0;
                 for (int i = 0; i < len; i++)
                 {
+                    sort(hands.handTile.begin(), hands.handTile.end(), cmp());
                     Mahjong tmp = hands.handTile[i];
                     if (i > 0 && tmp == hands.handTile[i - 1])
                         continue;
@@ -456,6 +434,30 @@ string response()
                 sort(hands.handTile.begin(), hands.handTile.end(), cmp());
             }
 
+            //GANG
+            if (canMinGang())
+            {
+
+                int myP = memory.getMyPosistion(), otherP = memory.getCurrPlayer();
+                int tars = memory.getFormatPosition(myP, otherP);
+
+                hands.addMinGang(currPlayTile, tars);
+                sort(hands.handTile.begin(), hands.handTile.end(), cmp());
+                string t1 = hands.getFormatHandSting();
+                int usenums = 0;
+                int Ts = Handtiles_ShangTing_Temp(t1, usenums);
+                if (Minshang >= Ts)
+                {
+                    responseStr = "GANG";
+
+                    GangFlag = true;
+
+                    Minshang = Ts;
+                }
+                hands.removeMinGang(currPlayTile);
+                sort(hands.handTile.begin(), hands.handTile.end(), cmp());
+
+            }
 
             //弃胡，无需判断
             if (quitHu(Minshang, unusedTile)) {
