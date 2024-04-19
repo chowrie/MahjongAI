@@ -492,6 +492,7 @@ int Get_safe_tile(vector<Mahjong>& handTile)
 //非弃胡出牌策略
 int get_defend_tile_1(vector<Mahjong>& useless)
 {
+	if (useless.size() == 1) return useless[0].getTile();
 	//策略:
 	//牌局前期: 依照花牌 - 箭牌 - 风牌的次序打出
 	//牌局后期: 不考虑十三幺这类极低概率事件(若要考虑则额外增加读牌河,判剩余幺九牌数量),当字牌仅剩手上这一张时打出
