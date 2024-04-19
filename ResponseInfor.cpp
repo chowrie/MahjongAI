@@ -281,7 +281,7 @@ string response()
 
         Minshang = INT_MAX;
 
-        //Minshang = Handtiles_ShangTing_Temp(t1, rr);
+        Minshang = Handtiles_ShangTing_Temp(t1, rr);
         int Shang_tocheck = Minshang;
 
         //1.对手杠牌回合中，若自己无法进行抢杠和，则不执行任何操作，直接PASS
