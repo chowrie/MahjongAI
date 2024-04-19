@@ -500,7 +500,10 @@ int get_defend_tile_1(vector<Mahjong>& useless)
 	{
 		Mahjong tile = tmp[i];
 		if (!tile.isNum() && memory.getCntHand(tile) >= 2)
+		{
 			tmp.erase(tmp.begin() + i);
+			i--;
+		}
 	}
 	if (tmp.size() != 0)	useless = tmp;
 	//²ßÂÔ:
