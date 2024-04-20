@@ -4,7 +4,7 @@
 #include "stringify.h"
 #include "fan_calculator.h"
 #include "statusMemory.h"
-
+#include"defend.h"
 //test
 using namespace mahjong;
 using namespace std;

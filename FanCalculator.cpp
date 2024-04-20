@@ -348,14 +348,40 @@ int Tingtilenum(string& a)
 Mahjong Searchting(map<Mahjong, int>& a)
 {
     Mahjong pt = 0;
-    int result = 0;
+    int len = a.size();
+    if (len == 1)
+    {
+        map<Mahjong, int>::iterator it = a.begin();
+        return it->first;
+    }
+ 
+    int result = 0, flag = 0;
     for (map<Mahjong, int>::iterator it = a.begin(); it != a.end(); ++it)
     {
-        if (it->second >= result)
+        if (it->second > result)
         {
             pt = it->first;
             result = it->second;
+            flag = 0;
         }
+        else if (it->second == result)
+        {
+            flag++;
+        }
+        else continue;
+    }
+    if (flag>0)
+    {
+        vector<Mahjong> tmp;
+        for (map<Mahjong, int>::iterator it = a.begin(); it != a.end(); ++it)
+        {
+            if (it->second == result)
+            {
+                tmp.push_back(it->first);
+            }
+        }
+        Mahjong plays = get_defend_tile(tmp);
+        return plays;
     }
     return pt;
 }
