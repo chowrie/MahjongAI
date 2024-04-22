@@ -48,6 +48,7 @@ int main()
         istringstream sin(inputJSON["requests"][i].asString());
         request(sin);
     }
+
     Json::Value outputJSON;
     outputJSON["response"] = response();
     cout << outputJSON << endl;

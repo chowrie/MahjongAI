@@ -160,6 +160,7 @@ string response()
             //PLAY Card1（打手牌Card1）
              //摸切
 
+            //排序
             sort(hands.handTile.begin(), hands.handTile.end(), cmp());
 
             int len = hands.handTile.size();
@@ -169,6 +170,7 @@ string response()
             for (int i = 0; i < len; i++)
             {
                 Mahjong tmp = hands.handTile[i];
+                //通过排序进行剪枝
                 if (i > 0 && tmp == hands.handTile[i - 1])
                     continue;
                 hands.removeHand(hands.handTile[i]);
@@ -219,6 +221,7 @@ string response()
 
 
             Mahjong playedTile;
+
 
             //到达此处意味着在摸牌阶段
             if (quitHu(Minshang,unusedTile)) {//弃胡
@@ -297,7 +300,18 @@ string response()
 
             int PengFlag = false;
 
-            int chiTarget = canChi();
+
+            vector<int>res = CanChi();
+
+            bool canChiFlag;
+
+            if (res.size() != 0) {
+                canChiFlag = true;
+            }
+            else {
+                canChiFlag = false;
+            }
+
 
             int ChiFlag = false;
 
@@ -369,74 +383,78 @@ string response()
 
             }
 
+
             //CHI Card1 Card2（吃Card1打Card2）
-            if (chiTarget) {
+            if (canChiFlag) {
 
-                hands.addChi(currPlayTile, chiTarget);
+                for (auto& chiTarget : res) {
 
-                //胡不了
-                Mahjong cTarget;
+                    hands.addChi(currPlayTile, chiTarget);
 
-                switch (chiTarget) {
-                case 1: {
-                    cTarget = currPlayTile.getNext();
-                    break;
-                }
-                case 2: {
-                    cTarget = currPlayTile;
-                    break;
-                }
-                case 3: {
-                    cTarget = currPlayTile.getLast();
-                    break;
-                }
-                }
+                    //胡不了
+                    Mahjong cTarget;
 
-
-                sort(hands.handTile.begin(), hands.handTile.end(), cmp());
-                int len = hands.handTile.size();
-                int perfectlo = 0;
-                for (int i = 0; i < len; i++)
-                {
-                    sort(hands.handTile.begin(), hands.handTile.end(), cmp());
-                    Mahjong tmp = hands.handTile[i];
-                    if (i > 0 && tmp == hands.handTile[i - 1])
-                        continue;
-                    hands.removeHand(hands.handTile[i]);
-                    string t1 = hands.getFormatHandSting();
-                    int usenums = 0;
-                    int Ts = Handtiles_ShangTing_Temp(t1, usenums);
-                    if (Ts < Minshang)
-                    {
-                        responseStr = "CHI ";
-                        responseStr += cTarget.getTileString() + " ";
-
-                        unusedTile.clear();
-                        usednum.clear();
-
-                        unusedTile.push_back(tmp);
-                        usednum.insert({ tmp, usenums });
-
-                        ChiFlag = true;
+                    switch (chiTarget) {
+                    case 1: {
+                        cTarget = currPlayTile.getNext();
+                        break;
                     }
-                    else if (Ts == Minshang) {
-                        responseStr = "CHI ";
-                        responseStr += cTarget.getTileString() + " ";
+                    case 2: {
+                        cTarget = currPlayTile;
+                        break;
+                    }
+                    case 3: {
+                        cTarget = currPlayTile.getLast();
+                        break;
+                    }
+                    }
 
-                        if (!ChiFlag) {
+
+                    sort(hands.handTile.begin(), hands.handTile.end(), cmp());
+                    int len = hands.handTile.size();
+                    int perfectlo = 0;
+                    for (int i = 0; i < len; i++)
+                    {
+                        sort(hands.handTile.begin(), hands.handTile.end(), cmp());
+                        Mahjong tmp = hands.handTile[i];
+                        if (i > 0 && tmp == hands.handTile[i - 1])
+                            continue;
+                        hands.removeHand(hands.handTile[i]);
+                        string t1 = hands.getFormatHandSting();
+                        int usenums = 0;
+                        int Ts = Handtiles_ShangTing_Temp(t1, usenums);
+                        if (Ts < Minshang)
+                        {
+                            responseStr = "CHI ";
+                            responseStr += cTarget.getTileString() + " ";
+
                             unusedTile.clear();
                             usednum.clear();
+
+                            unusedTile.push_back(tmp);
+                            usednum.insert({ tmp, usenums });
+
+                            ChiFlag = true;
                         }
+                        else if (Ts == Minshang) {
+                            responseStr = "CHI ";
+                            responseStr += cTarget.getTileString() + " ";
 
-                        unusedTile.push_back(tmp);
-                        usednum.insert({ tmp, usenums });
+                            if (!ChiFlag) {
+                                unusedTile.clear();
+                                usednum.clear();
+                            }
 
-                        ChiFlag = true;
+                            unusedTile.push_back(tmp);
+                            usednum.insert({ tmp, usenums });
+
+                            ChiFlag = true;
+                        }
+                        hands.addHand(tmp);
                     }
-                    hands.addHand(tmp);
+                    hands.removeChi(cTarget, chiTarget);
+                    sort(hands.handTile.begin(), hands.handTile.end(), cmp());
                 }
-                hands.removeChi(cTarget, chiTarget);
-                sort(hands.handTile.begin(), hands.handTile.end(), cmp());
             }
 
             //GANG
@@ -511,6 +529,25 @@ int canChi()
     return 0;
 }
 
+vector<int> CanChi()
+{
+    vector<int>res;
+
+    if (memory.getCurrPlayer() == memory.getLastPosition() && memory.getCurrPlayTile().isNum()) {
+        if (memory.getCntHand(memory.getCurrPlayTile().getNext()) &&
+            memory.getCntHand(memory.getCurrPlayTile().getNext().getNext())
+            )res.push_back(1);
+        if (memory.getCntHand(memory.getCurrPlayTile().getLast()) &&
+            memory.getCntHand(memory.getCurrPlayTile().getLast().getLast())
+            )res.push_back(3);
+        if (memory.getCntHand(memory.getCurrPlayTile().getLast()) &&
+            memory.getCntHand(memory.getCurrPlayTile().getNext())
+            )res.push_back(2);
+    }
+
+    return res;
+}
+
 bool canPeng()
 {
     //不为自家，手上牌
@@ -531,6 +568,7 @@ bool canMinGang()
 bool canAnGang()
 {
     if (memory.getCurrPlayer() == memory.getMyPosistion() && memory.getCntHand(memory.getCurrPlayTile()) == 4) {
+
         return true;
     }
     return false;

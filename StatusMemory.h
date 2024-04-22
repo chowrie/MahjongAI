@@ -60,6 +60,7 @@ private:
 
     int tileWall[4];
 
+    //暗杠
     int unknownTile;
 
 public:
@@ -135,6 +136,7 @@ public:
         }
         return Played;
     };
+
     //记录
     void playTile(Mahjong majang, action Action);//本家出牌，包括吃碰杠花,注明动作
     void playTile(Mahjong majang);//本家出牌，包括吃碰花
@@ -143,6 +145,7 @@ public:
 
 
     void drawTile(Mahjong majang);//本家抓牌
+
     void drawTile(int idx, int num = 1);//他家抓牌
 
     int getCntHand(Mahjong majang);

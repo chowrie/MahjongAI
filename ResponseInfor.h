@@ -8,6 +8,9 @@ string response();
 
 int canChi();
 
+
+vector<int> CanChi();
+
 bool canPeng();
 
 bool canMinGang();
@@ -15,6 +18,8 @@ bool canMinGang();
 bool canAnGang();
 
 bool canBuGang();
+
+//
 
 bool isHeJueZhang(Mahjong& majang,action Action);
 
