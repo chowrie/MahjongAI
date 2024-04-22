@@ -289,9 +289,6 @@ string response()
 
         Minshang = INT_MAX;
 
-        Minshang = Handtiles_ShangTing_Temp(t1, rr);
-        int Shang_tocheck = Minshang;
-
         //1.对手杠牌回合中，若自己无法进行抢杠和，则不执行任何操作，直接PASS
         //2.任意一家牌墙为空时，无法吃碰杠
         if (currAction != GANG && !noTileFlag) {
@@ -360,6 +357,8 @@ string response()
                         Minshang = Ts;
 
                         PengFlag = true;
+
+                        flag = true;
                     }
                     else if (Ts == Minshang) {
 
@@ -435,6 +434,10 @@ string response()
                             usednum.insert({ tmp, usenums });
 
                             ChiFlag = true;
+
+                            Minshang = Ts;
+
+                            flag = true;
                         }
                         else if (Ts == Minshang) {
                             responseStr = "CHI ";
@@ -456,6 +459,7 @@ string response()
                     sort(hands.handTile.begin(), hands.handTile.end(), cmp());
                 }
             }
+
 
             //GANG
             if (canMinGang())
@@ -482,6 +486,20 @@ string response()
 
             }
 
+            //不鸣牌
+            int Ts = Handtiles_ShangTing_Temp(t1, rr);
+
+            if (Ts <= Minshang) {
+                ChiFlag = false;
+                PengFlag = false; 
+                GangFlag = false;
+
+                flag = false;
+
+                Minshang = Ts;
+            }
+
+
             //弃胡，无需判断
             if (quitHu(Minshang, unusedTile)) {
                 return "PASS";
@@ -489,6 +507,7 @@ string response()
             //吃碰杠谁更好呢？
             //杠牌不用选无用牌
             else if (GangFlag) {
+                flag = true;
 
             }
             else if (ChiFlag || PengFlag) {
