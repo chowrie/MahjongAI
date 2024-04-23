@@ -495,7 +495,7 @@ int get_defend_tile_1(vector<Mahjong>& useless)
 {
 	if (useless.size() == 1) return useless[0].getTile();
 	//«Âœ¥Œﬁ”√≈∆
-	vector<Mahjong>& tmp = useless;
+	vector<Mahjong> tmp = useless;
 	for (int i = 0; i < tmp.size(); i++)
 	{
 		Mahjong tile = tmp[i];

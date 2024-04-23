@@ -190,7 +190,7 @@ string response()
                 int usenums = 0;
                 int Ts = Handtiles_ShangTing_Temp(t1, usenums);
 
-                if (Ts < Minshang)
+                /*if (Ts < Minshang)
                 {
                     responseStr = "PLAY ";
                     
@@ -221,7 +221,7 @@ string response()
 
                     }
 
-                }
+                }*/
 
                 //手牌:hand.handTile
                 //拟打出的牌：tmp
@@ -233,119 +233,120 @@ string response()
                 //有用牌数usefulNum
 
                 //排除自摸影响
-               /*Winflag = 0;
-                Winflag |= WIN_FLAG_DISCARD;
+               /**/Winflag = 0;
+               Winflag |= WIN_FLAG_DISCARD;
 
 
 
-                int usefulNum = 0;
-                int priFlag = 0;
+               int usefulNum = 0;
+               int priFlag = 0;
 
-                if (Ts == 0) {
-                    vector<Mahjong>tingTile = getTingTile(t1);
+               if (Ts == 0) {
+                   vector<Mahjong>tingTile = getTingTile(t1);
 
-                    for (auto& it : tingTile) {
-                        hands.addHand(it);
-                        
-                        string checkStr = hands.getFormatHandSting();
+                   for (auto& it : tingTile) {
+                       hands.addHand(it);
 
-                        if (turn > 160) {
-                            Winflag |= WIN_FLAG_ABOUT_KONG;
+                       string checkStr = hands.getFormatHandSting();
 
-                            priFlag = 1;
-                        }
-                        else if (turn > 100) {
-                            Winflag |= WIN_FLAG_4TH_TILE;
+                       if (turn > 160) {
+                           Winflag |= WIN_FLAG_ABOUT_KONG;
 
-                            priFlag = 1;
-                        }
-                        else {
-                            priFlag = 2;
-                        }
+                           priFlag = 1;
+                       }
+                       else if (turn > 100) {
+                           Winflag |= WIN_FLAG_4TH_TILE;
 
-                        if (Handtiles_Point(checkStr, Winflag, it) >= 8) {
+                           priFlag = 1;
+                       }
+                       else {
+                           priFlag = 2;
+                       }
 
-                            if (priFlag == 1) {
-                                if (memory.getTargetTileLeft(it)) {
-                                    usefulNum+=1;
-                                }
-                            }
-                            else if (priFlag == 2) {
-                                usefulNum += memory.getTargetTileLeft(it);
-                            }
+                       if (Handtiles_Point(checkStr, Winflag, it) >= 8) {
 
-                        }
+                           if (priFlag == 1) {
+                               if (memory.getTargetTileLeft(it)) {
+                                   usefulNum += 1;
+                               }
+                           }
+                           else if (priFlag == 2) {
+                               usefulNum += memory.getTargetTileLeft(it);
+                           }
 
-
-
-                        hands.removeHand(it);
-                    }
-
-                    if (usefulNum >= 2 || (usefulNum >= 1&&turn > 100)) {
-                        Minshang = Ts;
-
-                        if (checkTingFlag) {
-                            responseStr = "PLAY ";
-
-                            buGangFlag = false;
-                            anGangFlag = false;
-
-                            unusedTile.clear();
-                            usednum.clear();
-
-                            unusedTile.push_back(tmp);
-                            usednum.insert({ tmp, usefulNum });
-                        }
-                        else {
-                            responseStr = "PLAY ";
-
-                            checkTingFlag = true;
-
-                            buGangFlag = false;
-                            anGangFlag = false;
+                       }
 
 
-                            unusedTile.push_back(tmp);
-                            usednum.insert({ tmp, usefulNum });
-                        }
-                    }
+
+                       hands.removeHand(it);
+                   }
+
+                   if (usefulNum >= 2 || (usefulNum >= 1 && turn > 100)) {
+                       Minshang = Ts;
+
+                       if (checkTingFlag) {
+                           responseStr = "PLAY ";
+
+                           buGangFlag = false;
+                           anGangFlag = false;
+
+                           unusedTile.clear();
+                           usednum.clear();
+
+                           unusedTile.push_back(tmp);
+                           usednum.insert({ tmp, usefulNum });
+                       }
+                       else {
+                           responseStr = "PLAY ";
+
+                           checkTingFlag = true;
+
+                           buGangFlag = false;
+                           anGangFlag = false;
 
 
-                }
-                else {
-                    if (Ts < Minshang)
-                    {
-                        responseStr = "PLAY ";
-                        //
+                           unusedTile.push_back(tmp);
+                           usednum.insert({ tmp, usefulNum });
+                       }
 
-                        unusedTile.clear();
-                        usednum.clear();
-
-                        unusedTile.push_back(tmp);
-                        usednum.insert({ tmp, usenums });
-
-                        Minshang = Ts;
+                   }
 
 
-                        buGangFlag = false;
-                        anGangFlag = false;
-                    }
-                    else if (Ts == Minshang) {
+               }
+               else {
+                   if (Ts < Minshang)
+                   {
+                       responseStr = "PLAY ";
+                       //
 
-                        //优先选择暗杠
-                        if (!anGangFlag) {
-                            unusedTile.push_back(tmp);
-                            usednum.insert({ tmp, usenums });
+                       unusedTile.clear();
+                       usednum.clear();
 
-                            responseStr = "PLAY ";
+                       unusedTile.push_back(tmp);
+                       usednum.insert({ tmp, usenums });
 
-                            //补杠虽然加番，但是存在点炮风险，此处待定
-                            buGangFlag = false;
+                       Minshang = Ts;
 
-                        }
 
-                    }
-                }*/
+                       buGangFlag = false;
+                       anGangFlag = false;
+                   }
+                   else if (Ts == Minshang) {
+
+                       //优先选择暗杠
+                       if (!anGangFlag) {
+                           unusedTile.push_back(tmp);
+                           usednum.insert({ tmp, usenums });
+
+                           responseStr = "PLAY ";
+
+                           //补杠虽然加番，但是存在点炮风险，此处待定
+                           buGangFlag = false;
+
+                       }
+
+                   }
+               }
 
                 hands.addHand(tmp);
                 sort(hands.handTile.begin(), hands.handTile.end(), cmp());
@@ -353,6 +354,8 @@ string response()
             string temphands = hands.getFormatHandSting();
             //   int Shang_tocheck = Handtiles_ShangTing_Temp(temphands);
             
+
+
 
 
             sort(unusedTile.begin(), unusedTile.end(), cmp());
@@ -487,73 +490,6 @@ string response()
                         PengFlag = true;
 
                         flag = true;
-                    }
-                    else if (Ts == Minshang) {
-
-                        responseStr = "PENG ";
-
-                        if (!PengFlag) {
-                            unusedTile.clear();
-                            usednum.clear();
-                        }
-
-                        unusedTile.push_back(tmp);
-                        usednum.insert({ tmp, usenums });
-                        PengFlag = true;
-
-                    }
-                    hands.addHand(tmp);
-                    sort(hands.handTile.begin(), hands.handTile.end(), cmp());
-                }
-
-                hands.removePeng(currPlayTile);
-
-            }
-
-
-
-
-            //PENG Card1（打Card1）
-            if (canPeng())
-            {
-                int myP = memory.getMyPosistion(), otherP = memory.getCurrPlayer();
-                int tars = memory.getFormatPosition(myP, otherP);
-
-                hands.addPeng(currPlayTile, tars);
-
-
-
-                sort(hands.handTile.begin(), hands.handTile.end(), cmp());
-                //胡不了，选牌
-                //缺少多张无用牌的情况
-                int len = hands.handTile.size();
-                int perfectlo = 0;
-                for (int i = 0; i < len; i++)
-                {
-                    sort(hands.handTile.begin(), hands.handTile.end(), cmp());
-                    Mahjong tmp = hands.handTile[i];
-                    if (i > 0 && tmp == hands.handTile[i - 1])
-                        continue;
-
-                    hands.removeHand(hands.handTile[i]);
-
-                    string t1 = hands.getFormatHandSting();
-                    int usenums = 0;
-                    int Ts = Handtiles_ShangTing_Temp(t1, usenums);
-
-                    if (Ts < Minshang)
-                    {
-                        responseStr = "PENG ";
-
-                        unusedTile.clear();
-                        usednum.clear();
-
-                        unusedTile.push_back(tmp);
-                        usednum.insert({ tmp, usenums });
-
-                        Minshang = Ts;
-
-                        PengFlag = true;
                     }
                     else if (Ts == Minshang) {
 
