@@ -125,8 +125,8 @@ string response()
 
                     //暗杠无需注明杠牌
                     //换言之，对手之间不清楚彼此暗杠的牌
-                    responseStr = "GANG";
-                    //responseStr += currPlayTile.getTileString();
+                    responseStr = "GANG ";
+                    responseStr += currPlayTile.getTileString();
 
                     //unusedTile.clear();
                     //usednum.clear();
@@ -136,8 +136,8 @@ string response()
 
                     Minshang = TempShang;
 
-                    buGangFlag = true;
-                    anGangFlag = false;
+                    anGangFlag = true;
+                    buGangFlag = false;
                 }
                 else if (Minshang == TempShang) {
 
@@ -164,7 +164,7 @@ string response()
             sort(hands.handTile.begin(), hands.handTile.end(), cmp());
 
             int len = hands.handTile.size();
-            int perfectlo = 0;
+
 
             //弃胡换牌策略的引入
             //拟打出所有牌，判断上听数
@@ -176,6 +176,7 @@ string response()
 
             //上听数≠0：
             //取最小
+
 
             bool checkTingFlag = false;
 
@@ -244,17 +245,22 @@ string response()
                if (Ts == 0) {
                    vector<Mahjong>tingTile = getTingTile(t1);
 
-                   for (auto& it : tingTile) {
+                   sort(tingTile.begin(), tingTile.end(), cmp());
+
+                   int l = tingTile.size();
+
+                   for (int j = 0; j < l;j++) {
+                       Mahjong it = tingTile[j];
                        hands.addHand(it);
 
                        string checkStr = hands.getFormatHandSting();
 
-                       if (turn > 160) {
-                           Winflag |= WIN_FLAG_ABOUT_KONG;
+                       if (turn > 130) {
+                           Winflag |= WIN_FLAG_4TH_TILE;
 
                            priFlag = 1;
                        }
-                       else if (turn > 100) {
+                       else if (turn > 80) {
                            Winflag |= WIN_FLAG_4TH_TILE;
 
                            priFlag = 1;
@@ -262,6 +268,7 @@ string response()
                        else {
                            priFlag = 2;
                        }
+
 
                        if (Handtiles_Point(checkStr, Winflag, it) >= 8) {
 
@@ -279,9 +286,10 @@ string response()
 
 
                        hands.removeHand(it);
+                     //  sort(tingTile.begin(), tingTile.end(), cmp());
                    }
 
-                   if (usefulNum >= 2 || (usefulNum >= 1 && turn > 100)) {
+                   if (usefulNum) {
                        Minshang = Ts;
 
                        if (checkTingFlag) {
@@ -290,8 +298,6 @@ string response()
                            buGangFlag = false;
                            anGangFlag = false;
 
-                           unusedTile.clear();
-                           usednum.clear();
 
                            unusedTile.push_back(tmp);
                            usednum.insert({ tmp, usefulNum });
@@ -304,6 +310,9 @@ string response()
                            buGangFlag = false;
                            anGangFlag = false;
 
+
+                           unusedTile.clear();
+                           usednum.clear();
 
                            unusedTile.push_back(tmp);
                            usednum.insert({ tmp, usefulNum });
@@ -385,7 +394,14 @@ string response()
                     //此处无论能否杠我们都不打算杠
                     //换言之进入时 responseStr = "PLAY ";
                     responseStr = "PLAY ";//保险处理
-                    playedTile = Searchting(usednum);
+
+                    if (usednum.size() == 0) {
+                        playedTile = get_defend_tile(hands.handTile);
+                    }
+                    else {
+                        playedTile = Searchting(usednum);
+                    }
+
                     responseStr += playedTile.getTileString();
                 }
             }

@@ -99,7 +99,7 @@ Mahjong::Mahjong(const string s, int idx)
 			tile = 10 + (s[0] - '0');
 			break;
 		}
-		case 'b': {
+		case 'p': {
 			tile = 20 + (s[0] - '0');
 			break;
 		}
