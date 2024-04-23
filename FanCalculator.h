@@ -28,4 +28,6 @@ Mahjong Search_playtile(Hand_Claim hands, int initShang);
 bool quitHu(int Shangting,vector<Mahjong>& unused);//true弃胡
 int Tingtilenum(string& a);
 Mahjong Searchting(map<Mahjong, int>& a);
+vector<Mahjong> Tingtile(string& a);//传入已听牌的立牌，返回所听牌组（牌还剩余）；
+Mahjong tile_toMahjong(tile_t a);
 
