@@ -385,126 +385,154 @@ Mahjong Searchting(map<Mahjong, int>& a)
     }
     return pt;
 }
-Mahjong tile_toMahjong(tile_t a)
-{
-    tile_t suits = tile_get_suit(a);
-    tile_t ranks = tile_get_rank(a);
-    int su = (int)suits;
-    int ra = (int)ranks;
-    switch (su)
+//Mahjong tile_toMahjong(tile_t a)
+//{
+//    tile_t suits = tile_get_suit(a);
+//    tile_t ranks = tile_get_rank(a);
+//    int su = (int)suits;
+//    int ra = (int)ranks;
+//    switch (su)
+//    {
+//    case 2:su = 3;break;
+//    case 3:su = 2;break;
+//    case 4:
+//        if (ra >= 5 && ra <= 7)
+//        {
+//            su = 5;
+//            ra = (ra + 6) % 10;
+//        }
+//        break;
+//    case 5:su = 6;break;
+//    default:;
+//    }
+//    Mahjong rs = su * 10 + ra;
+//    return rs;
+//}
+//vector<Mahjong> Tingtile(string& a)//传入已听牌的立牌，返回所听牌组（牌还剩余）；
+//{
+//    hand_tiles_t hand_p;
+//    tile_t serving_p;
+//    long sign = string_to_tiles(a.c_str(), &hand_p, &serving_p);
+//    tile_table_t unplayed_table = { 0 };
+//    useful_table_t useful_count = { 0 };
+//    vector<pair<int, int>> r;
+//    for (int i = 0; i < 5; i++)
+//    {
+//        r.push_back(make_pair(0, 0));
+//    }
+//    Unplayed_totiletable(unplayed_table);
+//    int result = INT_MAX;
+//    vector<Mahjong> temp;
+//    r[0].first = thirteen_orphans_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
+//    if (r[0].first != std::numeric_limits<int>::max())
+//        r[0].second = Count_usefultile(unplayed_table, useful_count);
+//    if (r[0].first == 0)
+//    {
+//        int cnt = 0;
+//        for (int i = 0; i < 34; ++i) {
+//            tile_t t = all_tiles[i];
+//            if (useful_count[t]&&unplayed_table[t])
+//            {
+//                Mahjong tmp = tile_toMahjong(t);
+//                temp.push_back(tmp);
+//            }
+//        }
+//        return temp;
+//    }
+//
+//    r[1].first = seven_pairs_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
+//    if (r[1].first != std::numeric_limits<int>::max())
+//        r[1].second = Count_usefultile(unplayed_table, useful_count);
+//    if (r[1].first == 0)
+//    {
+//        int cnt = 0;
+//        for (int i = 0; i < 34; ++i) {
+//            tile_t t = all_tiles[i];
+//            if (useful_count[t] && unplayed_table[t])
+//            {
+//                Mahjong tmp = tile_toMahjong(t);
+//                temp.push_back(tmp);
+//            }
+//        }
+//        return temp;
+//    }
+//    r[2].first = honors_and_knitted_tiles_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
+//    if (r[2].first != std::numeric_limits<int>::max())
+//        r[2].second = Count_usefultile(unplayed_table, useful_count);
+//    if (r[2].first == 0)
+//    {
+//        int cnt = 0;
+//        for (int i = 0; i < 34; ++i) {
+//            tile_t t = all_tiles[i];
+//            if (useful_count[t] && unplayed_table[t])
+//            {
+//                Mahjong tmp = tile_toMahjong(t);
+//                temp.push_back(tmp);
+//            }
+//        }
+//        return temp;
+//    }
+//
+//    r[3].first = knitted_straight_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
+//    if (r[3].first != std::numeric_limits<int>::max())
+//        r[3].second = Count_usefultile(unplayed_table, useful_count);
+//    if (r[3].first == 0)
+//    {
+//        int cnt = 0;
+//        for (int i = 0; i < 34; ++i) {
+//            tile_t t = all_tiles[i];
+//            if (useful_count[t] && unplayed_table[t])
+//            {
+//                Mahjong tmp = tile_toMahjong(t);
+//                temp.push_back(tmp);
+//            }
+//        }
+//        return temp;
+//    }
+//    r[4].first = basic_form_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
+//    if (r[4].first != std::numeric_limits<int>::max())
+//        r[4].second = Count_usefultile(unplayed_table, useful_count);
+//    if (r[4].first == 0)
+//    {
+//        int cnt = 0;
+//        for (int i = 0; i < 34; ++i) {
+//            tile_t t = all_tiles[i];
+//            if (useful_count[t] && unplayed_table[t])
+//            {
+//                Mahjong tmp = tile_toMahjong(t);
+//                temp.push_back(tmp);
+//            }
+//        }
+//        return temp;
+//    }
+//    return temp;//返回0代表已听牌
+//}
+vector<string> test_wait(string& a) {
+    hand_tiles_t hand_tiles;
+    tile_t serving_tile;
+    string_to_tiles(a.c_str(), &hand_tiles, &serving_tile);
+
+
+    //puts(str);
+
+    useful_table_t useful_table;
+    vector<string> temp;
+   // string tmp;
+    bool is_wait = mahjong::is_waiting(hand_tiles, &useful_table);
+    if (is_wait) 
     {
-    case 2:su = 3;break;
-    case 3:su = 2;break;
-    case 4:
-        if (ra >= 5 && ra <= 7)
+        //puts(" waiting:");
+        char buf[64];
+        for (tile_t t = TILE_1m; t < TILE_TABLE_SIZE; ++t)
         {
-            su = 5;
-            ra = (ra + 6) % 10;
-        }
-        break;
-    case 5:su = 6;break;
-    default:;
-    }
-    Mahjong rs = su * 10 + ra;
-    return rs;
-}
-vector<Mahjong> Tingtile(string& a)//传入已听牌的立牌，返回所听牌组（牌还剩余）；
-{
-    hand_tiles_t hand_p;
-    tile_t serving_p;
-    long sign = string_to_tiles(a.c_str(), &hand_p, &serving_p);
-    tile_table_t unplayed_table = { 0 };
-    useful_table_t useful_count = { 0 };
-    vector<pair<int, int>> r;
-    for (int i = 0; i < 5; i++)
-    {
-        r.push_back(make_pair(0, 0));
-    }
-    Unplayed_totiletable(unplayed_table);
-    int result = INT_MAX;
-    vector<Mahjong> temp;
-    r[0].first = thirteen_orphans_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
-    if (r[0].first != std::numeric_limits<int>::max())
-        r[0].second = Count_usefultile(unplayed_table, useful_count);
-    if (r[0].first == 0)
-    {
-        int cnt = 0;
-        for (int i = 0; i < 34; ++i) {
-            tile_t t = all_tiles[i];
-            if (useful_count[t]&&unplayed_table[t])
+            if (useful_table[t])
             {
-                Mahjong tmp = tile_toMahjong(t);
-                temp.push_back(tmp);
+                tiles_to_string(&t, 1, buf, sizeof(buf));
+                temp.push_back(string(buf));
             }
         }
-        return temp;
+        return  temp;
     }
-
-    r[1].first = seven_pairs_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
-    if (r[1].first != std::numeric_limits<int>::max())
-        r[1].second = Count_usefultile(unplayed_table, useful_count);
-    if (r[1].first == 0)
-    {
-        int cnt = 0;
-        for (int i = 0; i < 34; ++i) {
-            tile_t t = all_tiles[i];
-            if (useful_count[t] && unplayed_table[t])
-            {
-                Mahjong tmp = tile_toMahjong(t);
-                temp.push_back(tmp);
-            }
-        }
-        return temp;
-    }
-    r[2].first = honors_and_knitted_tiles_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
-    if (r[2].first != std::numeric_limits<int>::max())
-        r[2].second = Count_usefultile(unplayed_table, useful_count);
-    if (r[2].first == 0)
-    {
-        int cnt = 0;
-        for (int i = 0; i < 34; ++i) {
-            tile_t t = all_tiles[i];
-            if (useful_count[t] && unplayed_table[t])
-            {
-                Mahjong tmp = tile_toMahjong(t);
-                temp.push_back(tmp);
-            }
-        }
-        return temp;
-    }
-
-    r[3].first = knitted_straight_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
-    if (r[3].first != std::numeric_limits<int>::max())
-        r[3].second = Count_usefultile(unplayed_table, useful_count);
-    if (r[3].first == 0)
-    {
-        int cnt = 0;
-        for (int i = 0; i < 34; ++i) {
-            tile_t t = all_tiles[i];
-            if (useful_count[t] && unplayed_table[t])
-            {
-                Mahjong tmp = tile_toMahjong(t);
-                temp.push_back(tmp);
-            }
-        }
-        return temp;
-    }
-    r[4].first = basic_form_shanten(hand_p.standing_tiles, hand_p.tile_count, &useful_count);
-    if (r[4].first != std::numeric_limits<int>::max())
-        r[4].second = Count_usefultile(unplayed_table, useful_count);
-    if (r[4].first == 0)
-    {
-        int cnt = 0;
-        for (int i = 0; i < 34; ++i) {
-            tile_t t = all_tiles[i];
-            if (useful_count[t] && unplayed_table[t])
-            {
-                Mahjong tmp = tile_toMahjong(t);
-                temp.push_back(tmp);
-            }
-        }
-        return temp;
-    }
-    return temp;//返回0代表已听牌
+    return temp;
 }
 

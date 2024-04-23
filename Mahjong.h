@@ -26,6 +26,7 @@ public:
     Mahjong(const string& s);
     Mahjong(const Mahjong& other);
     Mahjong(int tileNum);
+    Mahjong(const string s,int idx);
 
     char getTypeChar();
     string getTypeStr();

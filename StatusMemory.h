@@ -99,8 +99,7 @@ public:
     Mahjong getCurrPlayTile();
 
     int getTargetTileLeft(int tileNum);
-    int getTargetTileLeft(const Mahjong& majang);
-    int getTargetTileLeft(const Mahjong majang);
+    int getTargetTileLeft(Mahjong majang);
     int getTargetTileLeft(string& majang);
     int getTargetTileLeft(string majang);
 

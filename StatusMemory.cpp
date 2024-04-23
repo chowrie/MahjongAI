@@ -161,12 +161,8 @@ int Memory::getTargetTileLeft(int tileNum)
     return Unplayed[tileNum];
 }
 
-int Memory::getTargetTileLeft(const Mahjong& majang)
-{
-    return Unplayed[majang];
-}
 
-int Memory::getTargetTileLeft(const Mahjong majang)
+int Memory::getTargetTileLeft(Mahjong majang)
 {
     return Unplayed[majang];
 }

@@ -28,3 +28,5 @@ bool isQiangGangHe(action&currAction);
 bool isGangShangKaiHua(action&currAction, bool GangFlag);//²»¼Æ×ÔÃþ
 
 bool isNoTile();
+
+vector<Mahjong>getTingTile(string formatStr);

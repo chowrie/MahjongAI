@@ -53,6 +53,65 @@ Mahjong::Mahjong(int tileNum):tile(tileNum){
 	setFortamtStr();
 }
 
+Mahjong::Mahjong(const string s, int idx)
+{
+	FormatStr = s;
+	switch (s[0]) {
+	case 'E': {
+		FormatStr = "E";
+		tile = 41;
+		break;
+	}
+	case 'S': {
+		FormatStr = "S";
+		tile = 42;
+		break;
+	}
+	case 'W': {
+		FormatStr = "W";
+		tile = 43;
+		break;
+	}
+	case 'N': {
+		FormatStr = "N";
+		tile = 44;
+		break;
+	}
+	case 'C': {
+		FormatStr = "C";
+		tile = 51;
+		break;
+	}
+	case 'F': {
+		FormatStr = "F";
+		tile = 52;
+		break;
+	}
+	case 'P': {
+		FormatStr = "P";
+		tile = 53;
+		break;
+	}
+	default: {
+		switch (s[1])
+		{
+		case 'm': {
+			tile = 10 + (s[0] - '0');
+			break;
+		}
+		case 'b': {
+			tile = 20 + (s[0] - '0');
+			break;
+		}
+		case 's': {
+			tile = 30 + (s[0] - '0');
+			break;
+		}
+		}
+	}
+	}
+}
+
 char Mahjong::getTypeChar()
 {
 	int type = tile / 10;
