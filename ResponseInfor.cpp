@@ -251,6 +251,9 @@ string response()
 
                    for (int j = 0; j < l;j++) {
                        Mahjong it = tingTile[j];
+
+                       if (!memory.getTargetTileLeft(it))continue;
+
                        hands.addHand(it);
 
                        string checkStr = hands.getFormatHandSting();
